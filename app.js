@@ -29,8 +29,15 @@ thirdUser.addInfo({ height : 175 });
 thirdUser.addInfo({ height : 180 });
 thirdUser.changeInfo({ height : 177 });
 
+thirdUser.addFriend(firstUser);
+
+// fs.writeFile('users.txt', 
+            //  JSON.stringify([firstUser,secondUser, thirdUser]), 
+            //  {}, 
+            //  callbackFn);
+
 fs.writeFile('users.txt', 
-             JSON.stringify([firstUser,secondUser, thirdUser]), 
+             JSON.stringify(thirdUser), 
              {}, 
              callbackFn);
 // fs.writeFile('users.txt', JSON.stringify(secondUser), {}, callbackFn);

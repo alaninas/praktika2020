@@ -60,7 +60,20 @@ class User {
         if (this.extras !== extras) {
             this.extras = extras;
         }
-     }
+    }
+
+    addFriend(friend) {
+        if ( typeof(friend) === 'object' ) {
+            let ttt = friend;
+            let native = this;
+            this.friend = ttt;
+            // if (ttt.friend !== native) {
+                // ttt.friend = native;
+            // }
+            // friend.friend = this;
+        }
+    }
+
 }
 
 module.exports = User;

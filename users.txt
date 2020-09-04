@@ -1,1 +1,1 @@
-[{"name":"Petras","password":"PetrasPswd","email":"PetrasEmail.com","age":55},{"name":"PD1","password":"PD1Pswd","age":5},{"name":"PD2","password":"PD2Pswd","email":"PD2newEmail.com","info":"PD2info","height":177}]
+{"name":"PD2","password":"PD2Pswd","email":"PD2newEmail.com","info":"PD2info","height":177,"friend":{"name":"Petras","password":"PetrasPswd","email":"PetrasEmail.com","age":55}}
