@@ -4,7 +4,8 @@ class User {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.info = info
+        this.info = info;
+        this.friends = []
     }
 
     addAge(age) {
@@ -64,13 +65,9 @@ class User {
 
     addFriend(friend) {
         if ( typeof(friend) === 'object' ) {
-            let ttt = friend;
-            let native = this;
-            this.friend = ttt;
-            // if (ttt.friend !== native) {
-                // ttt.friend = native;
-            // }
-            // friend.friend = this;
+            if (!this.friends.find(fr => fr.name === friend.name)) {
+                this.friends.push(friend.name);
+            }
         }
     }
 
