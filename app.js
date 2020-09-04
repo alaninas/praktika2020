@@ -13,9 +13,9 @@ secondUser.addAge(5);
 
 firstUser.createPassword('PetrasPswd','PetrasPswd');
 
-secondUser.createPassword('PD1','PD2');
+secondUser.createPassword('PD1', 'PD2');
 
-const thirdUser = new User('PD2','PD2Pswd', 'PD2email.com', 'PD2info');
+const thirdUser = new User('PD2', 'PD2Pswd', 'PD2email.com');
 thirdUser.addAge(52);
 
 thirdUser.addEmail('PD2newEmail.com');

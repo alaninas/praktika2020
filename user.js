@@ -1,10 +1,9 @@
 class User {
-    constructor(name, password, email, info) {
+    constructor(name, password, email) {
         // this.name = name + "_stuff";
         this.name = name;
         this.password = password;
         this.email = email;
-        this.info = info;
         this.friends = []
     }
 
@@ -33,7 +32,7 @@ class User {
     // Answer:
     // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-    addInfo({age, height, physAddress, extras}={}) {
+    addInfo({age, height, physAddress}={}) {
         if (!this.age) {
             this.age = age;
         }
@@ -43,12 +42,9 @@ class User {
         if (!this.physAddress) {
             this.physAddress = physAddress;
         }
-        if (!this.extras) {
-            this.extras = extras;
-        }
     }
 
-    changeInfo({age, height, physAddress, extras}={}) {
+    changeInfo({age, height, physAddress}={}) {
         if (this.age !== age) {
             this.age = age;
         }
@@ -57,9 +53,6 @@ class User {
         }
         if (this.physAddress !== physAddress) {
             this.physAddress = physAddress;
-        }
-        if (this.extras !== extras) {
-            this.extras = extras;
         }
     }
 
