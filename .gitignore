@@ -1,2 +1,4 @@
 node_modules
 coverage
+# ignore doc/notes.txt
+doc/*.txt
