@@ -65,8 +65,6 @@ class User {
                 // Also works
                 // friend.friends.push(this.name);
             }
-        } else {
-            return;
         }
     }
 
@@ -77,8 +75,6 @@ class User {
             if (friend.friends.indexOf(this.name) > -1) {
                 friend.removeFriend(this);
             }
-        } else {
-            return;
         }
     }
 }
