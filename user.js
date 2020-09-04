@@ -64,10 +64,15 @@ class User {
     }
 
     addFriend(friend) {
-        if ( typeof(friend) === 'object' ) {
-            if (!this.friends.find(fr => fr.name === friend.name)) {
-                this.friends.push(friend.name);
+        if (!this.friends.find(fr => fr.name === friend.name)) {
+            this.friends.push(friend.name);
+            // if (friend.addFriend) {
+            if (!friend.friends.find(fr => fr.name === this.name)) {
+                // friend.addFriend(this);
+                friend.friends.push(this.name);
             }
+        } else {
+            return;
         }
     }
 

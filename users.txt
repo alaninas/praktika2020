@@ -1,1 +1,1 @@
-{"name":"PD2","password":"PD2Pswd","email":"PD2newEmail.com","info":"PD2info","friends":["Petras"],"height":177}
+[{"name":"PD2","password":"PD2Pswd","email":"PD2newEmail.com","info":"PD2info","friends":["Petras","Petras"],"height":177},{"name":"Petras","password":"PetrasPswd","email":"PetrasEmail.com","friends":["PD2","PD2"],"age":55}]

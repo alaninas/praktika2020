@@ -5,6 +5,22 @@ const callbackFn = () => {
     console.log("success");
 }
 
+function censor(censor) {
+    var i = 0;
+  
+    return function(key, value) {
+      if(i !== 0 && typeof(censor) === 'object' && typeof(value) == 'object' && censor == value) 
+        return '[Circular]'; 
+  
+      if(i >= 4) // seems to be a harded maximum of 30 serialized objects?
+        return '[Unknown]';
+  
+      ++i; // so we know we aren't using the original object anymore
+  
+      return value;  
+    }
+  }
+
 const firstUser = new User('Petras');
 firstUser.addAge(55);
 
@@ -30,6 +46,7 @@ thirdUser.addInfo({ height : 180 });
 thirdUser.changeInfo({ height : 177 });
 
 thirdUser.addFriend(firstUser);
+thirdUser.addFriend(firstUser);
 
 // fs.writeFile('users.txt', 
             //  JSON.stringify([firstUser,secondUser, thirdUser]), 
@@ -37,7 +54,7 @@ thirdUser.addFriend(firstUser);
             //  callbackFn);
 
 fs.writeFile('users.txt', 
-             JSON.stringify(thirdUser), 
-             {}, 
-             callbackFn);
-// fs.writeFile('users.txt', JSON.stringify(secondUser), {}, callbackFn);
+              JSON.stringify([thirdUser,firstUser]), 
+              {}, 
+              callbackFn);
+// fs.writeFile('users.txt', JSON.stringify(censor(secondUser)), {}, callbackFn);
