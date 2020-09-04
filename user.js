@@ -29,6 +29,16 @@ class User {
         }
     }
 
+    // Answer:
+    // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+    myFunction({age, height, physAddress, extras}={}) {
+       this.age = age;
+       this.height = height;
+       this.physAddress = physAddress;
+       this.extras = extras
+    }
+
     addInfo(info) {
         if (!this.info) {
             this.info = info;

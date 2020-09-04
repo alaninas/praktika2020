@@ -25,6 +25,8 @@ thirdUser.changeEmail('PD2newEmail.com');
 thirdUser.addInfo('PD2NewInfo');
 thirdUser.changeInfo('PD2NewInfo');
 
+thirdUser.myFunction({ height : 175});
+
 fs.writeFile('users.txt', 
              JSON.stringify([firstUser,secondUser, thirdUser]), 
              {}, 
