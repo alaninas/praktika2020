@@ -18,7 +18,7 @@ class User {
     }
 
     addEmail(email) {
-        if (!this.email) {
+        if (this.email === undefined) {
             this.email = email;
         }
     }
@@ -33,7 +33,7 @@ class User {
     // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
     addInfo({age, height, physAddress}={}) {
-        if (!this.age) {
+        if (isNaN(this.age)) {
             this.age = age;
         }
         if (!this.height) {
