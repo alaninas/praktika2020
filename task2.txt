@@ -1,10 +1,20 @@
 Prideti User klasei metodus:
-createPassword(pwd1, pwd2) // passwordai turi sutapti
-addEmail - turi prideti emaila jeigu useris dar neturi emailo
+
+createPassword(pwd1, pwd2) 
+           // passwordai turi sutapti
+
+addEmail - turi prideti emaila jeigu 
+           useris dar neturi emailo
+
 changeEmail - turi pakeisti email
-addInfo - turi prideti papildoma informacija prie userio (pvz amzius, ugis, adresas) jei jau turi info turi nebeprideti naujos
+
+addInfo - turi prideti papildoma informacija prie 
+          userio (pvz amzius, ugis, adresas) jei 
+          jau turi info turi nebeprideti naujos
+
 changeInfo - turi pakeisti info naujais parametrais
 
 //bonus taskai:
 galima prie userio prideti kitus userius kaip jo draugus
-jei faile irasome useri, automatiskai susikurtu atskiri failai su jo draugais
+jei faile irasome useri, automatiskai susikurtu 
+atskiri failai su jo draugais
