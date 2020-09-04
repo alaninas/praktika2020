@@ -22,10 +22,12 @@ thirdUser.addEmail('PD2newEmail.com');
 firstUser.addEmail('PetrasEmail.com');
 
 thirdUser.changeEmail('PD2newEmail.com');
-thirdUser.addInfo('PD2NewInfo');
-thirdUser.changeInfo('PD2NewInfo');
+// thirdUser.addInfo('PD2NewInfo');
+// thirdUser.changeInfo('PD2NewInfo');
 
-thirdUser.myFunction({ height : 175});
+thirdUser.addInfo({ height : 175 });
+thirdUser.addInfo({ height : 180 });
+thirdUser.changeInfo({ height : 177 });
 
 fs.writeFile('users.txt', 
              JSON.stringify([firstUser,secondUser, thirdUser]), 

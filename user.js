@@ -32,24 +32,35 @@ class User {
     // Answer:
     // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-    myFunction({age, height, physAddress, extras}={}) {
-       this.age = age;
-       this.height = height;
-       this.physAddress = physAddress;
-       this.extras = extras
-    }
-
-    addInfo(info) {
-        if (!this.info) {
-            this.info = info;
+    addInfo({age, height, physAddress, extras}={}) {
+        if (!this.age) {
+            this.age = age;
+        }
+        if (!this.height) {
+            this.height = height;
+        }
+        if (!this.physAddress) {
+            this.physAddress = physAddress;
+        }
+        if (!this.extras) {
+            this.extras = extras;
         }
     }
 
-    changeInfo(info) {
-        if (this.info !== info) {
-            this.info = info;
+    changeInfo({age, height, physAddress, extras}={}) {
+        if (this.age !== age) {
+            this.age = age;
         }
-    }
+        if (this.height !== height) {
+            this.height = height;
+        }
+        if (this.physAddress !== physAddress) {
+            this.physAddress = physAddress;
+        }
+        if (this.extras !== extras) {
+            this.extras = extras;
+        }
+     }
 }
 
 module.exports = User;
