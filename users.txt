@@ -1,1 +1,1 @@
-[{"name":"Petras","password":"PetrasPswd","age":55},{"name":"PetroDraugas1","password":"PetroDraugas1Pswd","age":5}]
+[{"name":"Petras","password":"PetrasPswd","email":"PetrasEmail.com","age":55},{"name":"PDraugas1","password":"PDraugas1Pswd","age":5},{"name":"PDraugas2","password":"PD2Pswd","email":"PD2email.com","age":52}]

@@ -1,12 +1,12 @@
 Prideti User klasei metodus:
 
-createPassword(pwd1, pwd2) 
++ createPassword(pwd1, pwd2) 
            // passwordai turi sutapti
 
-addEmail - turi prideti emaila jeigu 
++ addEmail - turi prideti emaila jeigu 
            useris dar neturi emailo
 
-changeEmail - turi pakeisti email
++ changeEmail - turi pakeisti email
 
 addInfo - turi prideti papildoma informacija prie 
           userio (pvz amzius, ugis, adresas) jei 
