@@ -47,6 +47,7 @@ thirdUser.changeInfo({ height : 177 });
 
 thirdUser.addFriend(firstUser);
 thirdUser.addFriend(firstUser);
+thirdUser.addFriend(firstUser);
 
 // fs.writeFile('users.txt', 
             //  JSON.stringify([firstUser,secondUser, thirdUser]), 
