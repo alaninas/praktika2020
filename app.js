@@ -15,13 +15,15 @@ firstUser.createPassword('PetrasPswd','PetrasPswd');
 
 secondUser.createPassword('PD1','PD2');
 
-const thirdUser = new User('PD2','PD2Pswd', 'PD2email.com');
+const thirdUser = new User('PD2','PD2Pswd', 'PD2email.com', 'PD2info');
 thirdUser.addAge(52);
 
 thirdUser.addEmail('PD2newEmail.com');
 firstUser.addEmail('PetrasEmail.com');
 
 thirdUser.changeEmail('PD2newEmail.com');
+thirdUser.addInfo('PD2NewInfo');
+thirdUser.changeInfo('PD2NewInfo');
 
 fs.writeFile('users.txt', 
              JSON.stringify([firstUser,secondUser, thirdUser]), 

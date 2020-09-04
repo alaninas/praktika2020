@@ -1,9 +1,10 @@
 class User {
-    constructor(name, password, email) {
+    constructor(name, password, email, info) {
         // this.name = name + "_stuff";
         this.name = name;
         this.password = password;
-        this.email = email
+        this.email = email;
+        this.info = info
     }
 
     addAge(age) {
@@ -25,6 +26,18 @@ class User {
     changeEmail(email) {
         if (this.email !== email) {
             this.email = email;
+        }
+    }
+
+    addInfo(info) {
+        if (!this.info) {
+            this.info = info;
+        }
+    }
+
+    changeInfo(info) {
+        if (this.info !== info) {
+            this.info = info;
         }
     }
 }

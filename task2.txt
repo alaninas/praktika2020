@@ -8,7 +8,7 @@ Prideti User klasei metodus:
 
 + changeEmail - turi pakeisti email
 
-addInfo - turi prideti papildoma informacija prie 
++ addInfo - turi prideti papildoma informacija prie 
           userio (pvz amzius, ugis, adresas) jei 
           jau turi info turi nebeprideti naujos
 
