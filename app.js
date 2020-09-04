@@ -8,4 +8,8 @@ const callbackFn = () => {
 const firstUser = new User('Petras');
 firstUser.addAge(55);
 
-fs.writeFile('users.txt', JSON.stringify(firstUser), {}, callbackFn);
+const secondUser = new User('PetroDraugas1');
+firstUser.addAge(5,'defaultpswd');
+
+fs.writeFile('users.txt', JSON.stringify([firstUser,secondUser]), {}, callbackFn);
+// fs.writeFile('users.txt', JSON.stringify(secondUser), {}, callbackFn);
