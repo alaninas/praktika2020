@@ -77,6 +77,17 @@ class User {
         }
     }
 
+    removeFriend(friend) {
+        if (this.friends.indexOf(friend.name) > -1) {
+            // In the array
+            this.friends.pop(friend.name);
+            if (friend.friends.indexOf(this.name) > -1) {
+                friend.removeFriend(this);
+            }
+        } else {
+            return;
+        }
+    }
 }
 
 module.exports = User;

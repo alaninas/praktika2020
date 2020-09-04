@@ -33,12 +33,17 @@ thirdUser.addFriend(firstUser);
 thirdUser.addFriend(firstUser);
 thirdUser.addFriend(firstUser);
 
-// fs.writeFile('users.txt', 
-            //  JSON.stringify([firstUser,secondUser, thirdUser]), 
-            //  {}, 
-            //  callbackFn);
+firstUser.removeFriend(thirdUser);
+firstUser.removeFriend(thirdUser);
+
+firstUser.addFriend(secondUser);
 
 fs.writeFile('users.txt', 
-              JSON.stringify([thirdUser,firstUser]), 
-              {}, 
-              callbackFn);
+            JSON.stringify([firstUser, secondUser, thirdUser]), 
+            {}, 
+            callbackFn);
+
+// fs.writeFile('users.txt', 
+              // JSON.stringify([thirdUser, firstUser]), 
+              // {}, 
+              // callbackFn);
