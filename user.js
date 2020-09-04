@@ -2,7 +2,7 @@ class User {
     constructor(name, password) {
         // this.name = name + "_stuff";
         this.name = name;
-        this.password = ""
+        this.password = password
     }
 
     addAge(age) {
