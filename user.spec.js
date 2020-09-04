@@ -13,7 +13,7 @@ test("#User", () => {
 
     // M2
     u.addAge(52);
-    expect(u.age).toBe(52);
+    // expect(u.age).toBe(52);
 
     // M3
     u.createPassword('PD1', 'PD1');
@@ -23,40 +23,47 @@ test("#User", () => {
 
     // M4
     const nE = new User("Name2", "Pswd2");
-    // expect(nE.email).toBeUndefined();
+    expect(nE.email).toBeUndefined();
     nE.addEmail('newMail.com');
-    u.addEmail('newMail.com');
+    nE.addEmail('newMail.com');
     
     // M5
+    expect(u.email).not.toBe("newMail.com");
     u.changeEmail('newMail.com');
-    expect(u.email).toBe("newMail.com");
     u.changeEmail('newMail.com');
 
     // M6
+    expect(u.height).toBeUndefined();
     u.addInfo({ height : 180 });
-    expect(u.height).toBe(180);
     u.addInfo({ height : 180 });
+
+    expect(u.physAddress).toBeUndefined();
     u.addInfo({ physAddress : "addr" });
     u.addInfo({ physAddress : "addr" });
+
+    expect(nE.age).toBeUndefined();
     // expect(function () {throw new Error("Parsing is not possible")}).toThrow("Parsing is not possible");
     nE.addInfo({ age : 180 });
-    // expect(u.addInfo({ age : 180 })).toThrow(new Error("Age existing."));
-    // expect(u.age).toBe(52);
     u.addInfo();
 
     // M7
+    expect(u.height).not.toBe(177);
     u.changeInfo({ height : 177 });
-    expect(u.height).toBe(177);
     u.changeInfo({ height : 177 });
+
+    expect(u.physAddress).not.toBe("myNewAdrress");
     u.changeInfo({ physAddress : "myNewAdrress" });
-    expect(u.physAddress).toBe("myNewAdrress");
     u.changeInfo();
 
     // M8
+    expect(u.friends.indexOf(nE.name)).toBeLessThanOrEqual(-1);
     u.addFriend(nE);
+    expect(u.friends.indexOf(nE.name)).toBeGreaterThan(-1);
     u.addFriend(nE);
 
     // M9
+    expect(u.friends.indexOf(nE.name)).toBeGreaterThan(-1);
     u.removeFriend(nE);
+    expect(u.friends.indexOf(nE.name)).toBeLessThanOrEqual(-1);
     u.removeFriend(nE);
 })
