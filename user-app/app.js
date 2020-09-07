@@ -38,7 +38,7 @@ firstUser.removeFriend(thirdUser);
 
 firstUser.addFriend(secondUser);
 
-fs.writeFile('users.txt', 
+fs.writeFile('users.json', 
             JSON.stringify([firstUser, secondUser, thirdUser]), 
             {}, 
             callbackFn);
