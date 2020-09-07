@@ -9,6 +9,3 @@
     },
     "lib": ["es2015"]
   }
-
-// Source
-// https://code.visualstudio.com/docs/typescript/typescript-compiling
