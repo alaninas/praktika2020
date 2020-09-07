@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Petras",
+        "password": "PetrasPswd",
+        "email": "PetrasEmail.com",
+        "friends": [
+            "PD1"
+        ],
+        "age": 55
+    },
+    {
+        "name": "PD1",
+        "password": "PD1Pswd",
+        "friends": [
+            "Petras"
+        ],
+        "age": 5
+    },
+    {
+        "name": "PD2",
+        "password": "PD2Pswd",
+        "email": "PD2newEmail.com",
+        "friends": [],
+        "height": 177
+    }
+]
