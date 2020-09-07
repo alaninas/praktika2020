@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "tsc user.ts && tsc app.ts && node app.js",
     "test": "jest --coverage"
   },
   "author": "",
