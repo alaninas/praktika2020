@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
 var User = /** @class */ (function () {
-    //constructor 
+    // Constructor 
     function User(name, password, email, friends) {
         this.name = name;
         this.password = password;

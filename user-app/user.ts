@@ -1,5 +1,5 @@
 export default class User {
-    // fields 
+    // Fields 
     name: string; 
     password: string; 
     email: string; 
@@ -8,7 +8,7 @@ export default class User {
     height: number;
     physAddress: string;
  
-    //constructor 
+    // Constructor 
     constructor(name: string, password: string, email: string, friends: Array<string>) {
         this.name = name;
         this.password = password;
