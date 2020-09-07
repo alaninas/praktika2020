@@ -29,8 +29,11 @@ var User = /** @class */ (function () {
     // Answer:
     // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+    // /* -------------- TypeScript Function -------------- */
+    // const hello1 = (first: string, last: string) =>
+    // `Hello ${first} ${last}!`;
     User.prototype.addInfo = function (_a) {
-        var _b = _a === void 0 ? { age: undefined, height: undefined, physAddress: '' } : _a, age = _b.age, height = _b.height, physAddress = _b.physAddress;
+        var age = _a.age, height = _a.height, physAddress = _a.physAddress;
         if (!this.age) {
             this.age = age;
         }
@@ -42,7 +45,7 @@ var User = /** @class */ (function () {
         }
     };
     User.prototype.changeInfo = function (_a) {
-        var _b = _a === void 0 ? { age: undefined, height: undefined, physAddress: '' } : _a, age = _b.age, height = _b.height, physAddress = _b.physAddress;
+        var age = _a.age, height = _a.height, physAddress = _a.physAddress;
         if (this.age !== age) {
             this.age = age;
         }

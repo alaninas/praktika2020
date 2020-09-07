@@ -1,38 +1,38 @@
 export default class User {
     // fields 
-    name:string; 
-    password:string; 
-    email:string; 
-    friends:Array<string>; 
-    age:number;
-    height:number;
-    physAddress:string;
+    name: string; 
+    password: string; 
+    email: string; 
+    friends: Array<string>; 
+    age: number;
+    height: number;
+    physAddress: string;
  
     //constructor 
-    constructor(name:string, password:string, email:string, friends:Array<string>) {
+    constructor(name: string, password: string, email: string, friends: Array<string>) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.friends = friends;
     }  
     
-    addAge(age:number) {
+    addAge(age: number) {
         this.age = age;
     }
 
-    createPassword(pwd1:string, pwd2:string) {
+    createPassword(pwd1: string, pwd2: string) {
         if (pwd1 === pwd2) {
             this.password = pwd1;
         }
     }
 
-    addEmail(email:string) {
+    addEmail(email: string) {
         if (this.email === undefined) {
             this.email = email;
         }
     }
 
-    changeEmail(email:string) {
+    changeEmail(email: string) {
         if (this.email !== email) {
             this.email = email;
         }
@@ -41,7 +41,9 @@ export default class User {
     // Answer:
     // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-    addInfo({age, height, physAddress}={age:undefined, height:undefined, physAddress:''}) {
+    // https://mariusschulz.com/articles/typing-destructured-object-parameters-in-typescript
+    addInfo({age, height, physAddress} : 
+            {age: number, height: number, physAddress: string}) {
         if (!this.age) {
             this.age = age;
         }
@@ -53,7 +55,8 @@ export default class User {
         }
     }
 
-    changeInfo({age, height, physAddress}={age:undefined, height:undefined, physAddress:''}) {
+    changeInfo({age, height, physAddress} : 
+               {age: number, height: number, physAddress: string}) {
         if (this.age !== age) {
             this.age = age;
         }
@@ -65,7 +68,7 @@ export default class User {
         }
     }
 
-    addFriend(friend:User) {
+    addFriend(friend: User) {
         if (this.friends.indexOf(friend.name) <= -1) {
             // Not in the array
             this.friends.push(friend.name);
@@ -77,7 +80,7 @@ export default class User {
         }
     }
 
-    removeFriend(friend:User) {
+    removeFriend(friend: User) {
         if (this.friends.indexOf(friend.name) > -1) {
             // In the array
             let index = this.friends.indexOf(friend.name);
