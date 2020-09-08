@@ -1,0 +1,5 @@
+node_modules
+coverage
+dist
+# ignore doc/notes.txt
+doc/*.txt
