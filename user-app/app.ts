@@ -5,17 +5,17 @@ const callbackFn = () => {
     console.log("success");
 }
 
-const firstUser = new User('Petras', '', '', []);
+const firstUser = new User('Petras', '', '', [], 0, 0,'');
 firstUser.addAge(55);
 
-const secondUser = new User('PD1', 'PD1Pswd', '', []);
+const secondUser = new User('PD1', 'PD1Pswd', '', [], 0,0,'');
 secondUser.addAge(5);
 
 firstUser.createPassword('PetrasPswd','PetrasPswd');
 
 secondUser.createPassword('PD1', 'PD2');
 
-const thirdUser = new User('PD2', 'PD2Pswd', 'PD2email.com', []);
+const thirdUser = new User('PD2', 'PD2Pswd', 'PD2email.com', [],0,0,'');
 thirdUser.addAge(52);
 
 thirdUser.addEmail('PD2newEmail.com');
@@ -23,9 +23,9 @@ firstUser.addEmail('PetrasEmail.com');
 
 thirdUser.changeEmail('PD2newEmail.com');
 
-thirdUser.addInfo({ age: undefined, height : 175, physAddress: '' });
-thirdUser.addInfo({ age: undefined, height : 180, physAddress: '' });
-thirdUser.changeInfo({ age: undefined, height : 177, physAddress: '' });
+thirdUser.addInfo({ age: 0, height : 175, physAddress: '' });
+thirdUser.addInfo({ age: 0, height : 180, physAddress: '' });
+thirdUser.changeInfo({ age: 0, height : 177, physAddress: '' });
 
 thirdUser.addFriend(firstUser);
 thirdUser.addFriend(firstUser);

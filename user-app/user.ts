@@ -1,19 +1,24 @@
 export default class User {
     // Fields 
-    name: string; 
-    password: string; 
-    email: string; 
-    friends: Array<string>; 
-    age: number;
-    height: number;
-    physAddress: string;
+    private name: string; 
+    private password: string; 
+    private email: string; 
+    private friends: Array<string>; 
+    private age: number;
+    private height: number;
+    private physAddress: string;
  
     // Constructor 
-    constructor(name: string, password: string, email: string, friends: Array<string>) {
+    constructor(name: string, password: string, 
+                email: string, friends: Array<string>,
+                age: number, height: number, physAddress: string ) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.friends = friends;
+        this.age = age;
+        this.height = height;
+        this.physAddress = physAddress;
     }  
     
     addAge(age: number) {
