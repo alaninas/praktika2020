@@ -1,24 +1,17 @@
-export default class User {
+export class User {
     // Fields 
-    private name: string; 
-    private password: string; 
-    private email: string; 
+    public name: string; 
+    private password: string | undefined; 
+    private email: string | undefined; 
     private friends: Array<string>; 
-    private age: number;
-    private height: number;
-    private physAddress: string;
+    public age: number | undefined;
+    public height: number | undefined;
+    public physAddress: string | undefined;
  
     // Constructor 
-    constructor(name: string, password: string, 
-                email: string, friends: Array<string>,
-                age: number, height: number, physAddress: string ) {
+    constructor(name: string) {
         this.name = name;
-        this.password = password;
-        this.email = email;
-        this.friends = friends;
-        this.age = age;
-        this.height = height;
-        this.physAddress = physAddress;
+        this.friends = []
     }  
     
     addAge(age: number) {
@@ -82,6 +75,8 @@ export default class User {
                 // Also works
                 // friend.friends.push(this.name);
             }
+        } else {
+            throw ('Already friends: ' + this.name + ', ' + friend.name);
         }
     }
 
@@ -93,6 +88,8 @@ export default class User {
             if (friend.friends.indexOf(this.name) > -1) {
                 friend.removeFriend(this);
             }
+        } else {
+            throw ('Already unfriended: '  + this.name + ', ' + friend.name);
         }
     }
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/app.js",
   "scripts": {
-    "start": "node_modules/.bin/tsc-watch --onSuccess 'nodemon ./dist/appPT.js'",
+    "start": "node_modules/.bin/tsc-watch --onSuccess 'nodemon ./dist/app.js'",
     "test": "jest --coverage"
   },
   "author": "",
