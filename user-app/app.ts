@@ -216,4 +216,27 @@ app.delete('/user/:name/delete', function (req, res) {
     }
 })
 
+// PURGE
+app.purge('/user/purge', function (req, res) {
+    const r1 = getUser(userList, req.body.name);
+    if (r1) {
+        let index = userList.indexOf(r1);
+        userList.splice(index, 1);
+        res.send("User purged: " + JSON.stringify(userList));
+    } else {
+        res.send("Names..." + JSON.stringify(userList));
+    }
+})
+
+app.purge('/user/:name/purge', function (req, res) {
+    const r1 = getUser(userList, req.params.name);
+    if (r1) {
+        let index = userList.indexOf(r1);
+        userList.splice(index, 1);
+        res.send("User purged: " + JSON.stringify(userList));
+    } else {
+        res.send("Names..." + JSON.stringify(userList));
+    }
+})
+
 app.listen(3030);
