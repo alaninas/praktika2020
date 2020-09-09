@@ -6,11 +6,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const userList = new Array<User>(new User('U1'), 
-                                 new User('U2'),
-                                 new User('U3'));
+// const userList = new Array<User>(new User('U1'));
 
-let getUser = function(arr: Array<User>, name: string) {
+const userList: User[] = [new User('U1'),new User('U2'),new User('U3')];
+
+const getUser = (arr: User[], name: string) => {
     return arr.find(obj => {
         return obj.name === name
     });
@@ -18,30 +18,32 @@ let getUser = function(arr: Array<User>, name: string) {
 
 // GET
 // Send request, use query string PARAMS, limited length
-app.get('/', function (req, res) {
+app.get('/',  (req, res) => {
     res.send('GET from Home');
 })
 
 // 2 Get user list
-app.get('/users', function (req, res) {
+app.get('/users',  (req, res) => {
     res.send("Current user list: " + JSON.stringify(userList));
 })
 
 // 3 Get user by name
 // Send request, use path variables or QS
-app.get('/users/:name', function(req, res) {
-    let result = getUser(userList, req.params.name);
+app.get('/users/:name', (req, res) => {
+    const result = getUser(userList, req.params.name);
     res.send("User found: " + JSON.stringify(result))
 });
 
 // POST
 // Create
-app.get('/', function (req, res) {
+app.get('/',  (req, res) => {
     res.send('POST from Home');
 })
 
 // 1 Create user
-app.post('/createUser/', function(req, res) {
+app.post('/createUser/', (req, res) => {
+    // if req.body.name type is corrrect
+    // else stsatus error
     const u = new User(req.body.name);
     if (getUser(userList, req.params.name)) {
         res.send("Duplicate..." + JSON.stringify(userList));
@@ -52,7 +54,7 @@ app.post('/createUser/', function(req, res) {
 }); // taip reikia perduoti i post
 
 // Send request, use PV/QS
-app.get('/createUser/:name', function(req, res) {
+app.get('/createUser/:name', (req, res) => {
     // req.query.name?.toString()
     // type = string | undefined
     const u = new User(req.params.name);
@@ -66,7 +68,7 @@ app.get('/createUser/:name', function(req, res) {
 
 
 // 2 Create a friend
-app.post('/user/add-friend', function (req, res) {
+app.post('/user/add-friend',  (req, res) => {
     const r1 = getUser(userList, req.body.user);
     const r2 = getUser(userList, req.body.friend);
     if (r1 && r2){
@@ -82,7 +84,8 @@ app.post('/user/add-friend', function (req, res) {
     }
 })
 
-app.post('/user/:name/add-friend', function (req, res) {
+// to remove
+app.post('/user/:name/add-friend',  (req, res) => {
     const r1 = getUser(userList, req.params.name);
     const r2 = getUser(userList, req.body.friend);
     if (r1 && r2) {
@@ -99,7 +102,7 @@ app.post('/user/:name/add-friend', function (req, res) {
 })
 
 // 3 Remove friend
-app.post('/user/remove-friend', function (req, res) {
+app.post('/user/remove-friend',  (req, res) => {
     const r1 = getUser(userList, req.body.user);
     const r2 = getUser(userList, req.body.friend);
     if (r1 && r2) {
@@ -115,7 +118,7 @@ app.post('/user/remove-friend', function (req, res) {
     }
 })
 
-app.post('/user/:name/remove-friend', function (req, res) {
+app.post('/user/:name/remove-friend',  (req, res) => {
     const r1 = getUser(userList, req.params.name);
     const r2 = getUser(userList, req.body.friend);
     if (r1 && r2) {
@@ -131,30 +134,26 @@ app.post('/user/:name/remove-friend', function (req, res) {
     }
 })
 
-app.post('/user/update', function (req, res) {
+app.post('/user/update',  (req, res) => {
     const r1 = getUser(userList, req.body.name);
     const a = req.body.age ? req.body.age : r1?.age;
     const h = req.body.height ? req.body.height : r1?.height;
     const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
     if (r1) {
-        r1.addInfo({age: a, 
-            height: h,
-            physAddress: pa});
+        r1.addInfo({age: a, height: h, physAddress: pa});
         res.send("Updated: " + JSON.stringify(userList));
     } else {
         res.send("Names..." + JSON.stringify(userList));
     }
 })
 
-app.post('/user/:name/update', function (req, res) {
+app.post('/user/:name/update',  (req, res) => {
     const r1 = getUser(userList, req.params.name);
     const a = req.body.age ? req.body.age : r1?.age;
     const h = req.body.height ? req.body.height : r1?.height;
     const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
     if (r1) {
-        r1.addInfo({age: a, 
-            height: h,
-            physAddress: pa});
+        r1.addInfo({age: a, height: h, physAddress: pa});
         res.send("Updated: " + JSON.stringify(userList));
     } else {
         res.send("Names..." + JSON.stringify(userList));
@@ -163,30 +162,26 @@ app.post('/user/:name/update', function (req, res) {
 
 // PUT
 // Update
-app.put('/user/change', function (req, res) {
+app.put('/user/change',  (req, res) => {
     const r1 = getUser(userList, req.body.name);
     const a = req.body.age ? req.body.age : r1?.age;
     const h = req.body.height ? req.body.height : r1?.height;
     const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
     if (r1) {
-        r1.changeInfo({age: a, 
-            height: h,
-            physAddress: pa});
+        r1.changeInfo({age: a, height: h, physAddress: pa});
         res.send("Changed: " + JSON.stringify(userList));
     } else {
         res.send("Names..." + JSON.stringify(userList));
     }
 })
 
-app.put('/user/:name/change', function (req, res) {
+app.put('/user/:name/change',  (req, res) => {
     const r1 = getUser(userList, req.params.name);
     const a = req.body.age ? req.body.age : r1?.age;
     const h = req.body.height ? req.body.height : r1?.height;
     const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
     if (r1) {
-        r1.changeInfo({age: a, 
-                       height: h,
-                       physAddress: pa});
+        r1.changeInfo({age: a, height: h, physAddress: pa});
         res.send("Changed: " + JSON.stringify(userList));
     } else {
         res.send("Names..." + JSON.stringify(userList));
@@ -194,10 +189,10 @@ app.put('/user/:name/change', function (req, res) {
 })
 
 // DELETE
-app.delete('/user/delete', function (req, res) {
+app.delete('/user/delete',  (req, res) => {
     const r1 = getUser(userList, req.body.name);
     if (r1) {
-        let index = userList.indexOf(r1);
+        const index = userList.indexOf(r1);
         userList.splice(index, 1);
         res.send("User deleted: " + JSON.stringify(userList));
     } else {
@@ -205,10 +200,10 @@ app.delete('/user/delete', function (req, res) {
     }
 })
 
-app.delete('/user/:name/delete', function (req, res) {
+app.delete('/user/:name/delete',  (req, res) => {
     const r1 = getUser(userList, req.params.name);
     if (r1) {
-        let index = userList.indexOf(r1);
+        const index = userList.indexOf(r1);
         userList.splice(index, 1);
         res.send("User deleted: " + JSON.stringify(userList));
     } else {
@@ -217,10 +212,10 @@ app.delete('/user/:name/delete', function (req, res) {
 })
 
 // PURGE
-app.purge('/user/purge', function (req, res) {
+app.purge('/user/purge',  (req, res) => {
     const r1 = getUser(userList, req.body.name);
     if (r1) {
-        let index = userList.indexOf(r1);
+        const index = userList.indexOf(r1);
         userList.splice(index, 1);
         res.send("User purged: " + JSON.stringify(userList));
     } else {
@@ -228,10 +223,10 @@ app.purge('/user/purge', function (req, res) {
     }
 })
 
-app.purge('/user/:name/purge', function (req, res) {
+app.purge('/user/:name/purge',  (req, res) => {
     const r1 = getUser(userList, req.params.name);
     if (r1) {
-        let index = userList.indexOf(r1);
+        const index = userList.indexOf(r1);
         userList.splice(index, 1);
         res.send("User purged: " + JSON.stringify(userList));
     } else {
