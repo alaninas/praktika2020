@@ -165,7 +165,7 @@ app.put('/users/info',  (req, res) => {
 app.post('/users/pswd',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
-        const user = getUser(userList, req.body.name);
+        const user = getUser(userList, userInfo.name);
         if (user) {
             try {
                 const pswd = userInfo.password;
@@ -187,7 +187,7 @@ app.post('/users/pswd',  (req, res) => {
 app.put('/users/pswd',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
-        const user = getUser(userList, req.body.name);
+        const user = getUser(userList, userInfo.name);
         if (user) {
             try {
                 const pswd = userInfo.password;
@@ -209,7 +209,7 @@ app.put('/users/pswd',  (req, res) => {
 app.post('/users/email',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
-        const user = getUser(userList, req.body.name);
+        const user = getUser(userList, userInfo.name);
         if (user) {
             try {
                 const email = userInfo.email;
@@ -230,7 +230,7 @@ app.post('/users/email',  (req, res) => {
 app.put('/users/email',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
-        const user = getUser(userList, req.body.name);
+        const user = getUser(userList, userInfo.name);
         if (user) {
             try {
                 const email = userInfo.email;

@@ -56,10 +56,6 @@ export class User {
         }
     }
 
-    // Answer:
-    // https://stackoverflow.com/questions/11796093/is-there-a-way-to-provide-named-parameters-in-a-function-call-in-javascript
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-    // https://mariusschulz.com/articles/typing-destructured-object-parameters-in-typescript
     addInfo({age, height, physAddress} :
             {age: number, height: number, physAddress: string}) {
         if (!this.age) {
@@ -92,8 +88,6 @@ export class User {
             this.friends.push(friend.name);
             if (friend.friends.indexOf(this.name) <= -1) {
                 friend.addFriend(this);
-                // Also works
-                // friend.friends.push(this.name);
             }
         } else {
             throw new Error('Already friends: ' + this.name + ', ' + friend.name);
