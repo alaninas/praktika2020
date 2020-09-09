@@ -7,6 +7,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const userList: User[] = [new User('U1'),new User('U2'),new User('U3')];
+// const userList: User[] = [];
 
 const getUser = (arr: User[], name: string) => {
     return arr.find(obj => {
@@ -14,132 +15,236 @@ const getUser = (arr: User[], name: string) => {
     });
 }
 
-// GET / Send request, use query string PARAMS, limited length
+const renderUserName = (arr: User[], name: string) => {
+    return arr.find(obj => {
+        return obj.name === name
+    });
+}
+
+// Home route
 app.get('/',  (req, res) => {
     res.send('GET from Home');
 })
 
-// 2 user list
-app.get('/users',  (req, res) => {
-    res.send("Current user list: " + JSON.stringify(userList));
-})
-
-// 3 user by name
-app.get('/users/:name', (req, res) => {
-    const result = getUser(userList, req.params.name);
-    res.send("User found: " + JSON.stringify(result))
-})
-
-// POST / Create
-app.get('/',  (req, res) => {
+app.post('/',  (req, res) => {
     res.send('POST from Home');
 })
 
-// 1 Create user
-app.post('/create-user/', (req, res) => {
-    // if req.body.name type is corrrect
-    // else stsatus error
-    const u = new User(req.body.name);
-    if (getUser(userList, req.body.name)) {
-        res.send("Duplicate..." + JSON.stringify(userList));
+// User lists
+app.get('/users',  (req, res) => {
+    if (userList.length > 0) {
+        res.json(userList);
     } else {
-        userList.push(u);
-        res.send(req.body.name + " User created: " + JSON.stringify(userList));
+        res.status(404).send('No users in DB');
     }
 })
 
-// 2 Create a friend
-// use POST to add information
-// app.post('user/add-friend', etcetc...)
-app.post('/user/add-friend',  (req, res) => {
-    const r1 = getUser(userList, req.body.user);
-    const r2 = getUser(userList, req.body.friend);
-    if (r1 && r2){
-        try {
-            r1.addFriend(r2);
-        } catch (err) {
-            res.send(err.message);
-        } finally {
-            res.send(req.body.user + " friended " + req.body.friend);
+app.get('/users/:name/',  (req, res) => {
+    const userInfo = req.params;
+    if (userInfo.name) {
+        const user = getUser(userList, userInfo.name);
+        res.json(user);
+    } else {
+        res.status(404).send('No user found');
+    }
+})
+
+// User route
+app.post('/users/', (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const newUser = new User(userInfo.name);
+        if (getUser(userList, userInfo.name)) {
+            res.send("Duplicates not added: " + JSON.stringify(userList));
+        } else {
+            userList.push(newUser);
+            res.send(userInfo.name + " User created: " + JSON.stringify(userList));
         }
     } else {
-        res.send("Names..." + JSON.stringify(userList));
+        res.status(400).send('No user name provided');
     }
 })
 
-// 3 Remove friend
-app.post('/user/remove-friend',  (req, res) => {
-    const r1 = getUser(userList, req.body.user);
-    const r2 = getUser(userList, req.body.friend);
-    if (r1 && r2) {
-        try {
-            r1.removeFriend(r2);
-        } catch (err) {
-            res.send(err.message);
-        } finally {
-            res.send(req.body.user + " unfriended " + req.body.friend);
+app.delete('/users/',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, userInfo.name);
+        if (user) {
+            const index = userList.indexOf(user);
+            userList.splice(index, 1);
+            res.send("User deleted: " + JSON.stringify(userList));
+        } else {
+            res.status(404).send('User not found');
         }
     } else {
-        res.send("Names..." + JSON.stringify(userList));
+        res.status(400).send('No user name provided');
     }
 })
 
-// 4 Add info
-app.post('/user/add-info',  (req, res) => {
-    const r1 = getUser(userList, req.body.name);
-    const a = req.body.age ? req.body.age : r1?.age;
-    const h = req.body.height ? req.body.height : r1?.height;
-    const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
-    if (r1) {
-        r1.addInfo({age: a, height: h, physAddress: pa});
-        res.send("Info added: " + JSON.stringify(userList));
-    } else {
-        res.send("Names..." + JSON.stringify(userList));
-    }
-})
-
-// 5 Add pswd
-app.post('/user/add-pswd',  (req, res) => {
-    const r1 = getUser(userList, req.body.name);
-    const pswd = req.body.password;
-    const pswdRepeat = req.body.repeat;
-    if (r1) {
-        try {
-            r1.createPassword(pswd, pswdRepeat);
-        } catch (err) {
-            res.send(err.message);
-        } finally {
-            res.send("Password added: " + JSON.stringify(userList));
+// Friends
+app.post('/users/add-friend',  (req, res) => {
+    const users = req.body;
+    if (users.user && users.friend) {
+        const user = getUser(userList, users.user);
+        const friend = getUser(userList, users.friend);
+        if (user && friend){
+            try {
+                user.addFriend(friend);
+            } catch (err) {
+                res.send(err.message);
+            } finally {
+                res.send(user.name + " friended " + friend.name);
+            }
+        } else {
+            res.status(404).send('User not found');
         }
     } else {
-        res.send("Names..." + JSON.stringify(userList));
+        res.status(400).send('Missing user or friend name');
     }
 })
 
-// PUT / Update
-// use PUT to change information
-app.put('/user/change-info',  (req, res) => {
-    const r1 = getUser(userList, req.body.name);
-    const a = req.body.age ? req.body.age : r1?.age;
-    const h = req.body.height ? req.body.height : r1?.height;
-    const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
-    if (r1) {
-        r1.changeInfo({age: a, height: h, physAddress: pa});
-        res.send("Info changed: " + JSON.stringify(userList));
+app.post('/users/remove-friend',  (req, res) => {
+    const users = req.body;
+    if (users.user && users.friend) {
+        const user = getUser(userList, users.user);
+        const friend = getUser(userList, users.friend);
+        if (user && friend){
+            try {
+                user.removeFriend(friend);
+            } catch (err) {
+                res.send(err.message);
+            } finally {
+                res.send(user.name + " unfriended " + friend.name);
+            }
+        } else {
+            res.status(404).send('User not found');
+        }
     } else {
-        res.send("Names..." + JSON.stringify(userList));
+        res.status(400).send('Missing user or friend name');
     }
 })
 
-// DELETE
-app.delete('/user/delete',  (req, res) => {
-    const r1 = getUser(userList, req.body.name);
-    if (r1) {
-        const index = userList.indexOf(r1);
-        userList.splice(index, 1);
-        res.send("User deleted: " + JSON.stringify(userList));
+// Info
+app.post('/users/info',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, userInfo.name);
+        if (user) {
+            const a = userInfo.age ? userInfo.age : user?.age;
+            const h = userInfo.height ? userInfo.height : user?.height;
+            const pa = userInfo.physAddress ? userInfo.physAddress : user?.physAddress;
+            user.addInfo({age: a, height: h, physAddress: pa});
+            res.send("Info added: " + JSON.stringify(userList));
+        } else {
+            res.status(404).send('User not found');
+        }
     } else {
-        res.send("Names..." + JSON.stringify(userList));
+        res.status(400).send('No user name provided');
+    }
+})
+
+app.put('/users/info',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, userInfo.name);
+        if (user) {
+            const a = userInfo.age ? userInfo.age : user?.age;
+            const h = userInfo.height ? userInfo.height : user?.height;
+            const pa = userInfo.physAddress ? userInfo.physAddress : user?.physAddress;
+            user.changeInfo({age: a, height: h, physAddress: pa});
+            res.send("Info changed: " + JSON.stringify(userList));
+        } else {
+            res.status(404).send('User not found');
+        }
+    } else {
+        res.status(400).send('No user name provided');
+    }
+})
+
+// Pswd
+app.post('/users/pswd',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, req.body.name);
+        if (user) {
+            try {
+                const pswd = userInfo.password;
+                const pswdRepeat = userInfo.repeat;
+                user.createPassword(pswd, pswdRepeat);
+            } catch (err) {
+                res.send(err.message);
+            } finally {
+                res.send("Password added: " + JSON.stringify(userList));
+            }
+        } else {
+            res.status(404).send('User not found');
+        }
+    } else {
+        res.status(400).send('No user name provided');
+    }
+})
+
+app.put('/users/pswd',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, req.body.name);
+        if (user) {
+            try {
+                const pswd = userInfo.password;
+                user.changePassword(pswd);
+            } catch (err) {
+                res.send(err.message);
+            } finally {
+                res.send("Password changed: " + JSON.stringify(userList));
+            }
+        } else {
+            res.status(404).send('User not found');
+        }
+    } else {
+        res.status(400).send('No user name provided');
+    }
+})
+
+// Email
+app.post('/users/email',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, req.body.name);
+        if (user) {
+            try {
+                const email = userInfo.email;
+                user.addEmail(email);
+            } catch (err) {
+                res.send(err.message);
+            } finally {
+                res.send("Email added: " + JSON.stringify(userList));
+            }
+        } else {
+            res.status(404).send('User not found');
+        }
+    } else {
+        res.status(400).send('No user name provided');
+    }
+})
+
+app.put('/users/email',  (req, res) => {
+    const userInfo = req.body;
+    if (userInfo.name) {
+        const user = getUser(userList, req.body.name);
+        if (user) {
+            try {
+                const email = userInfo.email;
+                user.changeEmail(email);
+            } catch (err) {
+                res.send(err.message);
+            } finally {
+                res.send("Email changed: " + JSON.stringify(userList));
+            }
+        } else {
+            res.status(404).send('User not found');
+        }
+    } else {
+        res.status(400).send('No user name provided');
     }
 })
 
