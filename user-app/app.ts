@@ -28,7 +28,7 @@ app.get('/users',  (req, res) => {
 app.get('/users/:name', (req, res) => {
     const result = getUser(userList, req.params.name);
     res.send("User found: " + JSON.stringify(result))
-});
+})
 
 // POST / Create
 app.get('/',  (req, res) => {
@@ -36,17 +36,17 @@ app.get('/',  (req, res) => {
 })
 
 // 1 Create user
-app.post('/createUser/', (req, res) => {
+app.post('/create-user/', (req, res) => {
     // if req.body.name type is corrrect
     // else stsatus error
     const u = new User(req.body.name);
-    if (getUser(userList, req.params.name)) {
+    if (getUser(userList, req.body.name)) {
         res.send("Duplicate..." + JSON.stringify(userList));
     } else {
         userList.push(u);
-        res.send(req.params.name + " User created: " + JSON.stringify(userList));
+        res.send(req.body.name + " User created: " + JSON.stringify(userList));
     }
-}); // taip reikia perduoti i post
+})
 
 // 2 Create a friend
 // use POST to add information
@@ -57,10 +57,10 @@ app.post('/user/add-friend',  (req, res) => {
     if (r1 && r2){
         try {
             r1.addFriend(r2);
-        } catch  (err) {
-            res.send("Err: " + err);
+        } catch (err) {
+            res.send(err.message);
         } finally {
-            res.send(req.params.name + " friended " + req.body.friend);
+            res.send(req.body.user + " friended " + req.body.friend);
         }
     } else {
         res.send("Names..." + JSON.stringify(userList));
@@ -74,10 +74,10 @@ app.post('/user/remove-friend',  (req, res) => {
     if (r1 && r2) {
         try {
             r1.removeFriend(r2);
-        } catch  (err) {
-            res.send("Err: " + err);
+        } catch (err) {
+            res.send(err.message);
         } finally {
-            res.send(req.params.name + " unfriended " + req.body.friend);
+            res.send(req.body.user + " unfriended " + req.body.friend);
         }
     } else {
         res.send("Names..." + JSON.stringify(userList));
@@ -85,14 +85,32 @@ app.post('/user/remove-friend',  (req, res) => {
 })
 
 // 4 Add info
-app.post('/user/update',  (req, res) => {
+app.post('/user/add-info',  (req, res) => {
     const r1 = getUser(userList, req.body.name);
     const a = req.body.age ? req.body.age : r1?.age;
     const h = req.body.height ? req.body.height : r1?.height;
     const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
     if (r1) {
         r1.addInfo({age: a, height: h, physAddress: pa});
-        res.send("Updated: " + JSON.stringify(userList));
+        res.send("Info added: " + JSON.stringify(userList));
+    } else {
+        res.send("Names..." + JSON.stringify(userList));
+    }
+})
+
+// 5 Add pswd
+app.post('/user/add-pswd',  (req, res) => {
+    const r1 = getUser(userList, req.body.name);
+    const pswd = req.body.password;
+    const pswdRepeat = req.body.repeat;
+    if (r1) {
+        try {
+            r1.createPassword(pswd, pswdRepeat);
+        } catch (err) {
+            res.send(err.message);
+        } finally {
+            res.send("Password added: " + JSON.stringify(userList));
+        }
     } else {
         res.send("Names..." + JSON.stringify(userList));
     }
@@ -100,14 +118,14 @@ app.post('/user/update',  (req, res) => {
 
 // PUT / Update
 // use PUT to change information
-app.put('/user/change',  (req, res) => {
+app.put('/user/change-info',  (req, res) => {
     const r1 = getUser(userList, req.body.name);
     const a = req.body.age ? req.body.age : r1?.age;
     const h = req.body.height ? req.body.height : r1?.height;
     const pa = req.body.physAddress ? req.body.physAddress : r1?.physAddress;
     if (r1) {
         r1.changeInfo({age: a, height: h, physAddress: pa});
-        res.send("Changed: " + JSON.stringify(userList));
+        res.send("Info changed: " + JSON.stringify(userList));
     } else {
         res.send("Names..." + JSON.stringify(userList));
     }
