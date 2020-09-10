@@ -1,10 +1,10 @@
 import express from 'express';
-import listUtility from './listUtility';
+import ListController from './listController';
 
-class EmailUtility {
+class EmailController {
 
   public router = express.Router();
-  private lu = new listUtility();
+  private lc = new ListController();
 
   constructor() {
     this.intializeRoutes();
@@ -14,8 +14,8 @@ class EmailUtility {
     this.router.post('/users/email',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lu.getList();
-            const user = this.lu.getUser(userList, userInfo.name);
+            const userList = this.lc.getList();
+            const user = this.lc.getUser(userList, userInfo.name);
             if (user) {
                 try {
                     const email = userInfo.email;
@@ -35,8 +35,8 @@ class EmailUtility {
     this.router.put('/users/email',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lu.getList();
-            const user = this.lu.getUser(userList, userInfo.name);
+            const userList = this.lc.getList();
+            const user = this.lc.getUser(userList, userInfo.name);
             if (user) {
                 try {
                     const email = userInfo.email;
@@ -57,4 +57,4 @@ class EmailUtility {
 
 }
 
-export default EmailUtility;
+export default EmailController;

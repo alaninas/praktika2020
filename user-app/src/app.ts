@@ -1,10 +1,10 @@
-import listUtility from './utilities/listUtility';
-import friendUtility from './utilities/friendUtility';
-import infoUtility from './utilities/infoUtility';
-import passwordUtility from './utilities/passwordUtility';
-import emailUtility from './utilities/emailUtility';
 import express from 'express';
 import bodyParser from 'body-parser';
+import ListController from './controllers/listController';
+import FriendController from './controllers/friendController';
+import InfoController from './controllers/infoController';
+import PasswordController from './controllers/passwordController';
+import EmailController from './controllers/emailController';
 
 // Source
 // https://wanago.io/2018/12/03/typescript-express-tutorial-routing-controllers-middleware/
@@ -13,11 +13,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const users = new listUtility();
-const friends = new friendUtility();
-const info = new infoUtility();
-const password = new passwordUtility();
-const email = new emailUtility();
+const users = new ListController();
+const friends = new FriendController();
+const info = new InfoController();
+const password = new PasswordController();
+const email = new EmailController();
 
 app.use('/', users.router);
 app.use('/', friends.router);

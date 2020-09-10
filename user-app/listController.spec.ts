@@ -1,12 +1,12 @@
-import { User } from './src/user';
 import supertest from 'supertest';
-import listUtility from './src/utilities/listUtility';
+import { User } from './src/user';
+import ListController from './src/controllers/listController';
 import server from './src/app';
 
 // https://codewithhugo.com/express-request-response-mocking/
 // https://zellwk.com/blog/endpoint-testing/
-test("#listUtility", () => {
-    const users = new listUtility();
+test("#ListController", () => {
+    const users = new ListController();
     users.intializeRoutes();
 })
 

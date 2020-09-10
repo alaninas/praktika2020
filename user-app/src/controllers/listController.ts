@@ -2,7 +2,7 @@ import express from 'express';
 import { UserList } from '../userList';
 import { User } from '../userList';
 
-class ListUtility extends UserList {
+class ListController extends UserList {
   public router = express.Router();
 
   constructor() {
@@ -75,4 +75,4 @@ class ListUtility extends UserList {
 
 }
 
-export default ListUtility;
+export default ListController;

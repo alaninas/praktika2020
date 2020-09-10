@@ -1,10 +1,10 @@
 import express from 'express';
-import listUtility from './listUtility';
+import ListController from './listController';
 
-class InfoUtility {
+class InfoController {
 
   public router = express.Router();
-  private lu = new listUtility();
+  private lc = new ListController();
 
   constructor() {
     this.intializeRoutes();
@@ -14,8 +14,8 @@ class InfoUtility {
     this.router.post('/users/info',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lu.getList();
-            const user = this.lu.getUser(userList, userInfo.name);
+            const userList = this.lc.getList();
+            const user = this.lc.getUser(userList, userInfo.name);
             if (user) {
                 const a = userInfo.age ? userInfo.age : user?.age;
                 const h = userInfo.height ? userInfo.height : user?.height;
@@ -32,8 +32,8 @@ class InfoUtility {
     this.router.put('/users/info',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lu.getList();
-            const user = this.lu.getUser(userList, userInfo.name);
+            const userList = this.lc.getList();
+            const user = this.lc.getUser(userList, userInfo.name);
             if (user) {
                 const a = userInfo.age ? userInfo.age : user?.age;
                 const h = userInfo.height ? userInfo.height : user?.height;
@@ -51,4 +51,4 @@ class InfoUtility {
 
 }
 
-export default InfoUtility;
+export default InfoController;
