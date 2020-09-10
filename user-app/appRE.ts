@@ -25,11 +25,9 @@ const renderUserName = (arr: User[], name: string) => {
 app.get('/',  (req, res) => {
     res.send('GET from Home');
 })
-
 app.post('/',  (req, res) => {
     res.send('POST from Home');
 })
-
 // User lists
 app.get('/users',  (req, res) => {
     if (userList.length > 0) {
@@ -38,7 +36,6 @@ app.get('/users',  (req, res) => {
         res.status(404).send('No users in DB');
     }
 })
-
 app.get('/users/:name/',  (req, res) => {
     const userInfo = req.params;
     if (userInfo.name) {
@@ -48,7 +45,6 @@ app.get('/users/:name/',  (req, res) => {
         res.status(404).send('No user found');
     }
 })
-
 // User route
 app.post('/users/', (req, res) => {
     const userInfo = req.body;
@@ -64,7 +60,6 @@ app.post('/users/', (req, res) => {
         res.status(400).send('No user name provided');
     }
 })
-
 app.delete('/users/',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
@@ -102,7 +97,6 @@ app.post('/users/add-friend',  (req, res) => {
         res.status(400).send('Missing user or friend name');
     }
 })
-
 app.post('/users/remove-friend',  (req, res) => {
     const users = req.body;
     if (users.user && users.friend) {
@@ -142,7 +136,6 @@ app.post('/users/info',  (req, res) => {
         res.status(400).send('No user name provided');
     }
 })
-
 app.put('/users/info',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
@@ -183,7 +176,6 @@ app.post('/users/pswd',  (req, res) => {
         res.status(400).send('No user name provided');
     }
 })
-
 app.put('/users/pswd',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {
@@ -226,7 +218,6 @@ app.post('/users/email',  (req, res) => {
         res.status(400).send('No user name provided');
     }
 })
-
 app.put('/users/email',  (req, res) => {
     const userInfo = req.body;
     if (userInfo.name) {

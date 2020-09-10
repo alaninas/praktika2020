@@ -1,23 +1,79 @@
 import express from 'express';
-// import Post from './post.interface';
+import { UserList } from './userList';
+import { User } from './userList';
 
-class ListUtility {
-  public path = '/birds';
+class ListUtility extends UserList {
+
   public router = express.Router();
 
   constructor() {
+    super();
     this.intializeRoutes();
   }
 
   public intializeRoutes() {
-    // define the home page route
-    this.router.get('/', (req, res) => {
-      res.send('Birds home page')
+    this.router.get('/',  (req, res) => {
+      res.send('GET from Home');
     })
-    // define the about route
-    this.router.get('/about', (req, res) => {
-      res.send('About birds')
+
+    this.router.post('/',  (req, res) => {
+      res.send('POST from Home');
+    })
+
+    this.router.get('/users',  (req, res) => {
+      if (this.getList().length > 0) {
+          res.json(this.getList());
+      } else {
+          res.status(404).send('No users in DB');
+      }
+    })
+
+    this.router.get('/users/:name/',  (req, res, next) => {
+      const userInfo = req.params;
+      if (userInfo.name) {
+        const user = this.getUser(this.getList(), userInfo.name);
+        if (user) {
+          res.json(user);
+        } else {
+          res.status(404).send('No user found')
+        }
+      } else {
+        res.status(400).send('No user name provided')
+      }
+    })
+
+    this.router.post('/users/', (req, res) => {
+      const userInfo = req.body;
+      if (userInfo.name) {
+          const newUser = new User(userInfo.name);
+          if (this.getUser(this.getList(), userInfo.name)) {
+              res.send("Duplicates not added: " + JSON.stringify(this.getList()));
+          } else {
+              this.getList().push(newUser);
+              res.send(userInfo.name + " User created: " + JSON.stringify(this.getList()));
+          }
+      } else {
+          res.status(400).send('No user name provided');
+      }
+    })
+
+    this.router.delete('/users/',  (req, res) => {
+        const userInfo = req.body;
+        if (userInfo.name) {
+            const user = this.getUser(this.getList(), userInfo.name);
+            if (user) {
+                const index = this.getList().indexOf(user);
+                this.getList().splice(index, 1);
+                res.send("User deleted: " + JSON.stringify(this.getList()));
+            } else {
+                res.status(404).send('User not found');
+            }
+        } else {
+            res.status(400).send('No user name provided');
+        }
     })
   }
+
 }
+
 export default ListUtility;
