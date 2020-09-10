@@ -1,8 +1,8 @@
-import listUtility from './listUtility';
-import friendUtility from './friendUtility';
-import infoUtility from './infoUtility';
-import passwordUtility from './passwordUtility';
-import emailUtility from './emailUtility';
+import listUtility from './utilities/listUtility';
+import friendUtility from './utilities/friendUtility';
+import infoUtility from './utilities/infoUtility';
+import passwordUtility from './utilities/passwordUtility';
+import emailUtility from './utilities/emailUtility';
 import express from 'express';
 import bodyParser from 'body-parser';
 

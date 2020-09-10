@@ -1,6 +1,6 @@
 import express from 'express';
-import { UserList } from './userList';
-import { User } from './userList';
+import { UserList } from '../userList';
+import { User } from '../userList';
 
 class ListUtility extends UserList {
 
