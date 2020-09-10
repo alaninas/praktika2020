@@ -25,4 +25,6 @@ app.use('/', info.router);
 app.use('/', password.router);
 app.use('/', email.router);
 
-app.listen(3030)
+const server = app.listen(3030);
+
+export default server;

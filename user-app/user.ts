@@ -14,12 +14,6 @@ export class User {
         this.friends = []
     }
 
-    // Deprecated. See addInfo method.
-    // TODO: remove
-    addAge(age: number) {
-        this.age = age;
-    }
-
     createPassword(pwd1: string, pwd2: string) {
         if (this.password === undefined) {
             if (pwd1 === pwd2) {

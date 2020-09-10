@@ -3,7 +3,6 @@ import { UserList } from '../userList';
 import { User } from '../userList';
 
 class ListUtility extends UserList {
-
   public router = express.Router();
 
   constructor() {
