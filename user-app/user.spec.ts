@@ -1,4 +1,4 @@
-import { User } from './user';
+import { User } from './src/user';
 
 test("#User", () => {
     const u = new User("Name1");

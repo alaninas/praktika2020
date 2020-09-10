@@ -8,7 +8,7 @@
     "test": "jest --coverage",
     "start:dev": "nodemon src/app.ts",
     "start:debug": "nodemon --inspect src/app.ts",
-    "start": "node_modules/.bin/tsc-watch --onSuccess 'nodemon ./dist/app.js'"
+    "start": "node_modules/.bin/tsc-watch --onSuccess 'nodemon ./dist/src/app.js'"
   },
   "author": "",
   "license": "ISC",

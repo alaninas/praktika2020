@@ -1,7 +1,7 @@
-import { User } from './user';
+import { User } from './src/user';
 import supertest from 'supertest';
-import listUtility from './utilities/listUtility';
-import server from './app';
+import listUtility from './src/utilities/listUtility';
+import server from './src/app';
 
 // https://codewithhugo.com/express-request-response-mocking/
 // https://zellwk.com/blog/endpoint-testing/
