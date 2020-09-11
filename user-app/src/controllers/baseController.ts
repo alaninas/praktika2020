@@ -30,11 +30,12 @@ class BaseController extends UserList {
 
     this.router.get('/users/:name/',  (req, res) => {
       const userInfo = req.params;
-      if (this.getUser(this.getList(), userInfo.name)) {
-        const user = this.getUser(this.getList(), userInfo.name);
-        res.json(user);
-      } else {
+      const user = this.getUser(this.getList(), userInfo.name);
+      if (!user) {
         res.status(404).send('No user found')
+      } else {
+        // const user = this.getUser(this.getList(), userInfo.name);
+        res.json(user);
       }
     })
 
@@ -42,11 +43,12 @@ class BaseController extends UserList {
       const userInfo = req.body;
       if (userInfo.name) {
           const newUser = new User(userInfo.name);
-          if (this.getUser(this.getList(), userInfo.name)) {
-              res.status(400).send("Duplicates not added: " + JSON.stringify(this.getList()));
-          } else {
-              this.getList().push(newUser);
+          const user = this.getUser(this.getList(), userInfo.name);
+          if (!user) {
+            this.getList().push(newUser);
               res.send(userInfo.name + " User created: " + JSON.stringify(this.getList()));
+          } else {
+            res.status(400).send("Duplicates not added: " + JSON.stringify(this.getList()));
           }
       } else {
           res.status(404).send('No user name provided');
@@ -57,12 +59,12 @@ class BaseController extends UserList {
         const userInfo = req.body;
         if (userInfo.name) {
             const user = this.getUser(this.getList(), userInfo.name);
-            if (user) {
-                const index = this.getList().indexOf(user);
-                this.getList().splice(index, 1);
-                res.send("User deleted: " + JSON.stringify(this.getList()));
-            } else {
+            if (!user) {
                 res.status(404).send('User not found');
+            } else {
+              const index = this.getList().indexOf(user);
+              this.getList().splice(index, 1);
+              res.send("User deleted: " + JSON.stringify(this.getList()));
             }
         } else {
             res.status(404).send('No user name provided');
@@ -72,4 +74,5 @@ class BaseController extends UserList {
 
 }
 
+// export { User } from '../user';
 export default BaseController;

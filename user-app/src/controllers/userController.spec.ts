@@ -15,9 +15,12 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
-// const port = 3030;
-const port = process.env.PORT || 8000;
+const port = 3030;
+// const port = process.env.PORT || 8000;
 const server = app.listen(port);
+// avoid jest open handle error
+// beforeAll tests are run call server (depends on the program logic)
+afterAll(async () => {server.close();});
 
 // https://codewithhugo.com/express-request-response-mocking/
 // https://zellwk.com/blog/endpoint-testing/
@@ -27,8 +30,4 @@ test("#UserController", () => {
     list.intializeRoutes();
 })
 
-// avoid jest open handle error
-// beforeAll tests are run call server (depends on the program logic)
-afterAll(async () => {
- server.close();
-});
+server.close();

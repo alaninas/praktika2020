@@ -18,7 +18,9 @@ constructor(list: User[]) {
         if (users.user && users.friend) {
             const user = this.getUser(this.getList(), users.user);
             const friend = this.getUser(this.getList(), users.friend);
-            if (user && friend){
+            if (!user || !friend){
+                res.status(404).send('User not found');
+            } else {
                 try {
                     user.addFriend(friend);
                 } catch (err) {
@@ -26,8 +28,6 @@ constructor(list: User[]) {
                 } finally {
                     res.send(user.name + " friended " + friend.name);
                 }
-            } else {
-                res.status(404).send('User not found');
             }
         } else {
             res.status(400).send('Missing user or friend name');

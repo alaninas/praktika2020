@@ -9,9 +9,7 @@ export class UserList {
     }
 
     public getUser (arr: User[], name: string) {
-      return arr.find(obj => {
-          return obj.name === name
-      });
+      return arr.find(obj => {return obj.name === name}) || 0;
     }
 
     public getList() {

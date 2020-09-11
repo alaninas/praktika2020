@@ -19,7 +19,9 @@ constructor(list: User[]) {
         if (userInfo.name) {
             const userList = this.getList();
             const user = this.getUser(userList, userInfo.name);
-            if (user) {
+            if (!user) {
+                res.status(404).send('User not found');
+            } else {
                 try {
                     const pswd = userInfo.password;
                     const pswdRepeat = userInfo.repeat;
@@ -29,8 +31,6 @@ constructor(list: User[]) {
                 } finally {
                     res.send("Password added: " + JSON.stringify(userList));
                 }
-            } else {
-                res.status(404).send('User not found');
             }
         } else {
             res.status(400).send('No user name provided');
@@ -41,7 +41,9 @@ constructor(list: User[]) {
         if (userInfo.name) {
             const userList = this.getList();
             const user = this.getUser(userList, userInfo.name);
-            if (user) {
+            if (!user) {
+                res.status(404).send('User not found');
+            } else {
                 try {
                     const pswd = userInfo.password;
                     user.changePassword(pswd);
@@ -50,8 +52,6 @@ constructor(list: User[]) {
                 } finally {
                     res.send("Password changed: " + JSON.stringify(userList));
                 }
-            } else {
-                res.status(404).send('User not found');
             }
         } else {
             res.status(400).send('No user name provided');
