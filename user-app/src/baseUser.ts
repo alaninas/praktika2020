@@ -6,7 +6,8 @@ export class BaseUser {
     public friends: string[];
     public age: number | undefined;
     public height: number | undefined;
-    public physAddress: string | undefined;
+    // tslint:disable-next-line: ban-types
+    public physAddress: string | String | undefined;
 
     // Constructor
     constructor(name: string) {
@@ -37,7 +38,8 @@ export class BaseUser {
         }
     }
     addInfo({age, height, physAddress} :
-            {age: number, height: number, physAddress: string}) {
+            // tslint:disable-next-line: ban-types
+            {age: number, height: number, physAddress: string | String}) {
         if (!this.age) {
             //
             if (age > 0) {
@@ -74,7 +76,8 @@ export class BaseUser {
         }
     }
     changeInfo({age, height, physAddress} :
-        {age: number, height: number, physAddress: string}) {
+        // tslint:disable-next-line: ban-types
+        {age: number, height: number, physAddress: string | String}) {
         if (this.age !== age) {
             //
             if (age > 0) {

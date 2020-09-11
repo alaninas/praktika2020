@@ -18,9 +18,9 @@ export class UserList {
       return UserList.list;
     }
 
-    public emptyList() {
-      UserList.list = [];
-    }
+    // public emptyList() {
+      // UserList.list = [];
+    // }
 }
 
 // export { User } from './user';
