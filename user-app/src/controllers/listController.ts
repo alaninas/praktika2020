@@ -1,6 +1,7 @@
 import express from 'express';
 import { UserList } from '../userList';
-import { User } from '../userList';
+// import { User } from '../userList';
+import { Friend } from '../friend';
 
 class ListController extends UserList {
   public router = express.Router();
@@ -44,7 +45,7 @@ class ListController extends UserList {
     this.router.post('/users/', (req, res) => {
       const userInfo = req.body;
       if (userInfo.name) {
-          const newUser = new User(userInfo.name);
+          const newUser = new Friend(userInfo.name);
           if (this.getUser(this.getList(), userInfo.name)) {
               res.send("Duplicates not added: " + JSON.stringify(this.getList()));
           } else {

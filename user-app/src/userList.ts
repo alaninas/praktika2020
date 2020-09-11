@@ -1,10 +1,11 @@
-import { User } from './user';
+// import { User } from './user';
+import { Friend } from './friend';
 
 export class UserList {
     // public static list: User[] = [];
-    public static list: User[] = [new User('U1'), new User('U2'), new User('U3')];
+    public static list: Friend[] = [new Friend('U1'), new Friend('U2'), new Friend('U3')];
 
-    public getUser (arr: User[], name: string) {
+    public getUser (arr: Friend[], name: string) {
       return arr.find(obj => {
           return obj.name === name
       });
@@ -15,4 +16,4 @@ export class UserList {
     }
 }
 
-export { User } from './user';
+// export { User } from './user';
