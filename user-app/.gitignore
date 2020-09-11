@@ -1,5 +1,5 @@
 node_modules
 coverage
-dist
+src/dist
 # ignore doc/notes.txt
 doc/*.txt

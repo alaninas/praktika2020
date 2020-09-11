@@ -1,4 +1,4 @@
-import { BaseUser } from './src/baseUser';
+import { BaseUser } from './baseUser';
 
 test("#BaseUserConstructor", () => {
     const u = new BaseUser("Name1");

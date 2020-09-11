@@ -1,22 +1,22 @@
 import express, { request } from 'express';
 import bodyParser from 'body-parser';
 import supertest from 'supertest';
-import { BaseUser } from './src/baseUser';
-import { User } from     './src/user';
-import App from          './src/app';
-import BaseController from     './src/controllers/baseController';
-import UserController from   './src/controllers/userController';
-import InfoController from     './src/controllers/infoController';
-import PasswordController from './src/controllers/passwordController';
-import EmailController from    './src/controllers/emailController';
+import { BaseUser } from '../baseUser';
+import { User } from     '../user';
+import App from          '../app';
+import BaseController from     './baseController';
+import UserController from     './userController';
+import InfoController from     './infoController';
+import PasswordController from './passwordController';
+import EmailController from    './emailController';
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
-// const port = 3030;
-const port = process.env.PORT || 1337;
+const port = 8080;
+// const port = process.env.PORT || 1337;
 const server = app.listen(port);
 
 // https://codewithhugo.com/express-request-response-mocking/
@@ -47,9 +47,10 @@ it('Gets the test endpoint1', async done => {
     done();
 })
 
-it('Should create user', async () => {
+it('Should create user', async done => {
     const res = await supertest(server).post('/users/').send({name: 'Petras'});
     expect(res.status).toBe(200);
+    done();
 })
 
 it('Gets the test endpoint2', async done => {
@@ -63,3 +64,5 @@ it('Gets the test endpoint2', async done => {
     // expect(response.body.message).toBe('pass!')
     done();
 })
+
+server.close();

@@ -1,4 +1,4 @@
-import { User } from './src/user';
+import { User } from './user';
 
 test("#Friend", () => {
     const u = new User("Name1");

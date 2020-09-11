@@ -6,9 +6,9 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "test": "jest --coverage",
-    "start:dev": "nodemon src/app.ts",
-    "start:debug": "nodemon --inspect src/app.ts",
-    "start": "node_modules/.bin/tsc-watch --onSuccess 'nodemon ./dist/src/start.js'"
+    "start:dev": "nodemon src/start.ts",
+    "start:debug": "nodemon --inspect src/start.ts",
+    "start": "node_modules/.bin/tsc-watch --onSuccess 'nodemon ./src/dist/start.js'"
   },
   "author": "",
   "license": "ISC",
