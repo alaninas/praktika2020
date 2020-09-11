@@ -1,13 +1,12 @@
 import express from 'express';
 import { UserList } from '../userList';
-// import { User } from '../userList';
-import { Friend } from '../friend';
+import { User } from '../user';
 
-class ListController extends UserList {
+class BaseController extends UserList {
   public router = express.Router();
-  // public list: Friend[];
+  // public list: User[];
 
-  constructor(list: Friend[]) {
+  constructor(list: User[]) {
     super(list);
     this.intializeRoutes();
   }
@@ -46,7 +45,7 @@ class ListController extends UserList {
     this.router.post('/users/', (req, res) => {
       const userInfo = req.body;
       if (userInfo.name) {
-          const newUser = new Friend(userInfo.name);
+          const newUser = new User(userInfo.name);
           if (this.getUser(this.getList(), userInfo.name)) {
               res.send("Duplicates not added: " + JSON.stringify(this.getList()));
           } else {
@@ -77,4 +76,4 @@ class ListController extends UserList {
 
 }
 
-export default ListController;
+export default BaseController;

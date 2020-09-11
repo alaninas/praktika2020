@@ -1,15 +1,14 @@
-// import { User } from './user';
-import { Friend } from './friend';
+import { User } from './user';
 
 export class UserList {
     // public static list: User[] = [];
-    public static list: Friend[];
+    public static list: User[];
 
-    constructor(list: Friend[]) {
+    constructor(list: User[]) {
       UserList.list = list;
     }
 
-    public getUser (arr: Friend[], name: string) {
+    public getUser (arr: User[], name: string) {
       return arr.find(obj => {
           return obj.name === name
       });

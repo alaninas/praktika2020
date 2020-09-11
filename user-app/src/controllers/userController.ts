@@ -1,13 +1,13 @@
 import express from 'express';
-import ListController from './listController';
-import { Friend } from '../friend';
+import BaseController from './baseController';
+import { User } from '../user';
 
-class FriendController extends ListController {
+class UserController extends BaseController {
 
   public router = express.Router();
-//   private lc = new ListController();
-// 
-constructor(list: Friend[]) {
+//   private lc = new BaseController();
+
+constructor(list: User[]) {
     super(list);
     this.intializeRoutes();
   }
@@ -57,4 +57,4 @@ constructor(list: Friend[]) {
 
 }
 
-export default FriendController;
+export default UserController;

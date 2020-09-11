@@ -1,6 +1,6 @@
 import app from './app';
-import { Friend } from './friend';
+// import { User } from './user';
 
-// const users: Friend[] = [new Friend('U1'), new Friend('U2'), new Friend('U3') ];
-// const app = new App(users, 3030);
+// const users: User[] = [new User('U1'), new User('U2'), new User('U3') ];
+
 app.listen(3030);

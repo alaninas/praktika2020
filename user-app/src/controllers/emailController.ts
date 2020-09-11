@@ -1,13 +1,13 @@
 import express from 'express';
-import ListController from './listController';
-import { Friend } from '../friend';
+import BaseController from './baseController';
+import { User } from '../user';
 
-class EmailController extends ListController {
+class EmailController extends BaseController {
 
   public router = express.Router();
-//   private lc = new ListController();
+//   private lc = new BaseController();
 
-  constructor(list: Friend[]) {
+  constructor(list: User[]) {
     super(list);
     this.intializeRoutes();
   }
