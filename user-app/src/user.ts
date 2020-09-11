@@ -16,7 +16,7 @@ export class User {
 
     createPassword(pwd1: string, pwd2: string) {
         if (this.password === undefined) {
-            if (pwd1 === pwd2) {
+            if (pwd1 === pwd2 && pwd1 !== undefined) {
                 this.password = pwd1;
             } else {
                 throw new Error('Passwords do not match');
@@ -26,7 +26,7 @@ export class User {
         }
     }
     addEmail(email: string) {
-        if (this.email === undefined) {
+        if (this.email === undefined && email !== undefined) {
             this.email = email;
         } else {
             throw new Error('Email already set');
@@ -34,13 +34,13 @@ export class User {
     }
     addInfo({age, height, physAddress} :
             {age: number, height: number, physAddress: string}) {
-        if (!this.age) {
+        if (!this.age && age > 0) {
             this.age = age;
         }
-        if (!this.height) {
+        if (!this.height && height > 0) {
             this.height = height;
         }
-        if (!this.physAddress) {
+        if (!this.physAddress && !physAddress) {
             this.physAddress = physAddress;
         }
     }
