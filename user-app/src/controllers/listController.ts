@@ -5,9 +5,10 @@ import { Friend } from '../friend';
 
 class ListController extends UserList {
   public router = express.Router();
+  // public list: Friend[];
 
-  constructor() {
-    super();
+  constructor(list: Friend[]) {
+    super(list);
     this.intializeRoutes();
   }
 

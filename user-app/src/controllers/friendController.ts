@@ -1,12 +1,14 @@
 import express from 'express';
 import ListController from './listController';
+import { Friend } from '../friend';
 
-class FriendController {
+class FriendController extends ListController {
 
   public router = express.Router();
-  private lc = new ListController();
-
-  constructor() {
+//   private lc = new ListController();
+// 
+constructor(list: Friend[]) {
+    super(list);
     this.intializeRoutes();
   }
 
@@ -14,8 +16,8 @@ class FriendController {
     this.router.post('/users/add-friend',  (req, res) => {
         const users = req.body;
         if (users.user && users.friend) {
-            const user = this.lc.getUser(this.lc.getList(), users.user);
-            const friend = this.lc.getUser(this.lc.getList(), users.friend);
+            const user = this.getUser(this.getList(), users.user);
+            const friend = this.getUser(this.getList(), users.friend);
             if (user && friend){
                 try {
                     user.addFriend(friend);
@@ -34,8 +36,8 @@ class FriendController {
     this.router.post('/users/remove-friend',  (req, res) => {
         const users = req.body;
         if (users.user && users.friend) {
-            const user = this.lc.getUser(this.lc.getList(), users.user);
-            const friend = this.lc.getUser(this.lc.getList(), users.friend);
+            const user = this.getUser(this.getList(), users.user);
+            const friend = this.getUser(this.getList(), users.friend);
             if (user && friend){
                 try {
                     user.removeFriend(friend);

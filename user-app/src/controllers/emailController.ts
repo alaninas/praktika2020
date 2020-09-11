@@ -1,12 +1,14 @@
 import express from 'express';
 import ListController from './listController';
+import { Friend } from '../friend';
 
-class EmailController {
+class EmailController extends ListController {
 
   public router = express.Router();
-  private lc = new ListController();
+//   private lc = new ListController();
 
-  constructor() {
+  constructor(list: Friend[]) {
+    super(list);
     this.intializeRoutes();
   }
 
@@ -14,8 +16,8 @@ class EmailController {
     this.router.post('/users/email',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lc.getList();
-            const user = this.lc.getUser(userList, userInfo.name);
+            const userList = this.getList();
+            const user = this.getUser(userList, userInfo.name);
             if (user) {
                 try {
                     const email = userInfo.email;
@@ -35,8 +37,8 @@ class EmailController {
     this.router.put('/users/email',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lc.getList();
-            const user = this.lc.getUser(userList, userInfo.name);
+            const userList = this.getList();
+            const user = this.getUser(userList, userInfo.name);
             if (user) {
                 try {
                     const email = userInfo.email;

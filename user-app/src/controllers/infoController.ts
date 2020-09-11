@@ -1,12 +1,14 @@
 import express from 'express';
 import ListController from './listController';
+import { Friend } from '../friend';
 
-class InfoController {
+class InfoController extends ListController {
 
   public router = express.Router();
-  private lc = new ListController();
-
-  constructor() {
+//   private lc = new ListController();
+// 
+constructor(list: Friend[]) {
+    super(list);
     this.intializeRoutes();
   }
 
@@ -14,8 +16,8 @@ class InfoController {
     this.router.post('/users/info',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lc.getList();
-            const user = this.lc.getUser(userList, userInfo.name);
+            const userList = this.getList();
+            const user = this.getUser(userList, userInfo.name);
             if (user) {
                 const a = userInfo.age ? userInfo.age : user?.age;
                 const h = userInfo.height ? userInfo.height : user?.height;
@@ -32,8 +34,8 @@ class InfoController {
     this.router.put('/users/info',  (req, res) => {
         const userInfo = req.body;
         if (userInfo.name) {
-            const userList = this.lc.getList();
-            const user = this.lc.getUser(userList, userInfo.name);
+            const userList = this.getList();
+            const user = this.getUser(userList, userInfo.name);
             if (user) {
                 const a = userInfo.age ? userInfo.age : user?.age;
                 const h = userInfo.height ? userInfo.height : user?.height;
