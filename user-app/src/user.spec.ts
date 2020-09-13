@@ -1,6 +1,6 @@
 import { User } from './user';
 
-test("#Friend", () => {
+test("#User", () => {
     const u = new User("Name1");
     const nE = new User("Name2");
     expect(u.friends.length).toBeLessThanOrEqual(0);
@@ -12,7 +12,7 @@ test("#Friend", () => {
     }).toThrow("Already friends: Name1, Name2");
 })
 
-test("#Friend", () => {
+test("#User", () => {
     const u = new User("Name1");
     const nE = new User("Name2");
     u.addFriend(nE);

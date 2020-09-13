@@ -4,15 +4,11 @@ import { User } from '../user';
 
 
 class PasswordController extends BaseController {
-
   public router = express.Router();
-//   private lc = new BaseController();
-//
-constructor(list: User[]) {
+  constructor(list: User[]) {
     super(list);
     this.intializeRoutes();
   }
-
   public intializeRoutes() {
     this.router.post('/users/pswd',  (req, res) => {
         const userInfo = req.body;
@@ -27,7 +23,7 @@ constructor(list: User[]) {
                     const pswdRepeat = userInfo.repeat;
                     user.createPassword(pswd, pswdRepeat);
                 } catch (err) {
-                    res.send(err.message);
+                    res.status(401).send(err.message);
                 } finally {
                     res.send("Password added: " + JSON.stringify(userList));
                 }
@@ -48,7 +44,7 @@ constructor(list: User[]) {
                     const pswd = userInfo.password;
                     user.changePassword(pswd);
                 } catch (err) {
-                    res.send(err.message);
+                    res.status(401).send(err.message);
                 } finally {
                     res.send("Password changed: " + JSON.stringify(userList));
                 }
@@ -58,7 +54,5 @@ constructor(list: User[]) {
         }
     })
   }
-
 }
-
 export default PasswordController;

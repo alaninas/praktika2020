@@ -3,58 +3,56 @@ import BaseController from './baseController';
 import { User } from '../user';
 
 class UserController extends BaseController {
-
   public router = express.Router();
-//   private lc = new BaseController();
-
-constructor(list: User[]) {
+  constructor(list: User[]) {
     super(list);
     this.intializeRoutes();
   }
-
   public intializeRoutes() {
     this.router.post('/users/add-friend',  (req, res) => {
-        const users = req.body;
-        if (users.user && users.friend) {
-            const user = this.getUser(this.getList(), users.user);
-            const friend = this.getUser(this.getList(), users.friend);
-            if (!user || !friend){
-                res.status(404).send('User not found');
+        const requestNames = req.body;
+        if (requestNames.user && requestNames.friend) {
+            const user = this.getUser(this.getList(), requestNames.user);
+            // const friend = this.getUser(this.getList(), users.friend);
+            if (!user){
+                res.status(401).send('User not found');
             } else {
-                try {
+                const friend = this.getUser(this.getList(), requestNames.friend);
+                if (!friend) {
+                    res.status(402).send('Friend not found');
+                } else {
                     user.addFriend(friend);
-                } catch (err) {
-                    res.send(err.message);
-                } finally {
                     res.send(user.name + " friended " + friend.name);
                 }
             }
         } else {
-            res.status(400).send('Missing user or friend name');
+            res.status(403).send('Missing request Names');
         }
     })
     this.router.post('/users/remove-friend',  (req, res) => {
-        const users = req.body;
-        if (users.user && users.friend) {
-            const user = this.getUser(this.getList(), users.user);
-            const friend = this.getUser(this.getList(), users.friend);
-            if (user && friend){
-                try {
-                    user.removeFriend(friend);
-                } catch (err) {
-                    res.send(err.message);
-                } finally {
-                    res.send(user.name + " unfriended " + friend.name);
-                }
+        const requestNames = req.body;
+        if (requestNames.user && requestNames.friend) {
+            const user = this.getUser(this.getList(), requestNames.user);
+            // const friend = this.getUser(this.getList(), users.friend);
+            if (!user){
+                res.status(401).send('User not found');
             } else {
-                res.status(404).send('User not found');
+                const friend = this.getUser(this.getList(), requestNames.friend);
+                if (!friend) {
+                    res.status(402).send('Friend not found');
+                } else {
+                    if (!this.checkFriendship(this.getList(), user.name, friend.name)) {
+                        res.status(300).send('Already not friends');
+                    } else {
+                        user.removeFriend(friend);
+                        res.send(user.name + " unfriended " + friend.name);
+                    }
+                }
             }
         } else {
-            res.status(400).send('Missing user or friend name');
+            res.status(403).send('Missing request Names');
         }
     })
   }
-
 }
-
 export default UserController;

@@ -19,6 +19,19 @@ export class UserList {
     // public emptyList() {
       // UserList.list = [];
     // }
+
+    public checkFriendship (arr: User[], userName: string, friendName: string) {
+      const user = this.getUser(arr, userName);
+      let result: string | number = 0;
+      if (!user) {
+        throw new Error("No such user in DB");
+      }
+      else {
+        const friends = user.friends;
+        result = friends.find(frName => {return frName === friendName}) || 0;
+      }
+      return result;
+    }
 }
 
 // export { User } from './user';

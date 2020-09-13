@@ -8,6 +8,7 @@ test("#BaseUserConstructor", () => {
 test("#BaseUserMail", () => {
     const u = new BaseUser("Name1");
     expect(u.email).toBeUndefined();
+    u.addEmail("");
     u.addEmail("Mail.com");
     expect(() => {
         u.addEmail("Mail.com")
@@ -34,6 +35,9 @@ test("#BaseUserPswd", () => {
     }).toThrow("New password matches the old");
     expect(u.password).not.toBe("PswdNew");
     u.changePassword("PswdNew");
+    expect(() => {
+        u.changePassword('');
+    }).toThrow("Empty password provided");
 })
 
 test("#BaseUserInfo", () => {
@@ -43,20 +47,26 @@ test("#BaseUserInfo", () => {
     expect(u.height).toBeUndefined();
     expect(u.age).toBeUndefined();
     expect(u.physAddress).toBeUndefined();
-    u.addInfo({ age: -1, height : -1, physAddress: '' });
-    // tslint:disable-next-line: no-construct
-    u.addInfo({ age: -1, height : -1, physAddress: new String() });
+    expect(() => {
+        u.addInfo({ age: -1, height : -1, physAddress: '' });
+    }).toThrow("No valid input information provided");
+    // u.addInfo({ age: -1, height : -1, physAddress: new String() });
     expect(u.physAddress).not.toBe('myAddress');
     u.addInfo({ age: -1, height : -1, physAddress: 'myAddress' });
     expect(u.age).not.toBe(5);
     expect(u.height).not.toBe(180);
     u.addInfo({ age: 5, height : 180, physAddress: '' });
     u.addInfo({ age: 5, height : 180, physAddress: '' });
+    expect(() => {
+        u.addInfo({ age: -1, height : -1, physAddress: '' });
+    }).toThrow("No valid input information provided");
 
     // M7
-    u.changeInfo({ age: -1, height : -1, physAddress: '' });
-    // tslint:disable-next-line: no-construct
-    u.changeInfo({ age: -1, height : -1, physAddress: new String() });
+    expect(() => {
+        u.changeInfo({ age: -1, height : -1, physAddress: '' });
+    }).toThrow("No valid update information provided");
+    // u.changeInfo({ age: -1, height : -1, physAddress: '' });
+    // u.changeInfo({ age: -1, height : -1, physAddress: new String() });
     expect(u.physAddress).not.toBe('myAddressNew');
     u.changeInfo({ age: -1, height : -1, physAddress: 'myAddressNew' });
     expect(u.age).not.toBe(180);

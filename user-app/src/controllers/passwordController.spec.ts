@@ -1,33 +1,47 @@
-import express, { request } from 'express';
-import bodyParser from 'body-parser';
 import supertest from 'supertest';
-import { BaseUser } from '../baseUser';
 import { User } from     '../user';
-import App from          '../app';
-import BaseController from     './baseController';
-import UserController from     './userController';
-import InfoController from     './infoController';
+import app from          '../app';
 import PasswordController from './passwordController';
-import EmailController from    './emailController';
+import ControllerTestUtility from './controllerTestUtility';
 
-const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
-
-const port = 3030;
-// const port = process.env.PORT || 8000;
+const port = 4130;
 const server = app.listen(port);
-// avoid jest open handle error
-// beforeAll tests are run call server (depends on the program logic)
-afterAll(async () => {server.close();});
-
-// https://codewithhugo.com/express-request-response-mocking/
-// https://zellwk.com/blog/endpoint-testing/
-test("#PasswordController", () => {
-    const users: User[] = [new User('U1'), new User('U2'), new User('U3') ];
-    const list = new PasswordController(users);
-    list.intializeRoutes();
+afterAll(async () => {
+    server.close();
 })
 
-server.close();
+it('#PasswordController Should create password', async done => {
+    const endpoint: string = '/users/pswd/';
+    app.use('/', (new PasswordController([ new User('U1') ])).router);
+    try {
+        const resOk = await supertest(server).post(endpoint).send({name: 'U1',  password: 'Pswd', repeat: 'Pswd'});
+        expect(resOk.status).toBe(200);
+        const resDouble = await supertest(server).post(endpoint).send({name: 'U1', password: 'Pswd', repeat: 'Pswd'});
+        expect(resDouble.status).toBe(401);
+        const resNoName = await supertest(server).post(endpoint).send({});
+        expect(resNoName.status).toBe(400);
+        const resNoSuchUser = await supertest(server).post(endpoint).send({name: 'NoSuchUser'});
+        expect(resNoSuchUser.status).toBe(404);
+    } catch (error) {
+        ControllerTestUtility.printErrorToConsole({ port, error });
+    }
+    done();
+})
+
+it('#PasswordController Should change password', async done => {
+    const endpoint: string = '/users/pswd/';
+    app.use('/', (new PasswordController([ new User('U1') ])).router);
+    try {
+        const resOk = await supertest(server).put(endpoint).send({name: 'U1',  password: 'Pswd'});
+        expect(resOk.status).toBe(200);
+        const resDouble = await supertest(server).put(endpoint).send({name: 'U1', password: 'Pswd'});
+        expect(resDouble.status).toBe(401);
+        const resNoName = await supertest(server).put(endpoint).send({});
+        expect(resNoName.status).toBe(400);
+        const resNoSuchUser = await supertest(server).put(endpoint).send({name: 'NoSuchUser'});
+        expect(resNoSuchUser.status).toBe(404);
+    } catch (error) {
+        ControllerTestUtility.printErrorToConsole({ port, error });
+    }
+    done();
+})
