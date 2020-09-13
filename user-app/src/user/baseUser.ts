@@ -41,9 +41,6 @@ export class BaseUser {
         if (this.strValidator.newAddress({oldValue: this.physAddress, newValue: physAddress})) {
             this.physAddress = physAddress;
         }
-        if (this.nrValidator.isBadNumber(age) && this.nrValidator.isBadNumber(height) && this.strValidator.isEmpty(physAddress)) {
-            throw new Error('No valid input information provided');
-        }
     }
     changePassword(pwd2: string) {
         if (this.strValidator.updatePassword({oldValue: this.password, newValue: pwd2})) {
@@ -65,9 +62,6 @@ export class BaseUser {
         }
         if (this.strValidator.updateAddress({oldValue: this.physAddress, newValue: physAddress})) {
             this.physAddress = physAddress;
-        }
-        if (this.nrValidator.isBadNumber(age) && this.nrValidator.isBadNumber(height) && this.strValidator.isEmpty(physAddress)) {
-            throw new Error('No valid update information provided');
         }
     }
 }

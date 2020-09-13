@@ -1,3 +1,4 @@
+// Should extend Errors and print the appropriate messaging
 class NumberValidator {
     isPositiveInt(str: any) {
         return /^[+]?[0-9]+$/.test(str);
@@ -5,47 +6,50 @@ class NumberValidator {
     isFloat(str: any) {
         return /^[-+]?[0-9]+\.[0-9]+$/.test(str);
     }
-    isAllDigits(str: any) {
-        return /^[0-9]+$/.test(str);
-    }
     isBadNumber(inpNumber: any) {
         return (!inpNumber || Number.isNaN(inpNumber) || inpNumber < 0);
     }
-    public newAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
+    setNew(oldValue: number | undefined, newValue: number) {
         let result = 0;
         if (!oldValue) {
-            if (newValue > 0) {
-                result = 1;
+            if (!this.isBadNumber(newValue)) {
+                if (this.isPositiveInt(newValue)) {
+                    result = 1;
+                } else {
+                    throw new Error('Number not positive int');
+                }
+            } else {
+                throw new Error('Number not positive int');
             }
         }
         return result;
     }
-    public updateAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
+    updateOld(oldValue: number | undefined, newValue: number) {
         let result = 0;
         if (oldValue !== newValue) {
-            if (newValue > 0) {
-                result = 1;
+            if (!this.isBadNumber(newValue)) {
+                if (this.isPositiveInt(newValue)) {
+                    result = 1;
+                } else {
+                    throw new Error('Number not positive int');
+                }
+            } else {
+                throw new Error('Number not positive int');
             }
         }
         return result;
+    }
+    public newAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
+        return this.setNew(oldValue,newValue);
     }
     public newHeight({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
-        let result = 0;
-        if (!oldValue) {
-            if (newValue > 0) {
-                result = 1;
-            }
-        }
-        return result;
+        return this.setNew(oldValue,newValue);
+    }
+    public updateAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
+        return this.updateOld(oldValue, newValue);
     }
     public updateHeight({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
-        let result = 0;
-        if (oldValue !== newValue) {
-            if (newValue > 0) {
-                result = 1;
-            }
-        }
-        return result;
+        return this.updateOld(oldValue, newValue);
     }
 }
 export default NumberValidator;
