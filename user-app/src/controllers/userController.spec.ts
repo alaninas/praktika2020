@@ -4,7 +4,7 @@ import app from          '../app';
 import UserController from './userController';
 import ControllerTestUtility from './controllerTestUtility';
 
-const port = 6000;
+const port = 6030;
 const server = app.listen(port);
 afterAll(async () => {
     server.close();
