@@ -30,20 +30,13 @@ export class BaseUser {
             this.email = email;
         }
     }
-    addInfo({age, height, physAddress} :
-            // tslint:disable-next-line: ban-types
-            {age: number, height: number, physAddress: string | String}) {
-        if (!this.age) {
-            //
-            if (age > 0) {
-                this.age = age;
-            }
+    // tslint:disable-next-line: ban-types
+    addInfo({age, height, physAddress}: {age: number, height: number, physAddress: string | String}) {
+        if (this.nrValidator.newAge({oldValue: this.age, newValue: age})) {
+            this.age = age;
         }
-        if (!this.height) {
-            //
-            if (height > 0) {
-                this.height = height;
-            }
+        if (this.nrValidator.newHeight({oldValue: this.height, newValue: height})) {
+            this.height = height;
         }
         if (this.strValidator.newAddress({oldValue: this.physAddress, newValue: physAddress})) {
             this.physAddress = physAddress;
@@ -62,20 +55,13 @@ export class BaseUser {
             this.email = email;
         }
     }
-    changeInfo({age, height, physAddress} :
-        // tslint:disable-next-line: ban-types
-        {age: number, height: number, physAddress: string | String}) {
-        if (this.age !== age) {
-            //
-            if (age > 0) {
-                this.age = age;
-            }
+    // tslint:disable-next-line: ban-types
+    changeInfo({age, height, physAddress}: {age: number, height: number, physAddress: string | String}) {
+        if (this.nrValidator.updateAge({oldValue: this.age, newValue: age})) {
+            this.age = age;
         }
-        if (this.height !== height) {
-            //
-            if (height > 0) {
-                this.height = height;
-            }
+        if (this.nrValidator.updateHeight({oldValue: this.height, newValue: height})) {
+            this.height = height;
         }
         if (this.strValidator.updateAddress({oldValue: this.physAddress, newValue: physAddress})) {
             this.physAddress = physAddress;

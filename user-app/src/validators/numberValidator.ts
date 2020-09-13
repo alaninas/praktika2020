@@ -14,7 +14,7 @@ class NumberValidator {
     public newAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
         let result = 0;
         if (!oldValue) {
-            if (!this.isBadNumber(newValue)) {
+            if (newValue > 0) {
                 result = 1;
             }
         }
@@ -23,7 +23,7 @@ class NumberValidator {
     public updateAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
         let result = 0;
         if (oldValue !== newValue) {
-            if (!this.isBadNumber(newValue)) {
+            if (newValue > 0) {
                 result = 1;
             }
         }
@@ -32,7 +32,7 @@ class NumberValidator {
     public newHeight({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
         let result = 0;
         if (!oldValue) {
-            if (!this.isBadNumber(newValue)) {
+            if (newValue > 0) {
                 result = 1;
             }
         }
@@ -41,7 +41,7 @@ class NumberValidator {
     public updateHeight({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
         let result = 0;
         if (oldValue !== newValue) {
-            if (!this.isBadNumber(newValue)) {
+            if (newValue > 0) {
                 result = 1;
             }
         }
