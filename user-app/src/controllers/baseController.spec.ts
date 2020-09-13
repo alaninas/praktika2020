@@ -1,9 +1,8 @@
 import supertest from 'supertest';
-import { User } from     '../user';
+import { User } from     '../user/user';
 import app from          '../app';
 import BaseController from        './baseController';
 import ControllerTestUtility from './controllerTestUtility';
-import { doesNotMatch } from 'assert';
 
 const port = 1337;
 const server = app.listen(port);
@@ -43,8 +42,7 @@ it('#BaseController Get users', async done => {
 // https://stackoverflow.com/questions/46645616/how-to-test-path-parameters-of-a-get-request-with-nodejss-supertest
 it('#BaseController Get users: by name', async done => {
     const endpoint: string = '/users/';
-    const users: User[] = [new User('U1'), new User('U2'), new User('U3') ];
-    app.use('/', (new BaseController(users)).router);
+    app.use('/', (new BaseController([new User('U1'), new User('U2') ])).router);
     try {
         const resOk = await supertest(server).get(endpoint + 'U2/').send({name: 'U2'});
         expect(resOk.status).toBe(200);

@@ -1,6 +1,6 @@
 import express from 'express';
 import BaseController from './baseController';
-import { User } from '../user';
+import { User } from '../user/user';
 
 class InfoController extends BaseController {
   public router = express.Router();

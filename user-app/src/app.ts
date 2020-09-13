@@ -6,7 +6,7 @@ import UserController from './controllers/userController';
 import InfoController from './controllers/infoController';
 import PasswordController from './controllers/passwordController';
 import EmailController from './controllers/emailController';
-import { User } from './user';
+import { User } from './user/user';
 
 // Source
 // https://wanago.io/2018/12/03/typescript-express-tutorial-routing-controllers-middleware/

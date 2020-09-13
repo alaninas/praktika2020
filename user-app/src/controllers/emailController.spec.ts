@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { User } from     '../user';
+import { User } from     '../user/user';
 import app from          '../app';
 import EmailController from './emailController';
 import ControllerTestUtility from './controllerTestUtility';

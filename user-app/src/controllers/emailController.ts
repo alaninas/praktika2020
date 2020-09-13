@@ -1,5 +1,5 @@
 import express from 'express';
-import { User } from '../user';
+import { User } from '../user/user';
 import BaseController from './baseController';
 
 class EmailController extends BaseController {

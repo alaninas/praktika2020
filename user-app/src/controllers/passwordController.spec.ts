@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { User } from     '../user';
+import { User } from     '../user/user';
 import app from          '../app';
 import PasswordController from './passwordController';
 import ControllerTestUtility from './controllerTestUtility';
