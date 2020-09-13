@@ -13,11 +13,7 @@ class NumberValidator {
         let result = 0;
         if (!oldValue) {
             if (!this.isBadNumber(newValue)) {
-                if (this.isPositiveInt(newValue)) {
-                    result = 1;
-                } else {
-                    throw new Error('Number not positive int');
-                }
+                result = 1;
             } else {
                 throw new Error('Number not positive int');
             }
@@ -28,11 +24,7 @@ class NumberValidator {
         let result = 0;
         if (oldValue !== newValue) {
             if (!this.isBadNumber(newValue)) {
-                if (this.isPositiveInt(newValue)) {
-                    result = 1;
-                } else {
-                    throw new Error('Number not positive int');
-                }
+                result = 1;
             } else {
                 throw new Error('Number not positive int');
             }
