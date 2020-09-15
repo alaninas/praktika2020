@@ -16,9 +16,7 @@ const testPerson = UserModel.create({ name: 'petras', age: 22 }).then(() => {
 // tslint:disable-next-line: no-console
 }, error => console.log(error))
 
-// tslint:disable-next-line: no-console
 UserModel.findById('5f60b756e683317d7f192516', (err, response) => {
-    // tslint:disable-next-line: no-console
     if (response) {
         // tslint:disable-next-line: no-console
         console.log('---> GOT:' + response);
@@ -34,7 +32,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
-// get all users'
+// get all users
 app.get('/users', (req, res) => {
     UserModel.find({}, (err, result) => {
         if (result) {
@@ -45,10 +43,18 @@ app.get('/users', (req, res) => {
     })
 })
 
+// get single user
 app.get('/users/:id/', (req, res) => {
-    res.send('get single user');
+    UserModel.findById(req.params.id, (err, result) => {
+        if (result) {
+            res.json(result);
+        } else {
+            res.status(404).send('No such user in DB');
+        }
+    })
 })
 
+// create one or more users
 app.post('/users/', (req, res) => {
     res.send('create one or more users');
 })
