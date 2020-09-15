@@ -16,7 +16,26 @@ mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useU
 // tslint:disable-next-line: no-console
 }, error => console.log(error));
 
-const testPerson = UserModel.create({ name: 'petras' });
+
+// var Chat = mongoose.model('Chat');
+// var n = new Chat();
+// n.name = "chat room";
+// n.save(function(err,room) {
+//    console.log(room.id);
+// });
+//
+// var awesome_instance = new SomeModel({ name: 'awesome' });
+// awesome_instance.save(function (err) {
+//   if (err) return handleError(err);
+// });
+// const test = new UserModel({ name: 'petras' });
+// test.save()
+
+const testPerson = UserModel.create({ name: 'petras', age: 65 }).then(() => {
+    // tslint:disable-next-line: no-console
+    return console.log('Successful creation!');
+// tslint:disable-next-line: no-console
+}, error => console.log(error))
 
 // UserModel.findOne({}).then(val => {
     // if (val) {
@@ -25,11 +44,21 @@ const testPerson = UserModel.create({ name: 'petras' });
         // console.log('Database is empty');
     // }
 // });
+// tslint:disable-next-line: no-console
+// UserModel.find({ name: "petras"}).then(val => console.log(val));
 
 // tslint:disable-next-line: no-console
-UserModel.find({ name: "petras"}).then(val => console.log(val));
+UserModel.findById('5f60b756e683317d7f192516', (err, response) => {
+    // tslint:disable-next-line: no-console
+    console.log('---> GOT:' + response);
+    if (err) {
+        // tslint:disable-next-line: no-console
+        console.log(err)
+    }
+}
+)
 
-
+// UserModel.remove({ _id: this.toObjectId('5f60b756e683317d7f192516') }, (err) => callback(err, null));
 
 
 const app = express();
