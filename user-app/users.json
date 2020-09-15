@@ -1,1 +1,33 @@
-[{"name":"Petras","password":"PetrasPswd","email":"","friends":["PD1"],"age":55,"height":0,"physAddress":""},{"name":"PD1","password":"PD1Pswd","email":"","friends":["Petras"],"age":5,"height":0,"physAddress":""},{"name":"PD2","password":"PD2Pswd","email":"PD2newEmail.com","friends":[],"age":0,"height":177,"physAddress":""}]
+[
+    {
+        "name": "Petras",
+        "password": "PetrasPswd",
+        "email": "",
+        "friends": [
+            "PD1"
+        ],
+        "age": 55,
+        "height": 0,
+        "physAddress": ""
+    },
+    {
+        "name": "PD1",
+        "password": "PD1Pswd",
+        "email": "",
+        "friends": [
+            "Petras"
+        ],
+        "age": 5,
+        "height": 0,
+        "physAddress": ""
+    },
+    {
+        "name": "PD2",
+        "password": "PD2Pswd",
+        "email": "PD2newEmail.com",
+        "friends": [],
+        "age": 0,
+        "height": 177,
+        "physAddress": ""
+    }
+]
