@@ -4,70 +4,45 @@ import { User } from './user/user';
 import mongoose from 'mongoose';
 import UserModel from './models/user.model';
 
-// const mongoDB = 'mongodb://localhost:27017/users';
-// mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
-// const db = mongoose.connection;
-// db.on('success', () => console.log('sss'));
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
     // tslint:disable-next-line: no-console
     return console.log('Success');
 // tslint:disable-next-line: no-console
 }, error => console.log(error));
 
-
-// var Chat = mongoose.model('Chat');
-// var n = new Chat();
-// n.name = "chat room";
-// n.save(function(err,room) {
-//    console.log(room.id);
-// });
-//
-// var awesome_instance = new SomeModel({ name: 'awesome' });
-// awesome_instance.save(function (err) {
-//   if (err) return handleError(err);
-// });
-// const test = new UserModel({ name: 'petras' });
-// test.save()
-
-const testPerson = UserModel.create({ name: 'petras', age: 65 }).then(() => {
+const testPerson = UserModel.create({ name: 'petras', age: 22 }).then(() => {
     // tslint:disable-next-line: no-console
     return console.log('Successful creation!');
 // tslint:disable-next-line: no-console
 }, error => console.log(error))
 
-// UserModel.findOne({}).then(val => {
-    // if (val) {
-        // console.log(val.name);
-    // } else {
-        // console.log('Database is empty');
-    // }
-// });
-// tslint:disable-next-line: no-console
-// UserModel.find({ name: "petras"}).then(val => console.log(val));
-
 // tslint:disable-next-line: no-console
 UserModel.findById('5f60b756e683317d7f192516', (err, response) => {
     // tslint:disable-next-line: no-console
-    console.log('---> GOT:' + response);
-    if (err) {
+    if (response) {
+        // tslint:disable-next-line: no-console
+        console.log('---> GOT:' + response);
+    } else {
         // tslint:disable-next-line: no-console
         console.log(err)
     }
-}
-)
-
+});
 // UserModel.remove({ _id: this.toObjectId('5f60b756e683317d7f192516') }, (err) => callback(err, null));
 
 
 const app = express();
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
+// get all users'
 app.get('/users', (req, res) => {
-    res.send('get all users');
+    UserModel.find({}, (err, result) => {
+        if (result) {
+            res.json(result);
+        } else {
+            res.status(404).send('No users in DB');
+        }
+    })
 })
 
 app.get('/users/:id/', (req, res) => {
@@ -86,4 +61,4 @@ app.delete('/users/', (req, res) => {
     res.send('delete one or more users');
 })
 
-app.listen(3000);
+app.listen(3030);
