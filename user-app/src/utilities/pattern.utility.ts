@@ -19,8 +19,8 @@ class PatternUtility {
         return pattern.test(str);
     }
     isPassword(str: string) {
-        const patter = new RegExp("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/");
-        return patter.test(str);
+        const pattern = new RegExp("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/");
+        return pattern.test(str);
     }
 }
 export default PatternUtility;

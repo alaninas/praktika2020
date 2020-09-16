@@ -5,7 +5,8 @@ interface IPerson extends Document {
     password: string,
     age?: number,
     height?: number,
-    physAddress?: string,
+    address?: string,
+    email?: string,
     friends?: string[]
 };
 

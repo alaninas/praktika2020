@@ -5,7 +5,8 @@ const PersonSchema = new Schema({
     password: { type: String, required: true },
     age: { type: Number, min: 18, max: 65 },
     height: { type: Number, min: 1, max: 265 },
-    physAddress: String,
+    address: String,
+    email: String,
     friends: [String]
 });
 

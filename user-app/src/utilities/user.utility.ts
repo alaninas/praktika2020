@@ -31,20 +31,20 @@ class UserUtility extends PatternUtility {
         return result;
     }
     // TODO: update individual constraints for the properties and throw property-specific errors
-    public validatePassword({ oldValue, newValue }: { oldValue: string | undefined; newValue: string; }) {
+    public checkPassword({ oldValue, newValue }: { oldValue: string | undefined; newValue: string; }) {
         return this.validateString(oldValue, newValue);
     }
-    public validateEmail({ oldValue, newValue }: { oldValue: string | undefined; newValue: string; }) {
+    public checkEmail({ oldValue, newValue }: { oldValue: string | undefined; newValue: string; }) {
         return this.validateString(oldValue, newValue);
     }
     // tslint:disable-next-line: ban-types
-    public validateAddress({ oldValue, newValue }: { oldValue: string | String | undefined; newValue: string; }) {
+    public checkAddress({ oldValue, newValue }: { oldValue: string | String | undefined; newValue: string; }) {
         return this.validateString(oldValue, newValue);
     }
-    public validateAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
+    public checkAge({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
         return this.validateNumeric(oldValue, newValue);
     }
-    public validateHeight({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
+    public checkHeight({ oldValue, newValue }: { oldValue: number | undefined; newValue: number; }) {
         return this.validateNumeric(oldValue, newValue);
     }
 }
