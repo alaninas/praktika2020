@@ -1,14 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-// import { User } from './user/user';
-import mongoose, { Document, model, Schema } from 'mongoose';
+import mongoose, { model } from 'mongoose';
+import md5 from 'md5';
 import IPerson from './models/user.interface'
 import PersonSchema from './models/user.schema';
-import md5 from 'md5';
+import { User } from './user/user';
 
-// md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
-// tslint:disable-next-line: no-console
-console.log('---> md5: ' + md5('mypwd'));
+// Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 
 mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
     // tslint:disable-next-line: no-console
@@ -41,8 +39,7 @@ app.post('/users/login', (req, res) => {
     if (uid) {
         UserModel.findById(uid, (err: any, result: IPerson | null) => {
             if (result) {
-                result.password === upwd ?
-                res.send('Successful login') :
+                result.password === upwd ? res.send('Successful login') :
                 res.status(400).send('Wrong password provided: ' + upwd + ', from DB: ' + result.password);
             } else {
                 res.status(404).json({err});
