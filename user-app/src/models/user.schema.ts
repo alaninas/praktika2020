@@ -13,15 +13,4 @@ const PersonSchema = new Schema({
     // name: string;
 // }
 
-// interface IPerson extends Document {
-    // name: string,
-    // age?: number,
-    // height?: number,
-    // password?: string,
-    // physAddress?: string,
-    // friends?: [string]
-// };
-// const UserModel = model<IPerson>('Person', PersonSchema);
-// const UserModel = model('Person', PersonSchema);
-
 export default PersonSchema;
