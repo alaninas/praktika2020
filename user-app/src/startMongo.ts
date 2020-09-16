@@ -6,8 +6,9 @@ import IPerson from './models/user.interface'
 import PersonSchema from './models/user.schema';
 import md5 from 'md5';
 
+// md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 // tslint:disable-next-line: no-console
-console.log('---> ' + typeof md5('message2'));
+console.log('---> md5: ' + md5('mypwd'));
 
 mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
     // tslint:disable-next-line: no-console
@@ -22,10 +23,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 
 app.get('/users', (req, res) => {
-    // const users = await UserModel.find({});
     UserModel.find({}, (err: any, result: IPerson[]) => {
-        // if return value := [], empty array === TRUE
-        // have to compare to an array length instead
+        // if return value := [], empty array === TRUE; have to compare to an array length instead
         result.length > 0 ? res.json(result) : res.status(404).json({err});
     })
 })
@@ -36,12 +35,30 @@ app.get('/users/:id/', (req, res) => {
     })
 })
 
+app.post('/users/login', (req, res) => {
+    const uid = req.body.id;
+    const upwd = md5(req.body.password);
+    if (uid) {
+        UserModel.findById(uid, (err: any, result: IPerson | null) => {
+            if (result) {
+                result.password === upwd ?
+                res.send('Successful login') :
+                res.status(400).send('Wrong password provided: ' + upwd + ', from DB: ' + result.password);
+            } else {
+                res.status(404).json({err});
+            }
+        })
+    } else {
+        res.status(400).send('No user ID provided');
+    }
+})
+
 app.post('/users/', (req, res) => {
     const uname = req.body.name;
+    const upwd = md5(req.body.password);
     if (uname) {
-        // const c = new UserModel({name: "iouoiu"});
-        // c.save( (err, result) => void);
-        UserModel.create({ name: uname }, (err: any, result: IPerson | null) => {
+        const newUser = new UserModel({ name: uname, password: upwd });
+        newUser.save((err: any, result: IPerson | null) => {
             err ? res.status(400).json({err}) : res.json(result);
         });
     } else {
@@ -51,11 +68,10 @@ app.post('/users/', (req, res) => {
 
 app.put('/users/', (req, res) => {
     const uid = req.body.id;
-    // use md5
-    const upwd = req.body.password;
+    const upwd = md5(req.body.password);
     // change all the user info here: changeInfo()....
     if (uid && upwd) {
-        UserModel.findByIdAndUpdate(uid, { password: md5(upwd) }, (err: any, result: IPerson | null) => {
+        UserModel.findByIdAndUpdate(uid, { password: upwd }, (err: any, result: IPerson | null) => {
             result ? res.json(result) : res.status(404).json({err});
         });
     } else {
