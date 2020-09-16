@@ -20,8 +20,11 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 // get all users
 app.get('/users', (req, res) => {
-    UserModel.find({}, (err: any, result: IPerson[] | null) => {
-        if (result) {
+    // const users = await UserModel.find({});
+    UserModel.find({}, (err: any, result: IPerson[]) => {
+        // if return value := [], empty array === TRUE
+        // have to compare to an array length instead
+        if (result.length > 0) {
             res.json(result);
         } else {
             res.status(404).send('No users in DB');
@@ -45,6 +48,8 @@ app.get('/users/:id/', (req, res) => {
 app.post('/users/', (req, res) => {
     const uname = req.body.name;
     if (uname) {
+        // const c = new UserModel({name: "iouoiu"});
+        // c.save( (err, result) => void);
         UserModel.create({ name: uname }, (err: any, result: IPerson | null) => {
             if (err) {
                 res.status(400).send('Error in inserting user');
@@ -61,7 +66,9 @@ app.post('/users/', (req, res) => {
 // here change only pswd?
 app.put('/users/', (req, res) => {
     const uid = req.body.id;
+    // use md5
     const upwd = req.body.password;
+    // change all the user info here: changeInfo()....
     if (uid && upwd) {
         UserModel.findByIdAndUpdate(uid, { password: upwd }, (err: any, result: IPerson | null) => {
             if (result) {
@@ -79,12 +86,14 @@ app.put('/users/', (req, res) => {
 app.delete('/users/', (req, res) => {
     const uid = req.body.id;
     if (uid) {
+        // UserModel.findOneAndDelete
         UserModel.findByIdAndDelete(uid, (err: any, result: IPerson | null) => {
             if (err) {
-                res.status(404).send('No such user found');
+                res.status(404).json({err});
             } else {
                 res.json(result);
             }
+            // err ? res.status(404).json({err}) : res.json(result);
         });
     } else {
         res.status(400).send('No user ID provided');

@@ -9,6 +9,10 @@ const PersonSchema = new Schema({
     friends: [String]
 });
 
+// export interface INewPerson {
+    // name: string;
+// }
+
 // interface IPerson extends Document {
     // name: string,
     // age?: number,
