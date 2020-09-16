@@ -14,26 +14,6 @@ mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useU
 
 const UserModel = model<IPerson>('Person', PersonSchema);
 
-
-// Sample runners
-const testPerson = UserModel.create({ name: 'petras', age: 22 }).then(() => {
-    // tslint:disable-next-line: no-console
-    return console.log('Successful creation!');
-// tslint:disable-next-line: no-console
-}, error => console.log(error))
-UserModel.findById('5f60b756e683317d7f192516', (err: any, response: IPerson | null) => {
-    if (response) {
-        // tslint:disable-next-line: no-console
-        console.log('---> GOT:' + response);
-    } else {
-        // tslint:disable-next-line: no-console
-        console.log(err)
-    }
-});
-// UserModel.remove({ _id: this.toObjectId('5f60b756e683317d7f192516') }, (err) => callback(err, null));
-
-
-// Setting endpoints
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
@@ -77,8 +57,22 @@ app.post('/users/', (req, res) => {
     }
 })
 
+// update one or more users
+// here change only pswd?
 app.put('/users/', (req, res) => {
-    res.send('update one or more users');
+    const uid = req.body.id;
+    const upwd = req.body.password;
+    if (uid && upwd) {
+        UserModel.findByIdAndUpdate(uid, { password: upwd }, (err: any, result: IPerson | null) => {
+            if (result) {
+                res.json(result);
+            } else {
+                res.status(404).send('Error while updating');
+            }
+        });
+    } else {
+        res.status(400).send('Not sufficient information provided');
+    }
 })
 
 // delete one or more users
