@@ -66,8 +66,7 @@ app.put('/users/', (req, res) => {
 app.delete('/users/', (req, res) => {
     const uid = req.body.id;
     if (uid) {
-        // UserModel.findOneAndDelete
-        UserModel.findByIdAndDelete(uid, (err: any, result: IPerson | null) => {
+        UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
             err ? res.status(404).json({err}) : res.json(result);
         });
     } else {
