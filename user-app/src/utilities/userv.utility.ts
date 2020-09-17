@@ -41,19 +41,19 @@ class UserVUtility extends PatternUtility {
         return result;
     }
     // TODO: update individual constraints for the properties and throw property-specific errors
-    public checkPassword(newValue: string) {
+    public password(newValue: string) {
         return this.validatePswd(this.user.password, newValue) ? newValue : this.user.password;
     }
-    public checkEmail(newValue: string) {
+    public email(newValue: string) {
         return this.validateString(newValue) ? newValue : this.user.email;
     }
-    public checkAddress(newValue: string) {
+    public address(newValue: string) {
         return this.validateString(newValue) ? newValue : this.user.address;
     }
-    public checkAge(newValue: number) {
+    public age(newValue: number) {
         return this.validateNumeric(newValue) ? newValue : this.user.age;
     }
-    public checkHeight(newValue: number) {
+    public height(newValue: number) {
         return this.validateNumeric(newValue) ? newValue : this.user.height;
     }
 }

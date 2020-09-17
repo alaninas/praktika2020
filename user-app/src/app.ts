@@ -34,66 +34,52 @@ app.get('/users/:id/', (req, res) => {
 app.post('/users/login', (req, res) => {
     const uid = req.body.id;
     const upwd = md5(req.body.password);
-    if (uid) {
-        UserModel.findById(uid, (err: any, result: IPerson | null) => {
-            if (result) {
-                result.password === upwd ? res.send('Successful login') : res.status(400).send('Wrong password provided: ' + upwd + ', from DB: ' + result.password);
-            } else {
-                res.status(404).json({err});
-            }
-        })
-    } else {
-        res.status(400).send('No user ID provided');
-    }
+    if (!uid) return res.status(400).send('No user ID provided');
+    UserModel.findById(uid, (err: any, result: IPerson | null) => {
+        if (result) {
+            result.password === upwd ? res.send('Successful login') : res.status(400).send('Wrong password provided: ' + upwd + ', from DB: ' + result.password);
+        } else {
+            res.status(404).json({err});
+        }
+    })
 })
 
 app.post('/users/', (req, res) => {
     const uname = req.body.name;
     const upwd = md5(req.body.password);
-    if (uname && upwd) {
-        const newUser = new UserModel({ name: uname, password: upwd });
-        newUser.save((err: any, result: IPerson | null) => {
-            err ? res.status(400).json({err}) : res.json(result);
-        });
-    } else {
-        res.status(400).send('Insufficient information provided');
-    }
+    if (!uname || !upwd) return res.status(400).send('Insufficient information provided');
+    const newUser = new UserModel({ name: uname, password: upwd });
+    newUser.save((err: any, result: IPerson | null) => {
+        err ? res.status(400).json({err}) : res.json(result);
+    });
 })
 
 app.put('/users/', (req, res) => {
     const data = req.body;
     const uid = data.id;
     const upwd = md5(data.password);
-    if (uid && upwd) {
-        UserModel.findById(uid, (err: any, result: IPerson | null) => {
-            if (result) {
-                try {
-                    const util = new UserVUtility(result);
-                    const fields = {password: util.checkPassword(upwd), email: util.checkEmail(data.email),
-                        address: util.checkAddress(data.address),
-                        age: util.checkAge(data.age), height: util.checkHeight(data.height)};
-                    result.updateOne(fields, (err2: any, raw: any) => {err2 ? res.status(400).send(err2) : res.json(raw);});
-                } catch (error) {
-                    res.status(400).json({error: error.message});
-                }
-            } else {
-                res.status(404).json({err});
+    if (!uid || !upwd) return res.status(400).send('Insufficient information provided');
+    UserModel.findById(uid, (err: any, result: IPerson | null) => {
+        if (result) {
+            try {
+                const util = new UserVUtility(result);
+                const fields = {password: util.password(upwd), email: util.email(data.email), address: util.address(data.address), age: util.age(data.age), height: util.height(data.height)};
+                result.updateOne(fields, (err2: any, raw: any) => {err2 ? res.status(400).send(err2) : res.json(raw);});
+            } catch (error) {
+                res.status(400).json({error: error.message});
             }
-        });
-    } else {
-        res.status(400).send('Insufficient information provided');
-    }
+        } else {
+            res.status(404).json({err});
+        }
+    });
 })
 
 app.delete('/users/', (req, res) => {
     const uid = req.body.id;
-    if (uid) {
-        UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
-            err ? res.status(404).json({err}) : res.json(result);
-        });
-    } else {
-        res.status(400).send('No user ID provided');
-    }
+    if (!uid) return res.status(400).send('No user ID provided');
+    UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
+        err ? res.status(404).json({err}) : res.json(result);
+    });
 })
 
 app.listen(3030);
