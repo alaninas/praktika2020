@@ -1,17 +1,13 @@
 import mongoose, { Document, model, Schema } from 'mongoose';
 
-const PersonSchema = new Schema({
+const MovieSchema = new Schema({
     name: { type: String, required: true },
     password: { type: String, required: true },
     age: { type: Number, min: 18, max: 65 },
     height: { type: Number, min: 1, max: 265 },
     address: String,
     email: String,
-    friends: [{ type: Schema.Types.ObjectId }]
+    directors: [{ type: Schema.Types.ObjectId }]
 });
 
-// export interface INewPerson {
-    // name: string;
-// }
-
-export default PersonSchema;
+export default MovieSchema;

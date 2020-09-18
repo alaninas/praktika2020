@@ -1,34 +1,37 @@
 import express from 'express';
-import { model } from 'mongoose';
+import bodyParser from 'body-parser';
+import mongoose, { model } from 'mongoose';
 import md5 from 'md5';
-import IPerson from '../models/user.interface';
-import PersonSchema from '../models/user.schema';
-import UserVUtility from '../utilities/userv.utility';
+import IPerson from './models/user.interface';
+import PersonSchema from './models/user.schema';
+import UserVUtility from './utilities/userv.utility';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
-const UserModel = model<IPerson>('Person', PersonSchema);
-const UsersRouter = express.Router();
+mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
+    // tslint:disable-next-line: no-console
+    return console.log('Success');
+// tslint:disable-next-line: no-console
+}, error => console.log(error));
 
-UsersRouter.get('/users', (req, res) => {
+const UserModel = model<IPerson>('Person', PersonSchema);
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
+
+app.get('/users', (req, res) => {
     UserModel.find({}, (err: any, result: IPerson[]) => {
         // if return value := [], empty array === TRUE; have to compare to an array length instead
-        result.length > 0 ? res.json(result) : res.status(404).json({err: 'DB is empty'});
+        result.length > 0 ? res.json(result) : res.status(404).json({err});
     })
 })
 
-// id:= 6f64a595fc86ad6952e2a47f
-// returns := null
-// why? if the object doesn't exist?
-// should return 404.
-// Fixed: App Restart is required.
-UsersRouter.get('/users/:id/', (req, res) => {
+app.get('/users/:id/', (req, res) => {
     UserModel.findById(req.params.id, (err: any, result: IPerson | null) => {
-        // result ? res.json(result) : res.status(404).json({err});
-        result ? res.json(result) : res.status(404).json({err: 'No user found'});;
+        result ? res.json(result) : res.status(404).send('BBBBBBBBBBBC');
     })
 })
 
-UsersRouter.post('/users/login', (req, res) => {
+app.post('/users/login', (req, res) => {
     const uid = req.body.id;
     const upwd = md5(req.body.password);
     if (!uid) return res.status(400).send('No user ID provided');
@@ -36,22 +39,22 @@ UsersRouter.post('/users/login', (req, res) => {
         if (result) {
             result.password === upwd ? res.send('Successful login') : res.status(400).send('Wrong password provided: ' + upwd + ', from DB: ' + result.password);
         } else {
-            res.status(404).json({err: 'No such user in BD'});
+            res.status(404).send('BBBBBBBBBBB');
         }
     })
 })
 
-UsersRouter.post('/users/', (req, res) => {
+app.post('/users/', (req, res) => {
     const uname = req.body.name;
     const upwd = md5(req.body.password);
     if (!uname || !upwd) return res.status(400).send('Insufficient information provided');
     const newUser = new UserModel({ name: uname, password: upwd });
-    newUser.save((err: any, result: IPerson) => {
-        err ? res.json(result) : res.status(400).json({err: 'Error while saving the document'});
+    newUser.save((err: any, result: IPerson | null) => {
+        err ? res.status(400).json({err}) : res.json(result);
     });
 })
 
-UsersRouter.put('/users/', (req, res) => {
+app.put('/users/', (req, res) => {
     const data = req.body;
     const uid = data.id;
     const upwd = md5(data.password);
@@ -71,15 +74,12 @@ UsersRouter.put('/users/', (req, res) => {
     });
 })
 
-// after introducing referenced relationship between users(as addFriend/removeFriend)
-// need to accomodate user deletion to represent the updated data accordingly
-// (possible implementaion : in UserVUtlit module)
-UsersRouter.delete('/users/', (req, res) => {
+app.delete('/users/', (req, res) => {
     const uid = req.body.id;
     if (!uid) return res.status(400).send('No user ID provided');
     UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
-        result ? res.json(result) : res.status(404).json({err});
+        err ? res.status(404).json({err}) : res.json(result);
     });
 })
 
-export default UsersRouter;
+app.listen(3030);
