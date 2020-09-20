@@ -23,40 +23,29 @@ FriendsRouter.get('/users/:id/friends', (req, res) => {
 FriendsRouter.post('/users/addfriend', (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
-    if (!userId || !friendId) return res.status(400).send('Insufficient information provided');
+    if (!userId || !friendId) return res.status(400).json({Error: 'Insufficient information provided'});
     const match = {_id: {$in: [mongoose.Types.ObjectId(userId), mongoose.Types.ObjectId(friendId)]}};
     UserModel.aggregate([
         {$match: match}
     ], (err: any, docs: any) => {
-        if (err) return res.status(400).json({err});
-        // res.send(userId);
-        console.log(docs[0]._id);
-        console.log(typeof docs[0]._id.toString());
-        console.log(docs[1]._id);
-        console.log(typeof docs[1]._id);
-
-        res.send(typeof docs);
-        // res.json({friends: docs[0].friends});
+        if (docs.length !== 2 || err) return res.status(400).json({Error: 'While reading user information from DB'});
+        // const userIdStr = docs[0]._id.toString();
+        // const friendIdStr = docs[1]._id.toString();
     });
-    // res.send(userId);
-    // UserModel.findById(userId, (err: any, result: IPerson | null) => {
-        // if (!result) return res.status(404).json({err});
-        // UserModel.findById(friendId, (err2: any, fr: IPerson | null) => {
-            // if (!fr) return res.status(400).json({error: err2.message});
-            // result.friends?.push(fr._id);
-            // const d = new mongoose.Types.ObjectId(fr._id);
-            // if (result.friends && result.friends.length > 0) {
-                // result.friends.push(d);
-                // result.save((err3: any, raw: any) => {err3 ? res.status(400).send(err2) : res.json(raw);});
-            // }
-        // });
-    // });
+    UserModel.findById(userId, (err: any, result: IPerson | null) => {
+        if (!result || err) return res.status(400).json({Error: 'While reading user information from DB'});
+        const newFr = new mongoose.Types.ObjectId(friendId);
+        if (result.friends) {
+            result.friends.push(newFr);
+            result.save((err2: any, raw: any) => {err2 ? res.status(400).json({err2}) : res.json(raw);});
+        }
+    });
 })
 
 FriendsRouter.post('/users/remfriend', (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
-    if (!userId || !friendId) return res.status(400).send('Insufficient information provided');
+    if (!userId || !friendId) return res.status(400).json({Error: 'Insufficient information provided'});
     UserModel.findById(userId, (err: any, result: IPerson | null) => {
         if (!result) return res.status(404).json({err});
         UserModel.findById(friendId, (err2: any, fr: IPerson | null) => {

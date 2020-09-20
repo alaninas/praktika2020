@@ -25,7 +25,7 @@ UsersRouter.get('/users/:id/', (req, res) => {
 UsersRouter.post('/users/', (req, res) => {
     const uname = req.body.name;
     const upwd = md5(req.body.password);
-    if (!uname || !upwd) return res.status(400).send('Insufficient information provided');
+    if (!uname || !upwd) return res.status(400).json({Error: 'Insufficient information provided'});
     const newUser = new UserModel({ name: uname, password: upwd });
     newUser.save((err: any, result: IPerson) => {
         err ? res.json(result) : res.status(400).json({Error: 'Error while saving the document'});
@@ -36,7 +36,7 @@ UsersRouter.put('/users/', (req, res) => {
     const data = req.body;
     const uid = data.id;
     const upwd = md5(data.password);
-    if (!uid || !upwd) return res.status(400).send('Insufficient information provided');
+    if (!uid || !upwd) return res.status(400).json({Error: 'Insufficient information provided'});
     UserModel.findById(uid, (err: any, result: IPerson | null) => {
         if (!result) return res.status(404).json({Error: 'No such user in DB'});
         try {
@@ -54,7 +54,7 @@ UsersRouter.put('/users/', (req, res) => {
 // (possible implementaion : in UserVUtlit module)
 UsersRouter.delete('/users/', (req, res) => {
     const uid = req.body.id;
-    if (!uid) return res.status(400).send('No user ID provided');
+    if (!uid) return res.status(400).json({Error: 'Insufficient information provided'});
     UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
         result ? res.json(result) : res.status(404).json({err});
     });
@@ -63,7 +63,7 @@ UsersRouter.delete('/users/', (req, res) => {
 UsersRouter.post('/users/login', (req, res) => {
     const uid = req.body.id;
     const upwd = md5(req.body.password);
-    if (!uid) return res.status(400).send('No user ID provided');
+    if (!uid) return res.status(400).json({Error: 'Insufficient information provided'});
     UserModel.findById(uid, (err: any, result: IPerson | null) => {
         if (!result) return res.status(404).json({Error: 'No such user in DB'});
         result.password === upwd ? res.send('Successful login') : res.status(400).send('Wrong password provided: ' + upwd + ', from DB: ' + result.password);
