@@ -24,7 +24,9 @@ FriendsRouter.post('/users/addfriend', (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
     if (!userId || !friendId) return res.status(400).json({Error: 'Insufficient information provided'});
-    const match = {_id: {$in: [mongoose.Types.ObjectId(userId), mongoose.Types.ObjectId(friendId)]}};
+    const userIdObjectId = mongoose.Types.ObjectId(userId);
+    const friendIdObjectId = mongoose.Types.ObjectId(friendId);
+    const match = {_id: {$in: [userIdObjectId, friendIdObjectId]}};
     UserModel.aggregate([
         {$match: match}
     ], (err: any, docs: any) => {
@@ -32,6 +34,12 @@ FriendsRouter.post('/users/addfriend', (req, res) => {
         // const userIdStr = docs[0]._id.toString();
         // const friendIdStr = docs[1]._id.toString();
     });
+    const duplicates = {$in: [friendIdObjectId]};
+    UserModel.findOne({
+        _id: userIdObjectId, friends: duplicates
+    }, (err: any, result: IPerson | null) => {
+        if (result || err) return res.status(400).json({Error: 'Already friends'});
+    })
     UserModel.findById(userId, (err: any, result: IPerson | null) => {
         if (!result || err) return res.status(400).json({Error: 'While reading user information from DB'});
         const newFr = new mongoose.Types.ObjectId(friendId);
