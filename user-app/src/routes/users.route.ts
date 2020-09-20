@@ -2,11 +2,11 @@ import express from 'express';
 import { model } from 'mongoose';
 import md5 from 'md5';
 import IPerson from '../models/user.interface';
-import PersonSchema from '../models/user.schema';
+import PersonSchema, {UserModel} from '../models/user.schema';
 import UserVUtility from '../utilities/userv.utility';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
-const UserModel = model<IPerson>('Person', PersonSchema);
+// const UserModel = model<IPerson>('Person', PersonSchema);
 const UsersRouter = express.Router();
 
 UsersRouter.get('/users', (req, res) => {

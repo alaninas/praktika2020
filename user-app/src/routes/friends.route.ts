@@ -9,6 +9,73 @@ import UserVUtility from '../utilities/userv.utility';
 const UserModel = model<IPerson>('Person', PersonSchema);
 const FriendsRouter = express.Router();
 
+// See
+// https://mongoosejs.com/docs/populate.html
+// https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+// https://masteringjs.io/tutorials/mongoose/aggregate
+FriendsRouter.get('/users/:userid/friends', (req, res) => {
+    const userId = req.params.userid;
+    if (!userId) return res.status(400).send('Insufficient information provided');
+
+    UserModel.aggregate([
+        {
+          $lookup: {
+            from: "people",
+            localField: "friends",
+            foreignField: "_id",
+            as: "friends"
+          }
+        },
+        {
+          $match: {
+            _id: mongoose.Types.ObjectId(userId)
+          }
+        },
+        {
+          "$project": {
+            "password": 0,
+            "email": 0,
+            "__v": 0,
+            "name": 0,
+            "_id": 0
+          }
+        },
+        // {$unwind: "$friends"}
+      // tslint:disable-next-line: no-string-literal
+      ], (err: any, docs: any) => {res.json(docs[0]["friends"])});
+
+    // UserModel
+        // .findById(userId)
+        // .populate("friends")
+        // .then((results: IPerson | null) => {
+            // res.json({friends: results?.friends})
+        // }, (err: any) => res.status(404).send('knlknlknlnl'));
+
+    // const ss = UserModel.aggregate([
+        // {
+            // $match: {
+            //   _id: mongoose.Types.ObjectId(userId)
+            // }
+        // },
+        // {
+            // $project: {"friends": 1, _id: 0}
+        // }
+    // ], (err: any, docs: object) => {res.json(docs)});
+
+    // res.send(ss.project());
+    // res.send(ss);
+    // aggregate
+    // const ans = UserModel.findById(userId, (err: any, result: IPerson | null) => {
+        // if (!result) return res.status(404).send('No such user');
+        // if (result.friends) {
+            // if (result.friends.length < 1) return res.status(200).send('No friends yet');
+            // (result.friends).forEach(element => {
+                //
+            // });
+        // }
+    // });
+})
+
 FriendsRouter.put('/users/addfriend', (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
