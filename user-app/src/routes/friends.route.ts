@@ -2,9 +2,22 @@ import express from 'express';
 import createError from 'http-errors';
 import mongoose, { Document, model, Schema } from 'mongoose';
 import UserModel, { IPerson } from '../models/user.model';
+import UserVUtility from '../utilities/userv.utility';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const FriendsRouter = express.Router();
+
+function generateObjectIds ({ userId, friendId, next }:
+    { userId: string | undefined; friendId: string | undefined; next: express.NextFunction; }): any {
+        if (!userId || !friendId) return next(createError(400, 'Insufficient information provided'));
+        const userObjectId = mongoose.Types.ObjectId(userId);
+        const friendObjectId = mongoose.Types.ObjectId(friendId);
+        const match = {_id: {$in: [userObjectId, friendObjectId]}};
+        UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
+            if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
+        });
+        return {uid: userObjectId, fid: friendObjectId};
+}
 
 FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     const userId = req.params.id;
@@ -18,21 +31,14 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
 })
 
 FriendsRouter.post('/users/addfriend', (req, res, next) => {
-    const userId = req.body.id;
-    const friendId = req.body.friend;
-    if (!userId || !friendId) return next(createError(400, 'Insufficient information provided'));
-    const userIdObjectId = mongoose.Types.ObjectId(userId);
-    const friendIdObjectId = mongoose.Types.ObjectId(friendId);
-    const match = {_id: {$in: [userIdObjectId, friendIdObjectId]}};
-    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
-        if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
-    });
-    const duplicates = {$in: [friendIdObjectId]};
-    UserModel.findOne({_id: userIdObjectId, friends: duplicates}, (err: any, result: IPerson | null) => {
+    const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
+    if (!oids) return next(createError(400, 'Error while reading DB'));
+    const duplicates = {$in: [oids.fid]};
+    UserModel.findOne({_id: oids.uid, friends: duplicates}, (err: any, result: IPerson | null) => {
         if (result || err) return next(createError(400, 'Already friends'));
-        UserModel.findById(userId, (err2: any, result2: IPerson | null) => {
+        UserModel.findById(oids.uid, (err2: any, result2: IPerson | null) => {
             if (result2 && result2.friends) {
-                result2.friends.push(friendIdObjectId);
+                result2.friends.push(oids.fid);
                 result2.save((err3: any, raw: any) => {
                     err3 ? next(createError(400, 'Error while saving data to DB')) : res.json(raw);
                 });
@@ -42,21 +48,14 @@ FriendsRouter.post('/users/addfriend', (req, res, next) => {
 })
 
 FriendsRouter.post('/users/remfriend', (req, res, next) => {
-    const userId = req.body.id;
-    const friendId = req.body.friend;
-    if (!userId || !friendId) return next(createError(400, 'Insufficient information provided'));
-    const userIdObjectId = mongoose.Types.ObjectId(userId);
-    const friendIdObjectId = mongoose.Types.ObjectId(friendId);
-    const match = {_id: {$in: [userIdObjectId, friendIdObjectId]}};
-    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
-        if (docs.length !== 2 || err) return next(createError(401, 'No such pair of users found in DB'));
-    });
-    const duplicates = {$in: [friendIdObjectId]};
-    UserModel.findOne({_id: userIdObjectId, friends: duplicates}, (err: any, result: IPerson | null) => {
+    const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
+    if (!oids) return next(createError(400, 'Error while reading DB'));
+    const duplicates = {$in: [oids.fid]};
+    UserModel.findOne({_id: oids.uid, friends: duplicates}, (err: any, result: IPerson | null) => {
         if (!result || err) return next(createError(400, 'Not friends'))
-        UserModel.findById(userId, (err2: any, result2: IPerson | null) => {
+        UserModel.findById(oids.uid, (err2: any, result2: IPerson | null) => {
             if (result2 && result2.friends) {
-                const index = result2.friends.indexOf(friendIdObjectId);
+                const index = result2.friends.indexOf(oids.fid);
                 result2.friends.splice(index, 1);
                 result2.save((err3: any, raw: any) => {
                     err3 ? next(createError(400, 'Error while saving data to DB')) : res.json(raw);
