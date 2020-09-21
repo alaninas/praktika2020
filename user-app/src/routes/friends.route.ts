@@ -9,11 +9,13 @@ const FriendsRouter = express.Router();
 function generateObjectIds ({ userId, friendId, next }:
     { userId: string | undefined; friendId: string | undefined; next: express.NextFunction; }): any {
         if (!userId || !friendId) return next(createError(400, 'Insufficient information provided'));
+        // if (!userId || !friendId) return {uid: userId || null, fid: friendId || null};
         const userObjectId = mongoose.Types.ObjectId(userId);
         const friendObjectId = mongoose.Types.ObjectId(friendId);
         const match = {_id: {$in: [userObjectId, friendObjectId]}};
         UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
             if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
+            // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
         });
         return {uid: userObjectId, fid: friendObjectId};
 }
@@ -31,6 +33,8 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
 
 FriendsRouter.post('/users/addfriend', async (req, res, next) => {
     const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
+    // const {uid,fid} = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
+    // if !uid || !fid -->> two different errors throw here
     if (!oids) return next(createError(400, 'Error while reading DB'));
     const duplicates = {$in: [oids.fid]};
     try {
