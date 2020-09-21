@@ -56,5 +56,16 @@ class UserVUtility extends PatternUtility {
     public height(newValue: number) {
         return this.validateNumeric(newValue) ? newValue : this.user.height;
     }
+    public clearFriends(allUsers: IPerson[]) {
+        // const [i, v] of ['a', 'b', 'c'].entries()
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < allUsers.length; i++) {
+            const index = allUsers[i].friends.indexOf(this.user._id);
+            if (index > -1) {
+                allUsers[i].friends.splice(index, 1);
+            }
+        }
+        return allUsers;
+    }
 }
 export default UserVUtility;

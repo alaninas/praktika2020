@@ -1,6 +1,5 @@
 import express from 'express';
 import createError from 'http-errors';
-import { model } from 'mongoose';
 import md5 from 'md5';
 import UserModel, { IPerson } from '../models/user.model';
 import UserVUtility from '../utilities/userv.utility';
@@ -49,14 +48,24 @@ UsersRouter.put('/users/', (req, res, next) => {
     });
 })
 
-// after introducing referenced relationship between users(as addFriend/removeFriend)
-// need to accomodate user deletion to represent the updated data accordingly
-// (possible implementaion : in UserVUtlit module)
 UsersRouter.delete('/users/', (req, res, next) => {
     const uid = req.body.id;
     if (!uid) return next(createError(400, 'Insufficient information provided'));
-    UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
-        result ? res.json(result) : next(createError(404, 'No such user found in DB'));
+    UserModel.findById(uid, async (err: any, userToDelete: IPerson | null) => {
+        if (!userToDelete || err) return next(createError(404, 'No such user found in DB'));
+        try {
+            const allUsers = await UserModel.find();
+            const util = new UserVUtility(userToDelete);
+            const allUsersUpdated = util.clearFriends(allUsers);
+            // tslint:disable-next-line: prefer-for-of
+            for (let i = 0; i < allUsersUpdated.length; i++) {
+                await allUsersUpdated[i].save();
+            }
+            const u = await UserModel.findOneAndDelete({_id: uid});
+            if (u) res.json(u);
+        } catch (error) {
+            return next(createError(400, 'Error while updating DB'));
+        }
     });
 })
 

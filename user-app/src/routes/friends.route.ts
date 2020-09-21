@@ -1,8 +1,7 @@
 import express from 'express';
 import createError from 'http-errors';
-import mongoose, { Document, model, Schema } from 'mongoose';
-import UserModel, { IPerson } from '../models/user.model';
-import UserVUtility from '../utilities/userv.utility';
+import mongoose from 'mongoose';
+import UserModel from '../models/user.model';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const FriendsRouter = express.Router();
@@ -40,6 +39,7 @@ FriendsRouter.post('/users/addfriend', async (req, res, next) => {
         const resUID = await UserModel.findById(oids.uid);
         const resFID = await UserModel.findById(oids.fid);
         if (!resUID || !resFID) return next(createError(404, 'No such user found in DB'));
+        // Better off adding to a set than pushing to an array?
         resUID.friends.push(oids.fid);
         resFID.friends.push(oids.uid);
         await resUID.save();
