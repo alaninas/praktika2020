@@ -26,7 +26,7 @@ UsersRouter.post('/users/', (req, res, next) => {
     const uname = req.body.name;
     const upwd = md5(req.body.password);
     if (!uname || !upwd) return next(createError(400, 'Insufficient information provided'));
-    const newUser = new UserModel({ name: uname, password: upwd });
+    const newUser = new UserModel({ name: uname, password: upwd, friends: [] });
     newUser.save((err: any, result: IPerson) => {
         err ? res.json(result) : next(createError(400, 'Error while saving data to DB'));
     });

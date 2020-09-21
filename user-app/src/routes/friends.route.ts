@@ -30,21 +30,24 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     });
 })
 
-FriendsRouter.post('/users/addfriend', (req, res, next) => {
+FriendsRouter.post('/users/addfriend', async (req, res, next) => {
     const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
     if (!oids) return next(createError(400, 'Error while reading DB'));
     const duplicates = {$in: [oids.fid]};
-    UserModel.findOne({_id: oids.uid, friends: duplicates}, (err: any, result: IPerson | null) => {
-        if (result || err) return next(createError(400, 'Already friends'));
-        UserModel.findById(oids.uid, (err2: any, result2: IPerson | null) => {
-            if (result2 && result2.friends) {
-                result2.friends.push(oids.fid);
-                result2.save((err3: any, raw: any) => {
-                    err3 ? next(createError(400, 'Error while saving data to DB')) : res.json(raw);
-                });
-            }
-        });
-    })
+    try {
+        const result = await UserModel.findOne({_id: oids.uid, friends: duplicates});
+        if (result) return next(createError(400, 'Already friends'));
+        const resUID = await UserModel.findById(oids.uid);
+        const resFID = await UserModel.findById(oids.fid);
+        if (!resUID || !resFID) return next(createError(404, 'No such user found in DB'));
+        resUID.friends.push(oids.fid);
+        resFID.friends.push(oids.uid);
+        await resUID.save();
+        await resFID.save();
+        res.json({Success: 'Friends updated'});
+    } catch (error) {
+        next(createError(400, 'Error while saving data to DB'));
+    }
 })
 
 FriendsRouter.post('/users/remfriend', (req, res, next) => {
