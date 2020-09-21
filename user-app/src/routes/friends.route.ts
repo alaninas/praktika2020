@@ -27,51 +27,42 @@ FriendsRouter.post('/users/addfriend', (req, res) => {
     const userIdObjectId = mongoose.Types.ObjectId(userId);
     const friendIdObjectId = mongoose.Types.ObjectId(friendId);
     const match = {_id: {$in: [userIdObjectId, friendIdObjectId]}};
-    UserModel.aggregate([
-        {$match: match}
-    ], (err: any, docs: any) => {
+    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
         if (docs.length !== 2 || err) return res.status(400).json({Error: 'While reading user information from DB'});
-        // const userIdStr = docs[0]._id.toString();
-        // const friendIdStr = docs[1]._id.toString();
     });
     const duplicates = {$in: [friendIdObjectId]};
-    UserModel.findOne({
-        _id: userIdObjectId, friends: duplicates
-    }, (err: any, result: IPerson | null) => {
+    UserModel.findOne({_id: userIdObjectId, friends: duplicates}, (err: any, result: IPerson | null) => {
         if (result || err) return res.status(400).json({Error: 'Already friends'});
+        UserModel.findById(userId, (err2: any, result2: IPerson | null) => {
+            if (result2 && result2.friends) {
+                result2.friends.push(friendIdObjectId);
+                result2.save((err3: any, raw: any) => {err3 ? res.status(400).json({err3}) : res.json(raw);});
+            }
+        });
     })
-    UserModel.findById(userId, (err: any, result: IPerson | null) => {
-        if (!result || err) return res.status(400).json({Error: 'While reading user information from DB'});
-        const newFr = new mongoose.Types.ObjectId(friendId);
-        if (result.friends) {
-            result.friends.push(newFr);
-            result.save((err2: any, raw: any) => {err2 ? res.status(400).json({err2}) : res.json(raw);});
-        }
-    });
 })
 
 FriendsRouter.post('/users/remfriend', (req, res) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
     if (!userId || !friendId) return res.status(400).json({Error: 'Insufficient information provided'});
-    UserModel.findById(userId, (err: any, result: IPerson | null) => {
-        if (!result) return res.status(404).json({err});
-        UserModel.findById(friendId, (err2: any, fr: IPerson | null) => {
-            if (!fr) return res.status(400).json({error: err2.message});
-            const d = new mongoose.Types.ObjectId(fr._id);
-            if (result.friends && result.friends.length > 0) {
-                if (result.friends.indexOf(d) > -1) {
-                    // In the array
-                    const index = result.friends.indexOf(d);
-                    result.friends.splice(index, 1);
-                    result.save((err3: any, raw: any) => {err3 ? res.status(400).send(err2) : res.json(raw);});
-                    // if (friend.friends.indexOf(this.name) > -1) {
-                        // friend.removeFriend(this);
-                    // }
-                }
+    const userIdObjectId = mongoose.Types.ObjectId(userId);
+    const friendIdObjectId = mongoose.Types.ObjectId(friendId);
+    const match = {_id: {$in: [userIdObjectId, friendIdObjectId]}};
+    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
+        if (docs.length !== 2 || err) return res.status(400).json({Error: 'While reading user information from DB'});
+    });
+    const duplicates = {$in: [friendIdObjectId]};
+    UserModel.findOne({_id: userIdObjectId, friends: duplicates}, (err: any, result: IPerson | null) => {
+        if (!result || err) return res.status(400).json({Error: 'Not friends'});
+        UserModel.findById(userId, (err2: any, result2: IPerson | null) => {
+            if (result2 && result2.friends) {
+                const index = result2.friends.indexOf(friendIdObjectId);
+                result2.friends.splice(index, 1);
+                result2.save((err3: any, raw: any) => {err3 ? res.status(400).send(err3) : res.json(raw);});
             }
         });
-    });
+    })
 })
 
 export default FriendsRouter;
