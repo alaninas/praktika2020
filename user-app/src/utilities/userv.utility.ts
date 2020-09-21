@@ -1,6 +1,6 @@
 import PatternUtility from './pattern.utility';
 // import mongoose, { model } from 'mongoose';
-import IPerson from '../models/user.interface';
+import { IPerson } from '../models/user.model';
 
 class UserVUtility extends PatternUtility {
     private user: IPerson;

@@ -2,8 +2,7 @@ import express from 'express';
 import createError from 'http-errors';
 import { model } from 'mongoose';
 import md5 from 'md5';
-import IPerson from '../models/user.interface';
-import PersonSchema, {UserModel} from '../models/user.schema';
+import UserModel, { IPerson } from '../models/user.model';
 import UserVUtility from '../utilities/userv.utility';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78

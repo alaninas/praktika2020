@@ -1,11 +1,9 @@
 import express from 'express';
 import createError from 'http-errors';
 import mongoose, { Document, model, Schema } from 'mongoose';
-import IPerson from '../models/user.interface';
-import PersonSchema from '../models/user.schema';
+import UserModel, { IPerson } from '../models/user.model';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
-const UserModel = model<IPerson>('Person', PersonSchema);
 const FriendsRouter = express.Router();
 
 FriendsRouter.get('/users/:id/friends', (req, res, next) => {
