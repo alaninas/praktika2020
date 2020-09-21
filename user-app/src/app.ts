@@ -24,7 +24,10 @@ app.use((req, res, next) => {
     next(createError(404))
 })
 
-app.use((error: { status: any; message: any; stack: any; }, req: any, res: { status: (arg0: any) => void; json: (arg0: { status: any; message: any; stack: any; }) => void; }, next: any) => {
+app.use((error: { status: any; message: any; stack: any; },
+        req: any,
+        res: { status: (arg0: any) => void; json: (arg0: { status: any; message: any; stack: any; }) => void; },
+        next: any) => {
     res.status(error.status || 500)
     res.json({
       status: error.status,

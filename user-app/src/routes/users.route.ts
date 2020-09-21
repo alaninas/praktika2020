@@ -13,23 +13,23 @@ const UsersRouter = express.Router();
 UsersRouter.get('/users', (req, res, next) => {
     UserModel.find({}, (err: any, result: IPerson[]) => {
         // if return value := [], empty array === TRUE; have to compare to an array length instead
-        result.length > 0 ? res.json(result) : next(createError(400, 'Please login to view this page.'));
+        result.length > 0 ? res.json(result) : next(createError(404, 'No users in DB'));
     })
 })
 
 UsersRouter.get('/users/:id/', (req, res, next) => {
     UserModel.findById(req.params.id, (err: any, result: IPerson | null) => {
-        result ? res.json(result) : next(createError(400, 'Please login to view this page.'));
+        result ? res.json(result) : next(createError(404, 'No such user found in DB'));
     })
 })
 
 UsersRouter.post('/users/', (req, res, next) => {
     const uname = req.body.name;
     const upwd = md5(req.body.password);
-    if (!uname || !upwd) return next(createError(400, 'Please login to view this page.'));
+    if (!uname || !upwd) return next(createError(400, 'Insufficient information provided'));
     const newUser = new UserModel({ name: uname, password: upwd });
     newUser.save((err: any, result: IPerson) => {
-        err ? res.json(result) : next(createError(400, 'Please login to view this page.'));
+        err ? res.json(result) : next(createError(400, 'Error while saving data to DB'));
     });
 })
 
@@ -37,15 +37,15 @@ UsersRouter.put('/users/', (req, res, next) => {
     const data = req.body;
     const uid = data.id;
     const upwd = md5(data.password);
-    if (!uid || !upwd) return next(createError(400, 'Please login to view this page.'));
+    if (!uid || !upwd) return next(createError(400, 'Insufficient information provided'));
     UserModel.findById(uid, (err: any, result: IPerson | null) => {
-        if (!result) return next(createError(400, 'Please login to view this page.'));
+        if (!result) return next(createError(404, 'No such user found in DB'));
         try {
             const util = new UserVUtility(result);
             const fields = {password: util.password(upwd), email: util.email(data.email), address: util.address(data.address), age: util.age(data.age), height: util.height(data.height)};
             result.updateOne(fields, (err2: any, raw: any) => {err2 ? res.status(400).send(err2) : res.json(raw);});
         } catch (error) {
-            next(createError(400, 'Please login to view this page.'));
+            next(createError(400, 'Error while saving data to DB'));
         }
     });
 })
@@ -55,19 +55,19 @@ UsersRouter.put('/users/', (req, res, next) => {
 // (possible implementaion : in UserVUtlit module)
 UsersRouter.delete('/users/', (req, res, next) => {
     const uid = req.body.id;
-    if (!uid) return next(createError(400, 'Please login to view this page.'));
+    if (!uid) return next(createError(400, 'Insufficient information provided'));
     UserModel.findOneAndDelete({_id: uid}, (err: any, result: IPerson | null) => {
-        result ? res.json(result) : next(createError(400, 'Please login to view this page.'));
+        result ? res.json(result) : next(createError(404, 'No such user found in DB'));
     });
 })
 
 UsersRouter.post('/users/login', (req, res, next) => {
     const uid = req.body.id;
     const upwd = md5(req.body.password);
-    if (!uid) return next(createError(400, 'Please login to view this page.'));
+    if (!uid) return next(createError(400, 'Insufficient information provided'));
     UserModel.findById(uid, (err: any, result: IPerson | null) => {
-        if (!result) return next(createError(400, 'Please login to view this page.'));
-        result.password === upwd ? res.send('Successful login') : next(createError(400, 'Please login to view this page.'));
+        if (!result) return next(createError(404, 'No such user found in DB'));
+        result.password === upwd ? res.send('Successful login') : next(createError(401, 'Wrong password provided'));
     })
 })
 
