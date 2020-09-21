@@ -5,7 +5,6 @@ import UserModel, { IPerson } from '../models/user.model';
 import UserVUtility from '../utilities/userv.utility';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
-// const UserModel = model<IPerson>('Person', PersonSchema);
 const UsersRouter = express.Router();
 
 UsersRouter.get('/users', (req, res, next) => {
@@ -27,7 +26,7 @@ UsersRouter.post('/users/', (req, res, next) => {
     if (!uname || !upwd) return next(createError(400, 'Insufficient information provided'));
     const newUser = new UserModel({ name: uname, password: upwd, friends: [] });
     newUser.save((err: any, result: IPerson) => {
-        err ? res.json(result) : next(createError(400, 'Error while saving data to DB'));
+        result ? res.json(result) : next(createError(400, 'Error while saving data to DB'));
     });
 })
 

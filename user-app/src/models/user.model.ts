@@ -1,4 +1,5 @@
 import mongoose, { Document, model, Schema } from 'mongoose';
+import MovieModel, { IMovie } from '../models/movie.model';
 
 export interface IPerson extends Document {
     name: string,
@@ -7,7 +8,8 @@ export interface IPerson extends Document {
     height?: number,
     address?: string,
     email?: string,
-    friends: mongoose.Types.ObjectId[]
+    friends: mongoose.Types.ObjectId[],
+    movies?: mongoose.Types.ObjectId[]
 };
 
 const PersonSchema = new Schema({
@@ -17,7 +19,8 @@ const PersonSchema = new Schema({
     height: { type: Number, min: 1, max: 265 },
     address: String,
     email: String,
-    friends: [{ type: Schema.Types.ObjectId, required: true, ref: 'Person' }]
+    friends: [{ type: Schema.Types.ObjectId, required: true, ref: 'Person' }],
+    movies: [{ type: Schema.Types.ObjectId, ref: 'Movie' }]
 });
 
 const UserModel = model<IPerson>('Person', PersonSchema);

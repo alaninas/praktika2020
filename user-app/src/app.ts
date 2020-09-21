@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import UsersRouter from './routes/users.route';
 import FriendsRouter from './routes/friends.route';
+import MoviesRouter from './routes/movies.route';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 mongoose.connect('mongodb://localhost:27017/users', {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 app.use('/', UsersRouter);
 app.use('/', FriendsRouter);
+app.use('/', MoviesRouter);
 
 app.use((req, res, next) => {
     next(createError(404))
