@@ -1,11 +1,11 @@
-import { IsAlpha, IsDateString, IsNotEmpty } from "class-validator";
+import { IsAlpha, IsDate, IsNotEmpty } from "class-validator";
 
 export class CreateMovieDto {
     @IsNotEmpty()
     readonly name: string;
 
-    @IsDateString()
-    readonly date: string;
+    @IsDate()
+    readonly date: Date;
 
     @IsAlpha()
     readonly genre: string;

@@ -37,9 +37,7 @@ describe('MoviesController', () => {
   });
 
   describe('createMovie', () => {
-    // date is a simple string
-    // not ISOformat '05 October 2011 14:48 UTC' -> test still holds. why?
-    const movie = {name: 'mtitle', date: 'mnknkjnk', genre: 'western'};
+    const movie = {name: 'mtitle', date: new Date('05 October 2011 14:48 UTC'), genre: 'western'};
     const response = `creates movie: name ${movie.name} date ${movie.date} genre ${movie.genre}`;
     it('should get one movie', async () => {
       jest.spyOn(service, 'createMovie').mockImplementation(() => response);
