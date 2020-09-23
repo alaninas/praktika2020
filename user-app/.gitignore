@@ -3,3 +3,5 @@ coverage
 src/dist
 # ignore doc/notes.txt
 doc/*.txt
+temp
+uploads

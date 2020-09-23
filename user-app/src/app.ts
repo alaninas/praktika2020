@@ -1,7 +1,6 @@
 import express from 'express';
 import createError from 'http-errors';
 import bodyParser from 'body-parser';
-// tslint:disable-next-line: no-var-requires
 import mongoose from 'mongoose';
 import UsersRouter from './routes/users.route';
 import FriendsRouter from './routes/friends.route';
