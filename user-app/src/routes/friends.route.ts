@@ -12,11 +12,11 @@ function generateObjectIds ({ userId, friendId, next }:
         // if (!userId || !friendId) return {uid: userId || null, fid: friendId || null};
         const userObjectId = mongoose.Types.ObjectId(userId);
         const friendObjectId = mongoose.Types.ObjectId(friendId);
-        const match = {_id: {$in: [userObjectId, friendObjectId]}};
-        UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
-            if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
+        // const match = {_id: {$in: [userObjectId, friendObjectId]}};
+        // UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
+            // if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
             // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
-        });
+        // });
         return {uid: userObjectId, fid: friendObjectId};
 }
 
@@ -36,6 +36,11 @@ FriendsRouter.post('/users/addfriend', async (req, res, next) => {
     // const {uid,fid} = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
     // if !uid || !fid -->> two different errors throw here
     if (!oids) return next(createError(400, 'Error while reading DB'));
+    const match = {_id: {$in: [oids.uid, oids.fid]}};
+    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
+        if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
+        // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
+    });
     const duplicates = {$in: [oids.fid]};
     try {
         const areDuplicates = await UserModel.findOne({_id: oids.uid, friends: duplicates});
@@ -57,6 +62,11 @@ FriendsRouter.post('/users/addfriend', async (req, res, next) => {
 FriendsRouter.post('/users/remfriend', async (req, res, next) => {
     const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
     if (!oids) return next(createError(400, 'Error while reading DB'));
+    const match = {_id: {$in: [oids.uid, oids.fid]}};
+    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
+        if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
+        // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
+    });
     const duplicates = {$in: [oids.fid]};
     try {
         const areDuplicates = await UserModel.findOne({_id: oids.uid, friends: duplicates});
