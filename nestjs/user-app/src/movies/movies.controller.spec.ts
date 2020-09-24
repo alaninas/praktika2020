@@ -37,7 +37,7 @@ describe('MoviesController', () => {
   });
 
   describe('createMovie', () => {
-    const movie = {name: 'mtitle', date: new Date('01/01/2020'), genre: 'western'};
+    const movie = {name: 'mtitle', date: 'jhhbjhbj', genre: 'western'};
     const response = `creates movie: name ${movie.name} date ${movie.date} genre ${movie.genre}`;
     it('should get one movie', async () => {
       jest.spyOn(service, 'createMovie').mockImplementation(() => response);

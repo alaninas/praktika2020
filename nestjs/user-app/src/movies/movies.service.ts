@@ -3,6 +3,8 @@ import { CreateMovieDto } from './create-movie.dto';
 
 @Injectable()
 export class MoviesService {
+    // addDir:
+    // inject UService --> isUser
     getAllMovies(): string {
         return `gets all movies`;
     }

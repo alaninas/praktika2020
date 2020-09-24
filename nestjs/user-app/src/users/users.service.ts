@@ -3,6 +3,8 @@ import { CreateUserDto } from './create-user.dto';
 
 @Injectable()
 export class UsersService {
+    //  add IsUser method
+    
     getAllUsers(): string {
         return `gets all users`;
     }

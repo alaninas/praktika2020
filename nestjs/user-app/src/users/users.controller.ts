@@ -24,10 +24,12 @@ export class UsersController {
         return this.usersService.createUser(user);
     }
     @Post('login')
+    // logindto := uname and pswd
     loginUser(@Body() user: CreateUserDto): string {
         return this.usersService.loginUser(user);
     }
     @Post('friends/add')
+    // @Param('id')
     addUserFriends(@Body() user: CreateUserDto): string {
         return this.usersService.addUserFriends(user);
     }
