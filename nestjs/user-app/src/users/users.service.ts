@@ -1,9 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Person } from './schemas/user.schema';
 import { CreateUserDto } from './create-user.dto';
-
 @Injectable()
 export class UsersService {
     //  add IsUser method
+
+    constructor(@InjectModel(Person.name) private personModel: Model<Person>) {}
+
+    async findAll(): Promise<Person[]> {
+        return this.personModel.find().exec();
+    }
     
     getAllUsers(): string {
         return `gets all users`;
