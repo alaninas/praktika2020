@@ -6,24 +6,32 @@ import UserModel from '../models/user.model';
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const FriendsRouter = express.Router();
 
-function generateObjectIds ({ userId, friendId, next }:
-    { userId: string | undefined; friendId: string | undefined; next: express.NextFunction; }): any {
-        if (!userId || !friendId) return next(createError(400, 'Insufficient information provided'));
-        // if (!userId || !friendId) return {uid: userId || null, fid: friendId || null};
-        let userObjectId: mongoose.Types.ObjectId | null = null;
-        let friendObjectId: mongoose.Types.ObjectId | null = null;
-        try {
-            userObjectId = new mongoose.Types.ObjectId(userId);
-            friendObjectId = new mongoose.Types.ObjectId(friendId);
-        } catch (error) {
-            next(createError(400, 'Bad IDs'));
-        }
-        // const match = {_id: {$in: [userObjectId, friendObjectId]}};
-        // UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
-            // if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
-            // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
-        // });
+function createObjectIds({ userId, friendId }: { userId: string | undefined; friendId: string | undefined; }): any {
+    if (!userId || !friendId) return {uid: userId || null, fid: friendId || null};
+    let userObjectId: mongoose.Types.ObjectId | null = null;
+    let friendObjectId: mongoose.Types.ObjectId | null = null;
+    try {
+        userObjectId = new mongoose.Types.ObjectId(userId);
+        friendObjectId = new mongoose.Types.ObjectId(friendId);
+    } catch (error) {
         return {uid: userObjectId, fid: friendObjectId};
+    }
+    return {uid: userObjectId, fid: friendObjectId};
+}
+
+function createAggregateStages({ uid, fid, deleteFriendFlag }:
+    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; }): any {
+    const match = {_id: {$in: [uid, fid]}};
+    const projectTemp = {
+        "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
+    };
+    const projectFin = {
+        friends: !deleteFriendFlag ?
+            {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
+            {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
+    };
+    // console.log(projectFin)
+    return {match, projectTemp, projectFin};
 }
 
 FriendsRouter.get('/users/:id/friends', (req, res, next) => {
@@ -37,59 +45,45 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     });
 })
 
-// const {uid,fid} = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
-// if !uid || !fid -->> two different errors throw here
 FriendsRouter.post('/users/addfriend', async (req, res, next) => {
-    const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
-    // try {
-    if (!oids || oids.uid === null || oids.fid === null) return next(createError(400, 'Error while reading DB'));
-    const match = {_id: {$in: [oids.uid, oids.fid]}};
-    const project1 = {
-        "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", oids.uid]}, [oids.fid], [oids.uid]]}
-    };
-    const project2 = {
-        friends: {$concatArrays: ["$friends", {"$setDifference": ["$addedFriends", "$friends"]}]}
-    };
+    const userId = req.body.id;
+    const friendId = req.body.friend;
+    const {uid, fid} = createObjectIds({userId, friendId});
+    if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
+    const {match, projectTemp, projectFin} = createAggregateStages({uid, fid, deleteFriendFlag: ''});
     try {
         const newFriends = await UserModel.aggregate([
-            {$match: match}, {$project: project1}, {$project: project2}
+            {$match: match}, {$project: projectTemp}, {$project: projectFin}
         ]);
         Promise.all([
             UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
             UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
         ]);
-        // await UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends});
-        // await UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends});
-        res.json({Success: 'Friends added'});
+        res.json({Success: `User #${newFriends[0]._id} friended #${newFriends[1]._id}`});
     } catch (error) {
-        next(createError(400, 'Error while saving data to DB'));
+        next(createError(400, `Error writing data to DB: user #${userId}, friend #${friendId}`));
     }
 })
 
 FriendsRouter.post('/users/remfriend', async (req, res, next) => {
-    const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
-    if (!oids) return next(createError(400, 'Error while reading DB'));
-    const match = {_id: {$in: [oids.uid, oids.fid]}};
-    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
-        if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
-        // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
-    });
-    const duplicates = {$in: [oids.fid]};
+    const userId = req.body.id;
+    const friendId = req.body.friend;
+    const {uid, fid} = createObjectIds({userId, friendId});
+    if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
+    const {match, projectTemp, projectFin} = createAggregateStages({uid, fid, deleteFriendFlag: 'true'});
     try {
-        const areDuplicates = await UserModel.findOne({_id: oids.uid, friends: duplicates});
-        if (!areDuplicates) return next(createError(400, 'Not friends'));
-        const resUID = await UserModel.findById(oids.uid);
-        const resFID = await UserModel.findById(oids.fid);
-        if (!resUID || !resFID) return next(createError(404, 'No such user found in DB'));
-        const indexFID = resUID.friends.indexOf(oids.fid);
-        const indexUID = resFID.friends.indexOf(oids.uid);
-        resUID.friends.splice(indexFID, 1);
-        resFID.friends.splice(indexUID, 1);
-        await resUID.save();
-        await resFID.save();
-        res.json({Success: 'Friends removed'});
+        const newFriends = await UserModel.aggregate([
+            {$match: match}, {$project: projectTemp}, {$project: projectFin}
+        ]);
+        // console.log(newFriends[0]);
+        // console.log(newFriends[1]);
+        Promise.all([
+            UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
+            UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
+        ]);
+        res.json({Success: `User #${newFriends[0]._id} unfriended #${newFriends[1]._id}`});
     } catch (error) {
-        next(createError(400, 'Error while saving data to DB'));
+        next(createError(400, `Error writing data to DB: user #${userId}, friend #${friendId}`));
     }
 })
 
