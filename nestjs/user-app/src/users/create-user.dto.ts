@@ -1,34 +1,32 @@
-import { IsEmail, IsInt, IsNotEmpty } from "class-validator";
+// import { Type } from "class-transformer/decorators";
+import { IsArray, IsEmail, IsInt, IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
+// import { Person } from "./schemas/user.schema";
 
 export class CreateUserDto {
     @IsNotEmpty()
     readonly name: string;
 
+    @IsOptional()
     @IsInt()
-    readonly age: number;
+    age: number;
 
+    @IsOptional()
     @IsNotEmpty()
     @IsEmail()
-    readonly email: string;
+    email: string;
+
+    @IsOptional()
+    @IsArray()
+    // @ValidateNested({each: true})
+    // @Type(() => Person)
+    @IsMongoId({each:true})
+    friends: string[];
 
     // .friends[] list
     // for-each in a list
-    // check if @IsUser
-    // ? How from @Body().user.id --> getUser(@Body().user.id) 
-    // ? The same logic extends to Movies.directors[]
-    // ? SwaggerModule
-
-    // @Body(key?: string) and req.body / req.body[key]
-    // (see Request Payloads)
-
     // .movies[] list
     // for-each in a list
-    // check if @IsMovie
-    // ? How from @Body().movie.id --> getMovie(@Body().movie.id) 
-
     // validate the array --> logic inside the service
     // director: string --> validate inside services
-    // and check id.length
-    // and check isHex
     // use isObjectId
 }

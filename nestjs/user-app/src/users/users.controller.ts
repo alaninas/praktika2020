@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { CreateUserDto } from './create-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
+import mongoose from 'mongoose';
 
 @Controller('users')
 export class UsersController {
@@ -16,7 +17,7 @@ export class UsersController {
         return this.usersService.getOneUser(id);
     }
     @Get(':id/friends')
-    getUserFriends(@Param('id') id: string): string {
+    async getUserFriends(@Param('id') id: string): Promise<mongoose.Types.ObjectId[]> {
         return this.usersService.getUserFriends(id);
     }
     

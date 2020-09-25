@@ -42,12 +42,12 @@ describe('UsersController', () => {
     // });
   // });
 
-  describe('createUser', () => {
-    const user = {name: 'uname', age: 15, email: 'uname@gmail.com'};
-    const response = `creates user: name ${user.name} age ${user.age} email ${user.email}`;
-    it('should get one user', async () => {
-      jest.spyOn(service, 'createUser').mockImplementation(() => response);
-      expect(controller.createUser(user)).toBe(response);
-    });
-  });
+  // describe('createUser', () => {
+    // const user = {name: 'uname', age: 15, email: 'uname@gmail.com'};
+    // const response = `creates user: name ${user.name} age ${user.age} email ${user.email}`;
+    // it('should get one user', async () => {
+      // jest.spyOn(service, 'createUser').mockImplementation(() => response);
+      // expect(controller.createUser(user)).toBe(response);
+    // });
+  // });
 });
