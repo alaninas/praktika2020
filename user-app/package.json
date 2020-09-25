@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon src/app.ts",
     "start:debug": "nodemon --inspect src/app.ts",
-    "start": "nodemon src/appUpload.ts"
+    "start": "nodemon src/app.ts"
   },
   "author": "",
   "license": "ISC",

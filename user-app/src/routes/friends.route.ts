@@ -31,28 +31,25 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     });
 })
 
+// const {uid,fid} = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
+// if !uid || !fid -->> two different errors throw here
 FriendsRouter.post('/users/addfriend', async (req, res, next) => {
     const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
-    // const {uid,fid} = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
-    // if !uid || !fid -->> two different errors throw here
     if (!oids) return next(createError(400, 'Error while reading DB'));
     const match = {_id: {$in: [oids.uid, oids.fid]}};
-    UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
-        if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
-        // if (docs.length !== 2 || err) return {uid: userId || null, fid: friendId || null};
-    });
-    const duplicates = {$in: [oids.fid]};
+    const project1 = {
+        "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", oids.uid]}, [oids.fid], [oids.uid]]}
+    };
+    const project2 = {
+        friends: {$concatArrays: ["$friends", {"$setDifference": ["$addedFriends", "$friends"]}]}
+    };
     try {
-        const areDuplicates = await UserModel.findOne({_id: oids.uid, friends: duplicates});
-        if (areDuplicates) return next(createError(400, 'Already friends'));
-        const resUID = await UserModel.findById(oids.uid);
-        const resFID = await UserModel.findById(oids.fid);
-        if (!resUID || !resFID) return next(createError(404, 'No such user found in DB'));
-        // Better off adding to a set than pushing to an array?
-        resUID.friends.push(oids.fid);
-        resFID.friends.push(oids.uid);
-        await resUID.save();
-        await resFID.save();
+        const updatedFriends = await UserModel.aggregate([
+            {$match: match}, {$project: project1}, {$project: project2}
+        ]);
+        await UserModel.findByIdAndUpdate(oids.uid, {friends: updatedFriends[0].friends});
+        await UserModel.findByIdAndUpdate(oids.fid, {friends: updatedFriends[1].friends});
+        // console.log(updatedFriends[0])
         res.json({Success: 'Friends added'});
     } catch (error) {
         next(createError(400, 'Error while saving data to DB'));
