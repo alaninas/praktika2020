@@ -9,16 +9,14 @@ export class UsersService {
 
     constructor(@InjectModel(Person.name) private personModel: Model<Person>) {}
 
-    async findAll(): Promise<Person[]> {
+    async getAllUsers(): Promise<Person[]> {
         return this.personModel.find().exec();
     }
+
+    async getOneUser(id: string): Promise<Person> {
+        return this.personModel.findById(id);
+    }
     
-    getAllUsers(): string {
-        return `gets all users`;
-    }
-    getOneUser(id: string): string {
-        return `gets user by id ${id}`;
-    }
     getUserFriends(id: string): string {
         return `gets user id ${id} friends list`;
     }

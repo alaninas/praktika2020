@@ -9,11 +9,10 @@ export class UsersController {
 
     @Get()
     async getAllUsers(): Promise<Person[]> {
-        // return this.usersService.getAllUsers();
-        return this.usersService.findAll();
+        return this.usersService.getAllUsers();
     }
     @Get(':id')
-    getOneUser(@Param('id') id: string): string {
+    async getOneUser(@Param('id') id: string): Promise<Person> {
         return this.usersService.getOneUser(id);
     }
     @Get(':id/friends')
