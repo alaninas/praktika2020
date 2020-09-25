@@ -10,8 +10,14 @@ function generateObjectIds ({ userId, friendId, next }:
     { userId: string | undefined; friendId: string | undefined; next: express.NextFunction; }): any {
         if (!userId || !friendId) return next(createError(400, 'Insufficient information provided'));
         // if (!userId || !friendId) return {uid: userId || null, fid: friendId || null};
-        const userObjectId = mongoose.Types.ObjectId(userId);
-        const friendObjectId = mongoose.Types.ObjectId(friendId);
+        let userObjectId: mongoose.Types.ObjectId | null = null;
+        let friendObjectId: mongoose.Types.ObjectId | null = null;
+        try {
+            userObjectId = new mongoose.Types.ObjectId(userId);
+            friendObjectId = new mongoose.Types.ObjectId(friendId);
+        } catch (error) {
+            next(createError(400, 'Bad IDs'));
+        }
         // const match = {_id: {$in: [userObjectId, friendObjectId]}};
         // UserModel.aggregate([{$match: match}], (err: any, docs: any) => {
             // if (docs.length !== 2 || err) return next(createError(404, 'No such pair of users found in DB'));
@@ -35,7 +41,8 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
 // if !uid || !fid -->> two different errors throw here
 FriendsRouter.post('/users/addfriend', async (req, res, next) => {
     const oids = generateObjectIds({userId: req.body.id, friendId: req.body.friend, next});
-    if (!oids) return next(createError(400, 'Error while reading DB'));
+    // try {
+    if (!oids || oids.uid === null || oids.fid === null) return next(createError(400, 'Error while reading DB'));
     const match = {_id: {$in: [oids.uid, oids.fid]}};
     const project1 = {
         "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", oids.uid]}, [oids.fid], [oids.uid]]}
@@ -44,12 +51,15 @@ FriendsRouter.post('/users/addfriend', async (req, res, next) => {
         friends: {$concatArrays: ["$friends", {"$setDifference": ["$addedFriends", "$friends"]}]}
     };
     try {
-        const updatedFriends = await UserModel.aggregate([
+        const newFriends = await UserModel.aggregate([
             {$match: match}, {$project: project1}, {$project: project2}
         ]);
-        await UserModel.findByIdAndUpdate(oids.uid, {friends: updatedFriends[0].friends});
-        await UserModel.findByIdAndUpdate(oids.fid, {friends: updatedFriends[1].friends});
-        // console.log(updatedFriends[0])
+        Promise.all([
+            UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
+            UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
+        ]);
+        // await UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends});
+        // await UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends});
         res.json({Success: 'Friends added'});
     } catch (error) {
         next(createError(400, 'Error while saving data to DB'));
