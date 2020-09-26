@@ -44,21 +44,28 @@ async function updateFriends({ uid, fid, deleteItemFlag, res, next}:
             UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
             UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
         ]);
-        res.json({Success: `User #${uid} ` + (!deleteItemFlag ? `` : `un`) + `friended #${fid}`});
+        return res.json({Success: `User #${uid} ` + (!deleteItemFlag ? `` : `un`) + `friended #${fid}`});
     } catch (error) {
-        next(createError(400, `Error writing data to DB: user #${uid}, friend #${fid}`));
+        return next(createError(400, `Error writing data to DB: user #${uid}, friend #${fid}`));
+    }
+}
+
+async function populateFriends({ userId, res, next }: { userId: string; res: express.Response; next: express.NextFunction; }) {
+    try {
+        const omid = new mongoose.Types.ObjectId(userId);
+        const lookup = {from: "people", localField: "friends", foreignField: "_id", as: "friends"};
+        const match = {_id: omid};
+        const docs = await UserModel.aggregate([{$lookup: lookup}, {$match: match}]);
+        return res.json({friends: docs[0].friends});
+    } catch (error) {
+        return next(createError(400, `Error reading data from DB: user #${userId}`));
     }
 }
 
 FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     const userId = req.params.id;
     if (!userId) return next(createError(400, `Insufficient information provided: user #${userId}`));
-    const lookup = {from: "people", localField: "friends", foreignField: "_id", as: "friends"};
-    const match = {_id: mongoose.Types.ObjectId(userId)};
-    UserModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
-        if (err) return next(createError(400, `Error reading data from DB: user #${userId}`));
-        res.json({friends: docs[0].friends});
-    });
+    populateFriends({userId, res, next});
 })
 
 FriendsRouter.post('/users/addfriend', (req, res, next) => {

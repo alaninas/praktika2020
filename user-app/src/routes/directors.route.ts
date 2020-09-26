@@ -71,9 +71,9 @@ async function updateDirectors({ mid, did, deleteItemFlag, res, next}:
             UserModel.findByIdAndUpdate(newUMovies[0]._id, {movies: newUMovies[0].movies}),
             MovieModel.findByIdAndUpdate(newMDirectors[0]._id, {directors: newMDirectors[0].directors})
         ]);
-        res.json({Success: `Director #${did} ` + (!deleteItemFlag ? `added to` : `removed from`) + ` movie #${mid}`});
+        return res.json({Success: `Director #${did} ` + (!deleteItemFlag ? `added to` : `removed from`) + ` movie #${mid}`});
     } catch (error) {
-        next(createError(400, `Error writing data to DB: movie #${mid}, director #${did}`));
+        return next(createError(400, `Error writing data to DB: movie #${mid}, director #${did}`));
     }
 }
 
