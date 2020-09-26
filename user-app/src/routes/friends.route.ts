@@ -19,20 +19,28 @@ function createObjectIds({ userId, friendId }: { userId: string | undefined; fri
     return {uid: userObjectId, fid: friendObjectId};
 }
 
-async function updateFriends({ uid, fid, deleteFriendFlag, res, next}:
-    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
+function createAggregateStages({ uid, fid, deleteFriendFlag}:
+    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; }) {
     const matchIdPair = {_id: {$in: [uid, fid]}};
     const matchForAdd = {friends: {$not: {$in: [uid, fid]}}};
-    const matchForDelete = {friends: {$in: [uid, fid]}};
-    const projectUtil = {"friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}};
+    const matchForDel = {friends: {$in: [uid, fid]}};
+    const projectUtil = {
+        "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
+    };
     const projectUpdate = {
         friends: !deleteFriendFlag ?
             {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
             {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
     };
+    return {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate};
+}
+
+async function updateFriends({ uid, fid, deleteFriendFlag, res, next}:
+    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
+    const {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate} = createAggregateStages({uid, fid, deleteFriendFlag});
     try {
         const newFriends = await UserModel.aggregate([
-            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteFriendFlag ? matchForAdd : matchForDelete)}, {$project: projectUpdate}
+            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteFriendFlag ? matchForAdd : matchForDel)}, {$project: projectUpdate}
         ]);
         Promise.all([
             UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
@@ -40,7 +48,6 @@ async function updateFriends({ uid, fid, deleteFriendFlag, res, next}:
         ]);
         res.json({Success: `User #${uid} ` + (!deleteFriendFlag ? `` : `un`) + `friended #${fid}`});
     } catch (error) {
-        // console.error({error});
         next(createError(400, `Error writing data to DB: user #${uid}, friend #${fid}`));
     }
 }

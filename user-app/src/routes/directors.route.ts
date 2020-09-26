@@ -2,29 +2,30 @@ import express from 'express';
 import createError from 'http-errors';
 import mongoose from 'mongoose';
 import UserModel from '../models/user.model';
+import MovieModel, { IMovie } from '../models/movie.model';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const DirectorsRouter = express.Router();
 
-function createObjectIds({ userId, friendId }: { userId: string | undefined; friendId: string | undefined; }): any {
-    if (!userId || !friendId) return {uid: userId || null, fid: friendId || null};
-    let userObjectId: mongoose.Types.ObjectId | null = null;
-    let friendObjectId: mongoose.Types.ObjectId | null = null;
+function createObjectIds({ movieId, directorId }: { movieId: string | undefined; directorId: string | undefined; }): any {
+    if (!movieId || !directorId) return {uid: movieId || null, fid: directorId || null};
+    let movieObjectId: mongoose.Types.ObjectId | null = null;
+    let directorObjectId: mongoose.Types.ObjectId | null = null;
     try {
-        userObjectId = new mongoose.Types.ObjectId(userId);
-        friendObjectId = new mongoose.Types.ObjectId(friendId);
+        movieObjectId = new mongoose.Types.ObjectId(movieId);
+        directorObjectId = new mongoose.Types.ObjectId(directorId);
     } catch (error) {
-        return {uid: userObjectId, fid: friendObjectId};
+        return {uid: movieObjectId, fid: directorObjectId};
     }
-    return {uid: userObjectId, fid: friendObjectId};
+    return {uid: movieObjectId, fid: directorObjectId};
 }
 
 // IMPORTANT:
-//  in order not to have duplicate logic
-// dont' let users to add/remove films on their roster
+// in order not to have duplicate logic
+// dont' let users to add/remove films on their router
 // users have the right to see users/:id/movies list
 
-// give the right to add/remove directors and movies only for the 'producer' personality
+// give the right to add/remove directors for movies only for the 'producer' personality
 // that is currently logged in VIA movies endpoint
 
 // Directors update logic:
@@ -55,35 +56,37 @@ async function updateDirectors({ uid, fid, deleteFriendFlag, res, next}:
         res.json({Success: `User #${uid} ` + (!deleteFriendFlag ? `` : `un`) + `friended #${fid}`});
     } catch (error) {
         // console.error({error});
-        next(createError(400, `Error writing data to DB: user #${uid}, friend #${fid}`));
+        next(createError(400, `Error writing data to DB: movie #${uid}, friend #${fid}`));
     }
 }
 
-DirectorsRouter.get('/users/:id/movies', (req, res, next) => {
-    const userId = req.params.id;
-    if (!userId) return next(createError(400, `Insufficient information provided: user #${userId}`));
-    const lookup = {from: "people", localField: "friends", foreignField: "_id", as: "friends"};
-    const match = {_id: mongoose.Types.ObjectId(userId)};
-    UserModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
-        if (err) return next(createError(400, `Error reading data from DB: user #${userId}`));
-        res.json({friends: docs[0].friends});
+DirectorsRouter.get('/movies/:id/directors', (req, res, next) => {
+    const movieId = req.params.id;
+    if (!movieId) return next(createError(400, `Insufficient information provided: movie #${movieId}`));
+    const lookup = {from: "people", localField: "directors", foreignField: "_id", as: "directors"};
+    const match = {_id: mongoose.Types.ObjectId(movieId)};
+    MovieModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
+        if (err) return next(createError(400, `Error reading data from DB: movie #${movieId}`));
+        res.json({directors: docs[0].directors});
     });
 })
 
-DirectorsRouter.post('/users/addmovie', (req, res, next) => {
-    const userId = req.body.id;
-    const friendId = req.body.friend;
-    const {uid, fid} = createObjectIds({userId, friendId});
-    if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    updateDirectors({uid, fid, deleteFriendFlag: '', res, next});
+DirectorsRouter.post('/movies/adddirector', (req, res, next) => {
+    const movieId = req.body.id;
+    const directorId = req.body.director;
+    const {uid, fid} = createObjectIds({movieId, directorId});
+    if (!uid || !fid) return next(createError(400, `Bad information provided: movie #${movieId}, director #${directorId}`));
+    // updateDirectors({uid, fid, deleteFriendFlag: '', res, next});
+    res.json({Success: `added director for movie #${movieId}, director #${directorId}`});
 })
 
-DirectorsRouter.post('/users/remmovie', (req, res, next) => {
-    const userId = req.body.id;
-    const friendId = req.body.friend;
-    const {uid, fid} = createObjectIds({userId, friendId});
-    if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    updateDirectors({uid, fid, deleteFriendFlag: 'true', res, next});
+DirectorsRouter.post('/movies/remdirector', (req, res, next) => {
+    const movieId = req.body.id;
+    const directorId = req.body.director;
+    const {uid, fid} = createObjectIds({movieId, directorId});
+    if (!uid || !fid) return next(createError(400, `Bad information provided: movie #${movieId}, director #${directorId}`));
+    // updateDirectors({uid, fid, deleteFriendFlag: 'true', res, next});
+    res.json({Success: `removed director for movie #${movieId}, director #${directorId}`});
 })
 
 export default DirectorsRouter;
