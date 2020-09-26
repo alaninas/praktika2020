@@ -3,6 +3,7 @@ import createError from 'http-errors';
 import md5 from 'md5';
 import UserModel, { IPerson } from '../models/user.model';
 import UserVUtility from '../utilities/userv.utility';
+import mongoose from 'mongoose';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const UsersRouter = express.Router();
@@ -19,6 +20,17 @@ UsersRouter.get('/users/:id/', (req, res, next) => {
     })
 })
 
+UsersRouter.get('/users/:id/movies', (req, res, next) => {
+    const userId = req.params.id;
+    if (!userId) return next(createError(400, `Insufficient information provided: user #${userId}`));
+    const lookup = {from: "movies", localField: "movies", foreignField: "_id", as: "movies"};
+    const match = {_id: mongoose.Types.ObjectId(userId)};
+    UserModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
+        if (err) return next(createError(400, `Error reading data from DB: user #${userId}`));
+        res.json({movies: docs[0].movies});
+    });
+})
+
 UsersRouter.post('/users/', (req, res, next) => {
     const uname = req.body.name;
     const upwd = md5(req.body.password);
@@ -27,6 +39,16 @@ UsersRouter.post('/users/', (req, res, next) => {
     newUser.save((err: any, result: IPerson) => {
         result ? res.json(result) : next(createError(400, 'Error while saving data to DB'));
     });
+})
+
+UsersRouter.post('/users/login', (req, res, next) => {
+    const uid = req.body.id;
+    const upwd = md5(req.body.password);
+    if (!uid) return next(createError(400, 'Insufficient information provided'));
+    UserModel.findById(uid, (err: any, result: IPerson | null) => {
+        if (!result) return next(createError(404, 'No such user found in DB'));
+        result.password === upwd ? res.send('Successful login') : next(createError(401, 'Wrong password provided'));
+    })
 })
 
 UsersRouter.put('/users/', (req, res, next) => {
@@ -65,16 +87,6 @@ UsersRouter.delete('/users/', (req, res, next) => {
             return next(createError(400, 'Error while updating DB'));
         }
     });
-})
-
-UsersRouter.post('/users/login', (req, res, next) => {
-    const uid = req.body.id;
-    const upwd = md5(req.body.password);
-    if (!uid) return next(createError(400, 'Insufficient information provided'));
-    UserModel.findById(uid, (err: any, result: IPerson | null) => {
-        if (!result) return next(createError(404, 'No such user found in DB'));
-        result.password === upwd ? res.send('Successful login') : next(createError(401, 'Wrong password provided'));
-    })
 })
 
 export default UsersRouter;
