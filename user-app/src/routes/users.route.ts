@@ -59,8 +59,8 @@ UsersRouter.delete('/users/', (req, res, next) => {
             for (let i = 0; i < allUsersUpdated.length; i++) {
                 await allUsersUpdated[i].save();
             }
-            const u = await UserModel.findOneAndDelete({_id: uid});
-            if (u) res.json(u);
+            const udel = await UserModel.findOneAndDelete({_id: uid});
+            if (udel) res.json(udel);
         } catch (error) {
             return next(createError(400, 'Error while updating DB'));
         }

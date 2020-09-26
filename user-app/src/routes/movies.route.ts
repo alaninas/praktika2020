@@ -69,8 +69,8 @@ MoviesRouter.delete('/movies/', (req, res, next) => {
             for (let i = 0; i < allUsersUpdated.length; i++) {
                 await allUsersUpdated[i].save();
             }
-            const u = await MovieModel.findOneAndDelete({_id: mid});
-            if (u) res.json(u);
+            const mdel = await MovieModel.findOneAndDelete({_id: mid});
+            if (mdel) res.json(mdel);
         } catch (error) {
             return next(createError(400, 'Error while updating DB'));
         }

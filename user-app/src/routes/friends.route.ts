@@ -24,17 +24,17 @@ async function createNewFriends({ uid, fid, deleteFriendFlag, res, next}:
     const matchIdPair = {_id: {$in: [uid, fid]}};
     const matchForAdd = {friends: {$not: {$in: [uid, fid]}}};
     const matchForDelete = {friends: {$in: [uid, fid]}};
-    const projectTemp = {
+    const projectUtil = {
         "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
     };
-    const projectFin = {
+    const projectUpdate = {
         friends: !deleteFriendFlag ?
             {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
             {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
     };
     try {
         const newFriends = await UserModel.aggregate([
-            {$match: matchIdPair}, {$project: projectTemp}, {$match: (!deleteFriendFlag ? matchForAdd : matchForDelete)}, {$project: projectFin}
+            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteFriendFlag ? matchForAdd : matchForDelete)}, {$project: projectUpdate}
         ]);
         Promise.all([
             UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
