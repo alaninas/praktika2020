@@ -16,6 +16,16 @@ function clearDirectors(allUsers: IPerson[], movie: IMovie) {
     return allUsers;
 }
 
+async function doMovieDelete(movieToDelete: IMovie) {
+    const allUsers = await UserModel.find({});
+    const allUsersUpdated = clearDirectors(allUsers, movieToDelete);
+    for (const user of allUsersUpdated) {
+        await user.save();
+    }
+    const mdel = await movieToDelete.deleteOne();
+    return mdel;
+}
+
 MoviesRouter.get('/movies', (req, res, next) => {
     MovieModel.find({}, (err: any, result: IMovie[]) => {
         // if return value := [], empty array === TRUE; have to compare to an array length instead
@@ -44,12 +54,8 @@ MoviesRouter.put('/movies/', (req, res, next) => {
     if (!mid) return next(createError(400, `Insufficient information provided: movie #${mid}`));
     MovieModel.findById(mid, (err: any, result: IMovie | null) => {
         if (!result) return next(createError(404, `No such movie found in DB: movie #${mid}`));
-        try {
-            const fields = {year: data.year, poster: data.poster};
-            result.updateOne(fields, (err2: any, raw: any) => {err2 ? res.status(400).send(err2) : res.json(raw);});
-        } catch (error) {
-            next(createError(400, 'Error while saving data to DB'));
-        }
+        const fields = {year: data.year, poster: data.poster};
+        result.updateOne(fields, (err2: any, raw: any) => {err2 ? next(createError(400, 'Error while saving data to DB')) : res.json(raw);});
     });
 })
 
@@ -59,12 +65,7 @@ MoviesRouter.delete('/movies/', (req, res, next) => {
     MovieModel.findById(mid, async (err: any, movieToDelete: IMovie | null) => {
         if (!movieToDelete || err) return next(createError(404, 'No such movie found in DB'));
         try {
-            const allUsers = await UserModel.find({});
-            const allUsersUpdated = clearDirectors(allUsers, movieToDelete);
-            for (const user of allUsersUpdated) {
-                await user.save();
-            }
-            const mdel = await movieToDelete.deleteOne();
+            const mdel = await doMovieDelete(movieToDelete);
             if (mdel) res.json(mdel);
         } catch (error) {
             return next(createError(400, 'Error while updating DB'));
