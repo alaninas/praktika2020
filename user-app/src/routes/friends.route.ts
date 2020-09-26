@@ -19,14 +19,12 @@ function createObjectIds({ userId, friendId }: { userId: string | undefined; fri
     return {uid: userObjectId, fid: friendObjectId};
 }
 
-async function createNewFriends({ uid, fid, deleteFriendFlag, res, next}:
+async function updateFriends({ uid, fid, deleteFriendFlag, res, next}:
     { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
     const matchIdPair = {_id: {$in: [uid, fid]}};
     const matchForAdd = {friends: {$not: {$in: [uid, fid]}}};
     const matchForDelete = {friends: {$in: [uid, fid]}};
-    const projectUtil = {
-        "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
-    };
+    const projectUtil = {"friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}};
     const projectUpdate = {
         friends: !deleteFriendFlag ?
             {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
@@ -58,20 +56,20 @@ FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     });
 })
 
-FriendsRouter.post('/users/addfriend', async (req, res, next) => {
+FriendsRouter.post('/users/addfriend', (req, res, next) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
     const {uid, fid} = createObjectIds({userId, friendId});
     if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    await createNewFriends({uid, fid, deleteFriendFlag: '', res, next});
+    updateFriends({uid, fid, deleteFriendFlag: '', res, next});
 })
 
-FriendsRouter.post('/users/remfriend', async (req, res, next) => {
+FriendsRouter.post('/users/remfriend', (req, res, next) => {
     const userId = req.body.id;
     const friendId = req.body.friend;
     const {uid, fid} = createObjectIds({userId, friendId});
     if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    await createNewFriends({uid, fid, deleteFriendFlag: 'true', res, next});
+    updateFriends({uid, fid, deleteFriendFlag: 'true', res, next});
 })
 
 export default FriendsRouter;
