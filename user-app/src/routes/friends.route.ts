@@ -19,8 +19,8 @@ function createObjectIds({ userId, friendId }: { userId: string | undefined; fri
     return {uid: userObjectId, fid: friendObjectId};
 }
 
-function createAggregateStages({ uid, fid, deleteFriendFlag}:
-    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; }) {
+function createPipeStages({ uid, fid, deleteItemFlag}:
+    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
     const matchIdPair = {_id: {$in: [uid, fid]}};
     const matchForAdd = {friends: {$not: {$in: [uid, fid]}}};
     const matchForDel = {friends: {$in: [uid, fid]}};
@@ -28,25 +28,25 @@ function createAggregateStages({ uid, fid, deleteFriendFlag}:
         "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
     };
     const projectUpdate = {
-        friends: !deleteFriendFlag ?
+        friends: !deleteItemFlag ?
             {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
             {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
     };
     return {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate};
 }
 
-async function updateFriends({ uid, fid, deleteFriendFlag, res, next}:
-    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
-    const {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate} = createAggregateStages({uid, fid, deleteFriendFlag});
+async function updateFriends({ uid, fid, deleteItemFlag, res, next}:
+    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
+    const {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate} = createPipeStages({uid, fid, deleteItemFlag});
     try {
         const newFriends = await UserModel.aggregate([
-            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteFriendFlag ? matchForAdd : matchForDel)}, {$project: projectUpdate}
+            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteItemFlag ? matchForAdd : matchForDel)}, {$project: projectUpdate}
         ]);
         Promise.all([
             UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
             UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
         ]);
-        res.json({Success: `User #${uid} ` + (!deleteFriendFlag ? `` : `un`) + `friended #${fid}`});
+        res.json({Success: `User #${uid} ` + (!deleteItemFlag ? `` : `un`) + `friended #${fid}`});
     } catch (error) {
         next(createError(400, `Error writing data to DB: user #${uid}, friend #${fid}`));
     }
@@ -68,7 +68,7 @@ FriendsRouter.post('/users/addfriend', (req, res, next) => {
     const friendId = req.body.friend;
     const {uid, fid} = createObjectIds({userId, friendId});
     if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    updateFriends({uid, fid, deleteFriendFlag: '', res, next});
+    updateFriends({uid, fid, deleteItemFlag: '', res, next});
 })
 
 FriendsRouter.post('/users/remfriend', (req, res, next) => {
@@ -76,7 +76,7 @@ FriendsRouter.post('/users/remfriend', (req, res, next) => {
     const friendId = req.body.friend;
     const {uid, fid} = createObjectIds({userId, friendId});
     if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    updateFriends({uid, fid, deleteFriendFlag: 'true', res, next});
+    updateFriends({uid, fid, deleteItemFlag: 'true', res, next});
 })
 
 export default FriendsRouter;

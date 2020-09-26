@@ -8,55 +8,76 @@ import MovieModel, { IMovie } from '../models/movie.model';
 const DirectorsRouter = express.Router();
 
 function createObjectIds({ movieId, directorId }: { movieId: string | undefined; directorId: string | undefined; }): any {
-    if (!movieId || !directorId) return {uid: movieId || null, fid: directorId || null};
+    if (!movieId || !directorId) return {mid: movieId || null, did: directorId || null};
     let movieObjectId: mongoose.Types.ObjectId | null = null;
     let directorObjectId: mongoose.Types.ObjectId | null = null;
     try {
         movieObjectId = new mongoose.Types.ObjectId(movieId);
         directorObjectId = new mongoose.Types.ObjectId(directorId);
     } catch (error) {
-        return {uid: movieObjectId, fid: directorObjectId};
+        return {mid: movieObjectId, did: directorObjectId};
     }
-    return {uid: movieObjectId, fid: directorObjectId};
+    return {mid: movieObjectId, did: directorObjectId};
+}
+
+function createMoviePipeStages({ mid, did, deleteItemFlag}:
+    { mid: mongoose.Types.ObjectId; did: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
+    const mMatchId = {_id: mid};
+    const mMatchAdd = {directors: {$not: {$in: [did]}}};
+    const mMatchDel = {directors: {$in: [did]}};
+    const mProjectUtil = {"directors": 1, addedDirs: did};
+    const mProjectNew = {
+        directors: !deleteItemFlag ? {$concatArrays: ["$directors", ["$addedDirs"]]}:
+        {$filter: {input: "$directors", as: "director", cond: {$ne: ["$$director", "$addedDirs"]}}}
+    };
+    return {mMatchId, mMatchAdd, mMatchDel, mProjectUtil, mProjectNew};
+}
+
+function createUserPipeStages({ did, mid, deleteItemFlag}:
+    { mid: mongoose.Types.ObjectId; did: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
+    const uMatchId = {_id: did};
+    const uMatchAdd = {movies: {$not: {$in: [mid]}}};
+    const uMatchDel = {movies: {$in: [mid]}};
+    const uProjectUtil = {"movies": 1, addedMovies: mid};
+    const uProjectNew = {
+        movies: !deleteItemFlag ? {$concatArrays: ["$movies", ["$addedMovies"]]}:
+        {$filter: {input: "$movies", as: "movie", cond: {$ne: ["$$movie", "$addedMovies"]}}}
+    };
+    return {uMatchId, uMatchAdd, uMatchDel, uProjectUtil, uProjectNew};
 }
 
 // IMPORTANT:
-// in order not to have duplicate logic
-// dont' let users to add/remove films on their router
-// users have the right to see users/:id/movies list
+// In order not to have duplicate logic
+// dont' let users to add/remove films on their router.
+// Users only have the right to see users/:id/movies list.
 
-// give the right to add/remove directors for movies only for the 'producer' personality
-// that is currently logged in VIA movies endpoint
+// Give the right to add/remove directors for movies only for the 'producer' personality
+// that is currently logged in VIA movies endpoint.
 
 // Directors update logic:
-// find user (probably use Promise.all)
-// see if he's already having this movie or not (for addition) -- opposite for deletion
-// see if the movie already having him as director (for addition) -- opposite for deletion
-// update users.model movies list -- by adding new movie
-// update movies.model directors list -- by adding new user as director
-async function updateDirectors({ uid, fid, deleteFriendFlag, res, next}:
-    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
-    const matchIdPair = {_id: {$in: [uid, fid]}};
-    const matchForAdd = {friends: {$not: {$in: [uid, fid]}}};
-    const matchForDelete = {friends: {$in: [uid, fid]}};
-    const projectUtil = {"friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}};
-    const projectUpdate = {
-        friends: !deleteFriendFlag ?
-            {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
-            {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
-    };
+// find user and movie (probably use Promise.all)
+// - see if user's already having this movie or not (for addition) -- opposite for deletion
+// - see if the movie already having him as director (for addition) -- opposite for deletion
+// - update users.model movies list -- by adding new movie
+// - update movies.model directors list -- by adding new user as director
+async function updateDirectors({ mid, did, deleteItemFlag, res, next}:
+    { mid: mongoose.Types.ObjectId; did: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
+    const {mMatchId, mMatchAdd, mMatchDel, mProjectUtil, mProjectNew} = createMoviePipeStages({mid, did, deleteItemFlag});
+    const {uMatchId, uMatchAdd, uMatchDel, uProjectUtil, uProjectNew} = createUserPipeStages({did, mid, deleteItemFlag});
     try {
-        const newFriends = await UserModel.aggregate([
-            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteFriendFlag ? matchForAdd : matchForDelete)}, {$project: projectUpdate}
+        const newMovies = await UserModel.aggregate([
+            {$match: uMatchId}, {$project: uProjectUtil}, {$match: (!deleteItemFlag ? uMatchAdd : uMatchDel)}, {$project: uProjectNew}
+        ]);
+        const newDirectors = await MovieModel.aggregate([
+            {$match: mMatchId}, {$project: mProjectUtil}, {$match: (!deleteItemFlag ? mMatchAdd : mMatchDel)}, {$project: mProjectNew}
         ]);
         Promise.all([
-            UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
-            UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
+            UserModel.findByIdAndUpdate(newMovies[0]._id, {movies: newMovies[0].movies}),
+            MovieModel.findByIdAndUpdate(newDirectors[0]._id, {directors: newDirectors[0].directors})
         ]);
-        res.json({Success: `User #${uid} ` + (!deleteFriendFlag ? `` : `un`) + `friended #${fid}`});
+        res.json({Success: `Director #${did} ` + (!deleteItemFlag ? `added to` : `removed from`) + ` movie #${mid}`});
     } catch (error) {
-        // console.error({error});
-        next(createError(400, `Error writing data to DB: movie #${uid}, friend #${fid}`));
+        next(createError(400, `Error writing data to DB: movie #${mid}, director #${did}`));
     }
 }
 
@@ -74,19 +95,17 @@ DirectorsRouter.get('/movies/:id/directors', (req, res, next) => {
 DirectorsRouter.post('/movies/adddirector', (req, res, next) => {
     const movieId = req.body.id;
     const directorId = req.body.director;
-    const {uid, fid} = createObjectIds({movieId, directorId});
-    if (!uid || !fid) return next(createError(400, `Bad information provided: movie #${movieId}, director #${directorId}`));
-    // updateDirectors({uid, fid, deleteFriendFlag: '', res, next});
-    res.json({Success: `added director for movie #${movieId}, director #${directorId}`});
+    const {mid, did} = createObjectIds({movieId, directorId});
+    if (!mid || !did) return next(createError(400, `Bad information provided: movie #${movieId}, director #${directorId}`));
+    updateDirectors({mid, did, deleteItemFlag: '', res, next});
 })
 
 DirectorsRouter.post('/movies/remdirector', (req, res, next) => {
     const movieId = req.body.id;
     const directorId = req.body.director;
-    const {uid, fid} = createObjectIds({movieId, directorId});
-    if (!uid || !fid) return next(createError(400, `Bad information provided: movie #${movieId}, director #${directorId}`));
-    // updateDirectors({uid, fid, deleteFriendFlag: 'true', res, next});
-    res.json({Success: `removed director for movie #${movieId}, director #${directorId}`});
+    const {mid, did} = createObjectIds({movieId, directorId});
+    if (!mid || !did) return next(createError(400, `Bad information provided: movie #${movieId}, director #${directorId}`));
+    updateDirectors({mid, did, deleteItemFlag: 'true', res, next});
 })
 
 export default DirectorsRouter;
