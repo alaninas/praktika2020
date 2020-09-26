@@ -19,19 +19,35 @@ function createObjectIds({ userId, friendId }: { userId: string | undefined; fri
     return {uid: userObjectId, fid: friendObjectId};
 }
 
-function createAggregateStages({ uid, fid, deleteFriendFlag }:
-    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; }): any {
-    const match = {_id: {$in: [uid, fid]}};
-    const projectTemp = {
-        "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
-    };
-    const projectFin = {
-        friends: !deleteFriendFlag ?
-            {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
-            {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
-    };
-    // console.log(projectFin)
-    return {match, projectTemp, projectFin};
+async function createNewFriends({ uid, fid, deleteFriendFlag, res, next}:
+    { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteFriendFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
+        const matchUserPair = {_id: {$in: [uid, fid]}};
+        const matchFriendToAdd = {friends: {$not: {$in: [uid, fid]}}};
+        const matchFriendForDelete = {friends: {$in: [uid, fid]}};
+        const projectTemp = {
+            "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
+        };
+        const projectFin = {
+            friends: !deleteFriendFlag ?
+                {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
+                {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
+        };
+        try {
+            const newFriends = await UserModel.aggregate([
+                    {$match: matchUserPair},
+                    {$project: projectTemp},
+                    !deleteFriendFlag ? {$match: matchFriendToAdd} : {$match: matchFriendForDelete},
+                    {$project: projectFin}
+            ])
+            Promise.all([
+                UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
+                UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
+            ]);
+            res.json({Success: `User #${uid} ` + (!deleteFriendFlag ? `` : `un`) + `friended #${fid}`});
+        } catch (error) {
+            // console.error({error});
+            next(createError(400, `Error writing data to DB: user #${uid}, friend #${fid}`));
+        }
 }
 
 FriendsRouter.get('/users/:id/friends', (req, res, next) => {
@@ -50,19 +66,17 @@ FriendsRouter.post('/users/addfriend', async (req, res, next) => {
     const friendId = req.body.friend;
     const {uid, fid} = createObjectIds({userId, friendId});
     if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    const {match, projectTemp, projectFin} = createAggregateStages({uid, fid, deleteFriendFlag: ''});
-    try {
-        const newFriends = await UserModel.aggregate([
-            {$match: match}, {$project: projectTemp}, {$project: projectFin}
-        ]);
-        Promise.all([
-            UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
-            UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
-        ]);
-        res.json({Success: `User #${newFriends[0]._id} friended #${newFriends[1]._id}`});
-    } catch (error) {
-        next(createError(400, `Error writing data to DB: user #${userId}, friend #${friendId}`));
-    }
+    await createNewFriends({uid, fid, deleteFriendFlag: '', res, next});
+    // if (!newUidFriends || !newFidFriends) return next(createError(400, `Error reading data in DB: can not add friend #${friendId} to user #${userId}`));
+    // try {
+        // Promise.all([
+            // UserModel.findByIdAndUpdate(uid, {friends: newUidFriends}),
+            // UserModel.findByIdAndUpdate(fid, {friends: newFidFriends})
+        // ]);
+        // res.json({Success: `User #${userId} and #${friendId} now friends`});
+    // } catch (error) {
+        // next(createError(400, `Error writing data to DB: user #${userId}, friend #${friendId}`));
+    // }
 })
 
 FriendsRouter.post('/users/remfriend', async (req, res, next) => {
@@ -70,21 +84,17 @@ FriendsRouter.post('/users/remfriend', async (req, res, next) => {
     const friendId = req.body.friend;
     const {uid, fid} = createObjectIds({userId, friendId});
     if (!uid || !fid) return next(createError(400, `Bad information provided: user #${userId}, friend #${friendId}`));
-    const {match, projectTemp, projectFin} = createAggregateStages({uid, fid, deleteFriendFlag: 'true'});
-    try {
-        const newFriends = await UserModel.aggregate([
-            {$match: match}, {$project: projectTemp}, {$project: projectFin}
-        ]);
-        // console.log(newFriends[0]);
-        // console.log(newFriends[1]);
-        Promise.all([
-            UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
-            UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
-        ]);
-        res.json({Success: `User #${newFriends[0]._id} unfriended #${newFriends[1]._id}`});
-    } catch (error) {
-        next(createError(400, `Error writing data to DB: user #${userId}, friend #${friendId}`));
-    }
+    await createNewFriends({uid, fid, deleteFriendFlag: 'true', res, next});
+    // if (!newUidFriends || !newFidFriends) return next(createError(400, `Error reading data in DB: can not remove friend #${friendId} from user #${userId}`));
+    // try {
+        // Promise.all([
+            // UserModel.findByIdAndUpdate(uid, {friends: newUidFriends}),
+            // UserModel.findByIdAndUpdate(fid, {friends: newFidFriends})
+        // ]);
+        // res.json({Success: `User #${userId} unfriended #${friendId}`});
+    // } catch (error) {
+        // next(createError(400, `Error writing data to DB: user #${userId}, friend #${friendId}`));
+    // }
 })
 
 export default FriendsRouter;

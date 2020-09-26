@@ -9,7 +9,6 @@ const UsersRouter = express.Router();
 
 UsersRouter.get('/users', (req, res, next) => {
     UserModel.find({}, (err: any, result: IPerson[]) => {
-        // if return value := [], empty array === TRUE; have to compare to an array length instead
         result.length > 0 ? res.json(result) : next(createError(404, 'No users in DB'));
     })
 })
