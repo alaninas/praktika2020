@@ -13,7 +13,7 @@ function clearFriends(allUsers: IPerson[], movie: IMovie) {
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < allUsers.length; i++) {
         const index = allUsers[i].movies?.indexOf(movie._id);
-        if (index && index > -1) {
+        if (index !== undefined && index > -1) {
             allUsers[i].movies?.splice(index, 1);
         }
     }
@@ -63,14 +63,19 @@ MoviesRouter.delete('/movies/', (req, res, next) => {
     MovieModel.findById(mid, async (err: any, movieToDelete: IMovie | null) => {
         if (!movieToDelete || err) return next(createError(404, 'No such movie found in DB'));
         try {
-            const allUsers = await UserModel.find();
+            const allUsers = await UserModel.find({});
+            console.log('INIT USERS');
+            console.log(allUsers);
             const allUsersUpdated = clearFriends(allUsers, movieToDelete);
+            console.log('UPDATED USERS');
+            console.log(allUsersUpdated);
             // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < allUsersUpdated.length; i++) {
-                await allUsersUpdated[i].save();
-            }
-            const mdel = await MovieModel.findOneAndDelete({_id: mid});
-            if (mdel) res.json(mdel);
+            // for (let i = 0; i < allUsersUpdated.length; i++) {
+                // await allUsersUpdated[i].save();
+            // }
+            // const mdel = await MovieModel.findOneAndDelete({_id: mid});
+            // if (mdel) res.json(mdel);
+            res.json({Success: 'movie deleted'});
         } catch (error) {
             return next(createError(400, 'Error while updating DB'));
         }
