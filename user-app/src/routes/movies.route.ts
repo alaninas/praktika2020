@@ -1,20 +1,16 @@
 import express from 'express';
 import createError from 'http-errors';
-import md5 from 'md5';
 import MovieModel, { IMovie } from '../models/movie.model';
 import UserModel, { IPerson } from '../models/user.model';
-import UserVUtility from '../utilities/userv.utility';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const MoviesRouter = express.Router();
 
-function clearFriends(allUsers: IPerson[], movie: IMovie) {
-    // const [i, v] of ['a', 'b', 'c'].entries()
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < allUsers.length; i++) {
-        const index = allUsers[i].movies?.indexOf(movie._id);
+function clearDirectors(allUsers: IPerson[], movie: IMovie) {
+    for (const user of allUsers) {
+        const index = user.movies?.indexOf(movie._id);
         if (index !== undefined && index > -1) {
-            allUsers[i].movies?.splice(index, 1);
+            user.movies?.splice(index, 1);
         }
     }
     return allUsers;
@@ -64,18 +60,12 @@ MoviesRouter.delete('/movies/', (req, res, next) => {
         if (!movieToDelete || err) return next(createError(404, 'No such movie found in DB'));
         try {
             const allUsers = await UserModel.find({});
-            console.log('INIT USERS');
-            console.log(allUsers);
-            const allUsersUpdated = clearFriends(allUsers, movieToDelete);
-            console.log('UPDATED USERS');
-            console.log(allUsersUpdated);
-            // tslint:disable-next-line: prefer-for-of
-            // for (let i = 0; i < allUsersUpdated.length; i++) {
-                // await allUsersUpdated[i].save();
-            // }
-            // const mdel = await MovieModel.findOneAndDelete({_id: mid});
-            // if (mdel) res.json(mdel);
-            res.json({Success: 'movie deleted'});
+            const allUsersUpdated = clearDirectors(allUsers, movieToDelete);
+            for (const user of allUsersUpdated) {
+                await user.save();
+            }
+            const mdel = await movieToDelete.deleteOne();
+            if (mdel) res.json(mdel);
         } catch (error) {
             return next(createError(400, 'Error while updating DB'));
         }
