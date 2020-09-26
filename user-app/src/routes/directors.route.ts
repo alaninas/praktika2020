@@ -77,15 +77,22 @@ async function updateDirectors({ mid, did, deleteItemFlag, res, next}:
     }
 }
 
+async function populateDirectors({ movieId, res, next }: { movieId: string; res: express.Response; next: express.NextFunction; }) {
+    try {
+        const omid = new mongoose.Types.ObjectId(movieId);
+        const lookup = {from: "people", localField: "directors", foreignField: "_id", as: "directors"};
+        const match = {_id: omid};
+        const docs = await MovieModel.aggregate([{$lookup: lookup}, {$match: match}]);
+        return res.json({directors: docs[0].directors});
+    } catch (error) {
+        return next(createError(400, `Error reading data from DB: movie #${movieId}`));
+    }
+}
+
 DirectorsRouter.get('/movies/:id/directors', (req, res, next) => {
     const movieId = req.params.id;
     if (!movieId) return next(createError(400, `Insufficient information provided: movie #${movieId}`));
-    const lookup = {from: "people", localField: "directors", foreignField: "_id", as: "directors"};
-    const match = {_id: mongoose.Types.ObjectId(movieId)};
-    MovieModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
-        if (err) return next(createError(400, `Error reading data from DB: movie #${movieId}`));
-        res.json({directors: docs[0].directors});
-    });
+    populateDirectors({movieId, res, next});
 })
 
 DirectorsRouter.post('/movies/adddirector', (req, res, next) => {
