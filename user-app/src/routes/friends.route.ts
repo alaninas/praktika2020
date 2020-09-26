@@ -21,27 +21,25 @@ function createObjectIds({ userId, friendId }: { userId: string | undefined; fri
 
 function createPipeStages({ uid, fid, deleteItemFlag}:
     { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
-    const matchIdPair = {_id: {$in: [uid, fid]}};
-    const matchForAdd = {friends: {$not: {$in: [uid, fid]}}};
-    const matchForDel = {friends: {$in: [uid, fid]}};
+    const matchIds = {_id: {$in: [uid, fid]}};
+    const matchAdd = {friends: {$not: {$in: [uid, fid]}}};
+    const matchDel = {friends: {$in: [uid, fid]}};
     const projectUtil = {
         "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
     };
-    const projectUpdate = {
+    const projectNew = {
         friends: !deleteItemFlag ?
             {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
             {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
     };
-    return {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate};
+    return {matchIds, matchDuplicate: (!deleteItemFlag ? matchAdd : matchDel), projectUtil, projectNew};
 }
 
 async function updateFriends({ uid, fid, deleteItemFlag, res, next}:
     { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
-    const {matchIdPair, matchForAdd, matchForDel, projectUtil, projectUpdate} = createPipeStages({uid, fid, deleteItemFlag});
+    const {matchIds, matchDuplicate, projectUtil, projectNew} = createPipeStages({uid, fid, deleteItemFlag});
     try {
-        const newFriends = await UserModel.aggregate([
-            {$match: matchIdPair}, {$project: projectUtil}, {$match: (!deleteItemFlag ? matchForAdd : matchForDel)}, {$project: projectUpdate}
-        ]);
+        const newFriends = await UserModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
         Promise.all([
             UserModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
             UserModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})

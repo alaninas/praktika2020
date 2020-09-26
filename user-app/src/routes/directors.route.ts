@@ -30,7 +30,7 @@ function createMoviePipeStages({ mid, did, deleteItemFlag}:
         directors: !deleteItemFlag ? {$concatArrays: ["$directors", ["$addedDirs"]]}:
         {$filter: {input: "$directors", as: "director", cond: {$ne: ["$$director", "$addedDirs"]}}}
     };
-    return {mMatchId, mMatchAdd, mMatchDel, mProjectUtil, mProjectNew};
+    return {mMatchId, mMatchDuplicate: (!deleteItemFlag ? mMatchAdd : mMatchDel), mProjectUtil, mProjectNew};
 }
 
 function createUserPipeStages({ did, mid, deleteItemFlag}:
@@ -43,7 +43,7 @@ function createUserPipeStages({ did, mid, deleteItemFlag}:
         movies: !deleteItemFlag ? {$concatArrays: ["$movies", ["$addedMovies"]]}:
         {$filter: {input: "$movies", as: "movie", cond: {$ne: ["$$movie", "$addedMovies"]}}}
     };
-    return {uMatchId, uMatchAdd, uMatchDel, uProjectUtil, uProjectNew};
+    return {uMatchId, uMatchDuplicate: (!deleteItemFlag ? uMatchAdd : uMatchDel), uProjectUtil, uProjectNew};
 }
 
 // IMPORTANT:
@@ -62,18 +62,14 @@ function createUserPipeStages({ did, mid, deleteItemFlag}:
 // - update movies.model directors list -- by adding new user as director
 async function updateDirectors({ mid, did, deleteItemFlag, res, next}:
     { mid: mongoose.Types.ObjectId; did: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; res: express.Response, next: express.NextFunction}) {
-    const {mMatchId, mMatchAdd, mMatchDel, mProjectUtil, mProjectNew} = createMoviePipeStages({mid, did, deleteItemFlag});
-    const {uMatchId, uMatchAdd, uMatchDel, uProjectUtil, uProjectNew} = createUserPipeStages({did, mid, deleteItemFlag});
+    const {mMatchId, mMatchDuplicate, mProjectUtil, mProjectNew} = createMoviePipeStages({mid, did, deleteItemFlag});
+    const {uMatchId, uMatchDuplicate, uProjectUtil, uProjectNew} = createUserPipeStages({did, mid, deleteItemFlag});
     try {
-        const newMovies = await UserModel.aggregate([
-            {$match: uMatchId}, {$project: uProjectUtil}, {$match: (!deleteItemFlag ? uMatchAdd : uMatchDel)}, {$project: uProjectNew}
-        ]);
-        const newDirectors = await MovieModel.aggregate([
-            {$match: mMatchId}, {$project: mProjectUtil}, {$match: (!deleteItemFlag ? mMatchAdd : mMatchDel)}, {$project: mProjectNew}
-        ]);
+        const newUMovies = await UserModel.aggregate([{$match: uMatchId}, {$project: uProjectUtil}, {$match: uMatchDuplicate}, {$project: uProjectNew}]);
+        const newMDirectors = await MovieModel.aggregate([{$match: mMatchId}, {$project: mProjectUtil}, {$match: mMatchDuplicate}, {$project: mProjectNew}]);
         Promise.all([
-            UserModel.findByIdAndUpdate(newMovies[0]._id, {movies: newMovies[0].movies}),
-            MovieModel.findByIdAndUpdate(newDirectors[0]._id, {directors: newDirectors[0].directors})
+            UserModel.findByIdAndUpdate(newUMovies[0]._id, {movies: newUMovies[0].movies}),
+            MovieModel.findByIdAndUpdate(newMDirectors[0]._id, {directors: newMDirectors[0].directors})
         ]);
         res.json({Success: `Director #${did} ` + (!deleteItemFlag ? `added to` : `removed from`) + ` movie #${mid}`});
     } catch (error) {
