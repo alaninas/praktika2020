@@ -47,11 +47,11 @@ async function updateFriends({ uid, fid, deleteFriendFlag, res, next}:
 
 FriendsRouter.get('/users/:id/friends', (req, res, next) => {
     const userId = req.params.id;
-    if (!userId) return next(createError(400, 'Insufficient information provided'));
+    if (!userId) return next(createError(400, `Insufficient information provided: user #${userId}`));
     const lookup = {from: "people", localField: "friends", foreignField: "_id", as: "friends"};
     const match = {_id: mongoose.Types.ObjectId(userId)};
     UserModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
-        if (err) return next(createError(404, 'No friends for this user'));
+        if (err) return next(createError(400, `Error reading data from DB: user #${userId}`));
         res.json({friends: docs[0].friends});
     });
 })
