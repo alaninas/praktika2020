@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Next, Response, HttpException, HttpStatus} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch} from '@nestjs/common';
 import { CreateUserDto } from './create-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
@@ -6,22 +6,25 @@ import mongoose from 'mongoose';
 import { ParseObjectIdPipe } from './users.pipe';
 import { ObjectID } from 'mongodb';
 
+@Catch(HttpException)
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) { }
+
+    constructor(private readonly usersService: UsersService) {
+    }
 
     @Get()
     async getAllUsers(): Promise<Person[]> {
         return this.usersService.getAllUsers();
     }
+    
     @Get(':id')
-    async getOneUser(@Param('id') id: string): Promise<Person> {
+    async getOneUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
         return this.usersService.getOneUser(id);
     }
+
     @Get(':id/friends')
     async getUserById(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-    // @Get(':id/friends')
-    // async getUserFriends(@Param('id') id: string): Promise<mongoose.Types.ObjectId[]> {
         return this.usersService.getUserFriends(id);
     }
     

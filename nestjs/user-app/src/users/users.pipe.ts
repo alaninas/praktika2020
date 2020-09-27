@@ -1,9 +1,10 @@
-import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { ObjectID } from 'mongodb';
 
 @Injectable()
 export class ParseObjectIdPipe implements PipeTransform<any, ObjectID> {
   /**
+   * Source: https://github.com/nestjs/nest/issues/4109
    * Validates and transforms a value to a MongoDB ObjectID
    *
    * @remarks
