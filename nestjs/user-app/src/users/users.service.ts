@@ -5,6 +5,7 @@ import { Person } from './schemas/user.schema';
 import { CreateUserDto } from './create-user.dto';
 import mongoose from 'mongoose';
 import { UsersHelper } from './users.helper';
+import { ObjectID } from 'mongodb';
 
 @Injectable()
 export class UsersService {
@@ -16,20 +17,24 @@ export class UsersService {
     }
 
     async getAllUsers(): Promise<Person[]> {
-        return this.personModel.find().exec();
+        return await this.personModel.find().exec();
     }
 
     async getOneUser(id: string): Promise<Person> {
-        return this.personModel.findById(id);
+        return await this.personModel.findById(id);
     }
 
-    async getUserFriends(id: string):  Promise<mongoose.Types.ObjectId[]> {
-        return this.usersHelper.populateFriends(id);
+    async getUserFriends(id: ObjectID):  Promise<mongoose.Types.ObjectId[]> {
+        try {
+            return await this.usersHelper.populateFriends(id);
+        } catch (error) {
+            throw new HttpException(`Can not populate user #${id} friends`, HttpStatus.BAD_REQUEST);
+        }
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {
         try {
-            return (new this.personModel(user)).save();
+            return await (new this.personModel(user)).save();
         } catch (error) {
             throw new HttpException(`Can not save user #${user.name}`, HttpStatus.BAD_REQUEST);
         }

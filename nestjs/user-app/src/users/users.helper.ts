@@ -23,18 +23,17 @@ export class UsersHelper {
     }
   }
 
-  async populateFriends(id: string): Promise<any> {
-    try {
+  async populateFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+    // try {
       // const u = await this.personModel.findById(id).populate('friends');
       // return u.friends;
 
-      const omid = await this.transform(id);
       const lookup = {from: "people", localField: "friends", foreignField: "_id", as: "friends"};
-      const docs = await this.personModel.aggregate([{$lookup: lookup}, {$match: {_id: omid}}]);
-      return docs[0].friends;
-    } catch (error) {
-      console.log(error.message)
-      throw new HttpException(`Can not find user #${id}`, HttpStatus.BAD_REQUEST);
-    }
+      const docs = await this.personModel.aggregate([{$lookup: lookup}, {$match: {_id: id}}, {$project: {"friends": 1}}]);
+      return docs[0];
+    // } catch (error) {
+      // console.log(error.message)
+      // throw new HttpException(`Can not find user #${id}`, HttpStatus.BAD_REQUEST);
+    // }
   }
 }

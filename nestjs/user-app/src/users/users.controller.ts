@@ -3,6 +3,8 @@ import { CreateUserDto } from './create-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
+import { ParseObjectIdPipe } from './users.pipe';
+import { ObjectID } from 'mongodb';
 
 @Controller('users')
 export class UsersController {
@@ -17,7 +19,9 @@ export class UsersController {
         return this.usersService.getOneUser(id);
     }
     @Get(':id/friends')
-    async getUserFriends(@Param('id') id: string): Promise<mongoose.Types.ObjectId[]> {
+    async getUserById(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+    // @Get(':id/friends')
+    // async getUserFriends(@Param('id') id: string): Promise<mongoose.Types.ObjectId[]> {
         return this.usersService.getUserFriends(id);
     }
     
