@@ -6,24 +6,16 @@ import UserModel, { IPerson } from '../models/user.model';
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const MoviesRouter = express.Router();
 
-function clearDirectors(allUsers: IPerson[], movie: IMovie) {
+async function purgeUsersRecords(movieToDelete: IMovie) {
+    const allUsers = await UserModel.find({});
     for (const user of allUsers) {
-        const index = user.movies?.indexOf(movie._id);
+        const index = user.movies?.indexOf(movieToDelete._id);
         if (index !== undefined && index > -1) {
             user.movies?.splice(index, 1);
+            await user.save();
         }
     }
     return allUsers;
-}
-
-async function doMovieDelete(movieToDelete: IMovie) {
-    const allUsers = await UserModel.find({});
-    const allUsersUpdated = clearDirectors(allUsers, movieToDelete);
-    for (const user of allUsersUpdated) {
-        await user.save();
-    }
-    const mdel = await movieToDelete.deleteOne();
-    return mdel;
 }
 
 MoviesRouter.get('/movies', (req, res, next) => {
@@ -65,10 +57,12 @@ MoviesRouter.delete('/movies/', (req, res, next) => {
     MovieModel.findById(mid, async (err: any, movieToDelete: IMovie | null) => {
         if (!movieToDelete || err) return next(createError(404, 'No such movie found in DB'));
         try {
-            const mdel = await doMovieDelete(movieToDelete);
-            if (mdel) res.json(mdel);
+            const users = await purgeUsersRecords(movieToDelete);
+            const mdel = await movieToDelete.deleteOne();
+            Promise.all([users, mdel]);
+            res.json(mdel);
         } catch (error) {
-            return next(createError(400, 'Error while updating DB'));
+            next(createError(400, 'Error while updating DB'));
         }
     });
 })

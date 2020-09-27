@@ -4,9 +4,46 @@ import md5 from 'md5';
 import UserModel, { IPerson } from '../models/user.model';
 import UserVUtility from '../utilities/userv.utility';
 import mongoose from 'mongoose';
+import MovieModel, { IMovie } from '../models/movie.model';
 
 // Digest: md5('mypwd') := 318bcb4be908d0da6448a0db76908d78
 const UsersRouter = express.Router();
+
+async function populateMovies({ userId, res, next }: { userId: string; res: express.Response; next: express.NextFunction; }) {
+    try {
+        const omid = new mongoose.Types.ObjectId(userId);
+        const lookup = {from: "movies", localField: "movies", foreignField: "_id", as: "movies"};
+        const match = {_id: omid};
+        const docs = await UserModel.aggregate([{$lookup: lookup}, {$match: match}]);
+        return res.json({movies: docs[0].movies});
+    } catch (error) {
+        return next(createError(400, `Error reading data from DB: user #${userId}`));
+    }
+}
+
+async function purgeUsersRecords(userToDelete: IPerson) {
+    const allUsers = await UserModel.find({});
+    for (const user of allUsers) {
+        const index = user.friends.indexOf(userToDelete._id);
+        if (index > -1) {
+            user.friends.splice(index, 1);
+            await user.save();
+        }
+    }
+    return allUsers;
+}
+
+async function purgeMoviesRecords(userToDelete: IPerson) {
+    const allMovies = await MovieModel.find({});
+    for (const movie of allMovies) {
+        const index = movie.directors.indexOf(userToDelete._id);
+        if (index > -1) {
+            movie.directors.splice(index, 1);
+            await movie.save();
+        }
+    }
+    return allMovies;
+}
 
 UsersRouter.get('/users', (req, res, next) => {
     UserModel.find({}, (err: any, result: IPerson[]) => {
@@ -23,12 +60,7 @@ UsersRouter.get('/users/:id/', (req, res, next) => {
 UsersRouter.get('/users/:id/movies', (req, res, next) => {
     const userId = req.params.id;
     if (!userId) return next(createError(400, `Insufficient information provided: user #${userId}`));
-    const lookup = {from: "movies", localField: "movies", foreignField: "_id", as: "movies"};
-    const match = {_id: mongoose.Types.ObjectId(userId)};
-    UserModel.aggregate([{$lookup: lookup}, {$match: match}], (err: any, docs: any) => {
-        if (err) return next(createError(400, `Error reading data from DB: user #${userId}`));
-        res.json({movies: docs[0].movies});
-    });
+    populateMovies({userId, res, next});
 })
 
 UsersRouter.post('/users/', (req, res, next) => {
@@ -61,9 +93,9 @@ UsersRouter.put('/users/', (req, res, next) => {
         try {
             const util = new UserVUtility(result);
             const fields = {password: util.password(upwd), email: util.email(data.email), address: util.address(data.address), age: util.age(data.age), height: util.height(data.height)};
-            result.updateOne(fields, (err2: any, raw: any) => {err2 ? res.status(400).send(err2) : res.json(raw);});
+            result.updateOne(fields, (err2: any, raw: any) => {err2 ? res.status(400).json({err2}) : res.json(raw);});
         } catch (error) {
-            next(createError(400, 'Error while saving data to DB'));
+            next(createError(400, error.message));
         }
     });
 })
@@ -74,17 +106,13 @@ UsersRouter.delete('/users/', (req, res, next) => {
     UserModel.findById(uid, async (err: any, userToDelete: IPerson | null) => {
         if (!userToDelete || err) return next(createError(404, 'No such user found in DB'));
         try {
-            const allUsers = await UserModel.find();
-            const util = new UserVUtility(userToDelete);
-            const allUsersUpdated = util.clearFriends(allUsers);
-            // tslint:disable-next-line: prefer-for-of
-            for (let i = 0; i < allUsersUpdated.length; i++) {
-                await allUsersUpdated[i].save();
-            }
-            const udel = await UserModel.findOneAndDelete({_id: uid});
-            if (udel) res.json(udel);
+            const users = await purgeUsersRecords(userToDelete);
+            const movies = await purgeMoviesRecords(userToDelete);
+            const udel = await userToDelete.deleteOne();
+            Promise.all([users, movies, udel]);
+            res.json(udel);
         } catch (error) {
-            return next(createError(400, 'Error while updating DB'));
+            next(createError(400, 'Error while updating DB'));
         }
     });
 })
