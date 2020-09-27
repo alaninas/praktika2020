@@ -21,9 +21,7 @@ function createObjectIds({ userId, friendId }: { userId: string | undefined; fri
 
 function createPipeStages({ uid, fid, deleteItemFlag}:
     { uid: mongoose.Types.ObjectId; fid: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
-    const matchIds = {_id: {$in: [uid, fid]}};
-    const matchAdd = {friends: {$not: {$in: [uid, fid]}}};
-    const matchDel = {friends: {$in: [uid, fid]}};
+    const matchDuplicate = !deleteItemFlag ? {friends: {$not: {$in: [uid, fid]}}} : {friends: {$in: [uid, fid]}};
     const projectUtil = {
         "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
     };
@@ -32,7 +30,7 @@ function createPipeStages({ uid, fid, deleteItemFlag}:
             {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
             {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
     };
-    return {matchIds, matchDuplicate: (!deleteItemFlag ? matchAdd : matchDel), projectUtil, projectNew};
+    return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
 }
 
 async function updateFriends({ uid, fid, deleteItemFlag, res, next}:

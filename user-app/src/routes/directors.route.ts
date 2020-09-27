@@ -22,28 +22,22 @@ function createObjectIds({ movieId, directorId }: { movieId: string | undefined;
 
 function createMoviePipeStages({ mid, did, deleteItemFlag}:
     { mid: mongoose.Types.ObjectId; did: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
-    const mMatchId = {_id: mid};
-    const mMatchAdd = {directors: {$not: {$in: [did]}}};
-    const mMatchDel = {directors: {$in: [did]}};
-    const mProjectUtil = {"directors": 1, addedDirs: did};
+    const mMatchDuplicate = !deleteItemFlag ? {directors: {$not: {$in: [did]}}} : {directors: {$in: [did]}};
     const mProjectNew = {
         directors: !deleteItemFlag ? {$concatArrays: ["$directors", ["$addedDirs"]]}:
         {$filter: {input: "$directors", as: "director", cond: {$ne: ["$$director", "$addedDirs"]}}}
     };
-    return {mMatchId, mMatchDuplicate: (!deleteItemFlag ? mMatchAdd : mMatchDel), mProjectUtil, mProjectNew};
+    return {mMatchId: {_id: mid}, mMatchDuplicate, mProjectUtil: {"directors": 1, addedDirs: did}, mProjectNew};
 }
 
 function createUserPipeStages({ did, mid, deleteItemFlag}:
     { mid: mongoose.Types.ObjectId; did: mongoose.Types.ObjectId; deleteItemFlag: string | undefined; }) {
-    const uMatchId = {_id: did};
-    const uMatchAdd = {movies: {$not: {$in: [mid]}}};
-    const uMatchDel = {movies: {$in: [mid]}};
-    const uProjectUtil = {"movies": 1, addedMovies: mid};
+    const uMatchDuplicate = !deleteItemFlag ? {movies: {$not: {$in: [mid]}}} : {movies: {$in: [mid]}};
     const uProjectNew = {
         movies: !deleteItemFlag ? {$concatArrays: ["$movies", ["$addedMovies"]]}:
         {$filter: {input: "$movies", as: "movie", cond: {$ne: ["$$movie", "$addedMovies"]}}}
     };
-    return {uMatchId, uMatchDuplicate: (!deleteItemFlag ? uMatchAdd : uMatchDel), uProjectUtil, uProjectNew};
+    return {uMatchId: {_id: did}, uMatchDuplicate, uProjectUtil: {"movies": 1, addedMovies: mid}, uProjectNew};
 }
 
 // IMPORTANT:
