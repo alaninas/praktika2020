@@ -1,16 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Next, Response} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Person } from './schemas/user.schema';
 import { CreateUserDto } from './create-user.dto';
 import mongoose from 'mongoose';
+import { UsersHelper } from './users.helper';
+
 @Injectable()
 export class UsersService {
-    //  add IsUser method ? probably not neccessary
-
+    private personModel: Model<Person>;
+    // add IsUser method ? probably not neccessary
     // add afterEach(async => .catch())
-
-    constructor(@InjectModel(Person.name) private personModel: Model<Person>) {}
+    constructor(private readonly usersHelper: UsersHelper) {
+        this.personModel = this.usersHelper.getPersonModel();
+    }
 
     async getAllUsers(): Promise<Person[]> {
         return this.personModel.find().exec();
@@ -20,17 +23,22 @@ export class UsersService {
         return this.personModel.findById(id);
     }
 
-    async getUserFriends(id: string):  Promise<mongoose.Types.ObjectId[]> | undefined {
-        const user = await this.personModel.findById(id);
-        return user ? user.friends : undefined;
+    async getUserFriends(id: string):  Promise<mongoose.Types.ObjectId[]> {
+        return this.usersHelper.populateFriends(id);
     }
 
-    createUser(user: CreateUserDto): string {
-        return `creates user: name ${user.name} age ${user.age} email ${user.email} friends ${user.friends}`;
+    async createUser(user: CreateUserDto): Promise<Person> {
+        try {
+            return (new this.personModel(user)).save();
+        } catch (error) {
+            throw new HttpException(`Can not save user #${user.name}`, HttpStatus.BAD_REQUEST);
+        }
     }
+
     loginUser(user: CreateUserDto): string {
         return `logs in user: name ${user.name} age ${user.age} email ${user.email}`;
     }
+    
     // if success on modelFindById('friendIdToAdd') --> then add to the current user friends[]
     // else throw 'Cannot find such friend in a DB'
     addUserFriends(user: CreateUserDto): string {

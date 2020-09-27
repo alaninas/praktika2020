@@ -12,7 +12,7 @@ export class Person extends Document {
   @Prop()
   email: string;
 
-  @Prop()
+  @Prop({ ref: Person })
   friends: mongoose.Types.ObjectId[];
 }
 
