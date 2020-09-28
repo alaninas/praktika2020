@@ -63,7 +63,7 @@ export class UsersController {
     }
 
     @Delete()
-    async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
+    async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<[Person[], Person]> {
         return this.usersService.deleteUser(id);
     }
 }

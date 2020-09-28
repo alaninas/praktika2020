@@ -63,14 +63,13 @@ export class UsersService {
         return await userToUpdate.updateOne({password: passwordDigest, age: user.age, email: user.email});
     }
     
-    async deleteUser(id: ObjectID): Promise<Person> {
+    async deleteUser(id: ObjectID): Promise<[Person[], Person]> {
         try {
             const userToDelete = await this.personModel.findById(id);
             const users = await this.usersHelper.purgeUsersRecords(userToDelete._id);
             // const movies = await purgeMoviesRecords(userToDelete);
             const udel = await userToDelete.deleteOne();
-            Promise.all([users, udel]);
-            return udel;
+            return Promise.all([users, udel]);
         } catch (error) {
             throw new HttpException(`Error: ${error.message}`, HttpStatus.BAD_REQUEST);
         }
