@@ -18,7 +18,7 @@ export class CreateUserDto {
     @IsOptional()
     @IsNotEmpty()
     @Length(2, 20)
-    @Matches(/^(\.*?\/)*([A-z0-9-_+]+\/)*([A-z0-9]+\.([A-z]*))$/, {message: 'not a file path'})
+    @Matches(/^(\.*?\/)*([A-z0-9-_+]+\/)*([A-z0-9]+\.(png|jpg|jpeg|gif|svg))$/, {message: 'not a picture file path'})
     poster: string;
 
     @IsOptional()
