@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
 import { ObjectID } from 'mongodb';
 
-
 @Injectable()
 export class UsersHelper {
   private myModel: Model<Person>;
@@ -14,6 +13,23 @@ export class UsersHelper {
 
   getPersonModel(): Model<Person>{
     return this.myModel;
+  }
+
+  /**
+  * @param { Promise } promise
+  * @param { Object } improved - If you need to enhance the error.
+  * @return { Promise }
+  * @usage            const [error, result] = await this.to(this.personModel.findById(id).exec());
+  */
+  to(promise, improved?) {
+    return promise
+      .then((data) => [null, data])
+      .catch((err) => {
+        if (improved) {
+          Object.assign(err, improved);
+        }
+        return [err]; // which is same as [err, undefined];
+      });
   }
 
   createPipeStages(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): any {
@@ -53,4 +69,5 @@ export class UsersHelper {
     }
     return allUsers;
   }
+
 }

@@ -16,32 +16,12 @@ export class UsersService {
         this.personModel = usersHelper.getPersonModel();
     }
 
-    /**
-    * @param { Promise } promise
-    * @param { Object } improved - If you need to enhance the error.
-    * @return { Promise }
-    */
-    to(promise, improved?){
-        return promise
-          .then((data) => [null, data])
-          .catch((err) => {
-            if (improved) {
-              Object.assign(err, improved);
-            }
-            return [err]; // which is same as [err, undefined];
-          });
-    }
-
     async getAllUsers(): Promise<Person[]> {
         return await this.personModel.find();
     }
 
     async getOneUser(id: ObjectID): Promise<Person> {
-        // const u = await this.personModel.findById(id).exec();
-        // if (!u) throw new HttpException(`No user #${id} in DB`, HttpStatus.NOT_FOUND);
-        // return u;
-        const [error, result] = await this.to(this.personModel.findById(id).exec());
-        return result;
+        return await this.personModel.findById(id).exec();
     }
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
@@ -50,12 +30,8 @@ export class UsersService {
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {
-        try {
-            user.password = Md5.hashStr(user.password).toString();
-            return await (new this.personModel(user)).save();
-        } catch (error) {
-            throw new HttpException(`Can't save user to BD: user #${user.name}`, HttpStatus.BAD_REQUEST);
-        }
+        user.password = Md5.hashStr(user.password).toString();
+        return await (new this.personModel(user)).save();
     }
 
     loginUser(user: LoginUserDto): string {
@@ -81,9 +57,10 @@ export class UsersService {
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
-        // check if new pswd matches the old
+        const userToUpdate = await this.personModel.findOne({name: user.name});
         const passwordDigest = Md5.hashStr(user.password).toString();
-        return await this.personModel.findOneAndUpdate({name: user.name}, {password: passwordDigest, age: user.age, email: user.email});
+        if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${user.name}`, HttpStatus.BAD_REQUEST);
+        return await userToUpdate.updateOne({password: passwordDigest, age: user.age, email: user.email});
     }
     
     async deleteUser(id: ObjectID): Promise<Person> {
