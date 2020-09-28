@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
 import { CreateUserDto } from './create-user.dto';
+import { UpdateUserDto } from './update-user.dto';
+import { LoginUserDto } from './login-user.dto';
 import mongoose from 'mongoose';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
@@ -39,8 +41,8 @@ export class UsersService {
         }
     }
 
-    loginUser(user: CreateUserDto): string {
-        return `logs in user: name ${user.name} age ${user.age} email ${user.email}`;
+    loginUser(user: LoginUserDto): string {
+        return `logs in user: name ${user.name} age ${user.password}`;
     }
     
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
@@ -61,7 +63,7 @@ export class UsersService {
         }
     }
 
-    updateUser(user: CreateUserDto): string {
+    updateUser(user: UpdateUserDto): string {
         return `updates user: name ${user.name} age ${user.age} email ${user.email}`;
     }
     

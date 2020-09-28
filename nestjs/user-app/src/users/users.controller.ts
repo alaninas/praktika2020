@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch} from '@nestjs/common';
 import { CreateUserDto } from './create-user.dto';
+import { UpdateUserDto } from './update-user.dto';
+import { LoginUserDto } from './login-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
@@ -39,7 +41,7 @@ export class UsersController {
     }
     @Post('login')
     // logindto := uname and pswd
-    loginUser(@Body() user: CreateUserDto): string {
+    loginUser(@Body() user: LoginUserDto): string {
         return this.usersService.loginUser(user);
     }
 
@@ -55,7 +57,7 @@ export class UsersController {
     }
 
     @Put()
-    updateUser(@Body() user: CreateUserDto): string {
+    updateUser(@Body() user: UpdateUserDto): string {
         return this.usersService.updateUser(user);
     }
 

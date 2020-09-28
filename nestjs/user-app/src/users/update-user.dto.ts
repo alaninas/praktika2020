@@ -1,8 +1,8 @@
 // import { Type } from "class-transformer/decorators";
-import { IsArray, IsEmail, IsString, IsInt, IsMongoId, IsNotEmpty, IsOptional, MaxLength, MinLength, Equals } from "class-validator";
+import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 // import { Person } from "./schemas/user.schema";
 
-export class CreateUserDto {
+export class UpdateUserDto {
     @IsNotEmpty()
     readonly name: string;
 
@@ -13,13 +13,6 @@ export class CreateUserDto {
     // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'password too weak'})
     password: string;
 
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(4)
-    @MaxLength(20)
-    @Equals('password', {message: 'passwords do not match'})
-    passwordConfirm: string;
-
     @IsOptional()
     @IsInt()
     age: number;
@@ -28,9 +21,4 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsEmail()
     email: string;
-
-    @IsOptional()
-    @IsArray()
-    @IsMongoId({each:true})
-    friends: string[];
 }

@@ -6,6 +6,9 @@ export class Person extends Document {
   @Prop({ required: true })
   name: string;
 
+  @Prop({ required: true })
+  password: string;
+
   @Prop()
   age: number;
 
