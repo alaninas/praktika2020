@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
-import { CreateUserDto } from './create-user.dto';
-import { UpdateUserDto } from './update-user.dto';
-import { LoginUserDto } from './login-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { LoginUserDto } from './dtos/login-user.dto';
 import mongoose from 'mongoose';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';

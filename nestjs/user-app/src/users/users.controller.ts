@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch} from '@nestjs/common';
-import { CreateUserDto } from './create-user.dto';
-import { UpdateUserDto } from './update-user.dto';
-import { LoginUserDto } from './login-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { LoginUserDto } from './dtos/login-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
