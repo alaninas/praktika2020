@@ -1,6 +1,4 @@
-// import { Type } from "class-transformer/decorators";
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
-// import { Person } from "./schemas/user.schema";
 
 export class UpdateUserDto {
     @IsNotEmpty()
