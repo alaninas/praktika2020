@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
@@ -35,19 +35,22 @@ export class UsersHelper {
     return docs[0];
   }
 
-  async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<string> {
+  async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Person]> {
     const {matchIds, matchDuplicate, projectUtil, projectNew} = this.createPipeStages(uid, fid, deleteItemFlag);
-    let s: string | undefined;
-    try {
-      const newFriends = await this.myModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
-      Promise.all([
-        this.myModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
-        this.myModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
-      ]);
-      s = `User #${uid} ` + (!deleteItemFlag ? `` : `un`) + `friended #${fid}`;
-    } catch (error) {
-      throw new HttpException(`Can not ` + (!deleteItemFlag ? `add` : `remove`) + ` friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
+    const newFriends = await this.myModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
+    return Promise.all([this.myModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
+                        this.myModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})]);
+  }
+
+  async purgeUsersRecords(uid: ObjectID): Promise<Person[]> {
+    const allUsers = await this.myModel.find({});
+    for (const user of allUsers) {
+        const index = user.friends.indexOf(uid);
+        if (index > -1) {
+            user.friends.splice(index, 1);
+            await user.save();
+        }
     }
-    return s;
+    return allUsers;
   }
 }

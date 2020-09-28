@@ -32,28 +32,49 @@ export class UsersService {
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {
-        return await (new this.personModel(user)).save();
+        try {
+            return await (new this.personModel(user)).save();
+        } catch (error) {
+            throw new HttpException(`Can save user to BD: user #${user.name}`, HttpStatus.BAD_REQUEST);
+        }
     }
 
     loginUser(user: CreateUserDto): string {
         return `logs in user: name ${user.name} age ${user.age} email ${user.email}`;
     }
     
-    // if success on modelFindById('friendIdToAdd') --> then add to the current user friends[]
-    // else throw 'Cannot find such friend in a DB'
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
-        return await this.usersHelper.updateFriends(uid, fid, '');
+        try {
+            await this.usersHelper.updateFriends(uid, fid, '');
+            return `User #${uid} friended #${fid}`;
+        } catch (error) {
+            throw new HttpException(`Can not add friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
+        }
     }
 
     async removeUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
-        return await this.usersHelper.updateFriends(uid, fid, 'delete');
+        try {
+            await this.usersHelper.updateFriends(uid, fid, 'delete');
+            return `User #${uid} unfriended #${fid}`;
+        } catch (error) {
+            throw new HttpException(`Can not remove friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
+        }
     }
 
     updateUser(user: CreateUserDto): string {
         return `updates user: name ${user.name} age ${user.age} email ${user.email}`;
     }
     
-    deleteUser(user: CreateUserDto): string {
-        return `deletes user: name ${user.name} age ${user.age} email ${user.email}`;
+    async deleteUser(id: ObjectID): Promise<Person> {
+        try {
+            const userToDelete = await this.personModel.findById(id);
+            const users = await this.usersHelper.purgeUsersRecords(userToDelete._id);
+            // const movies = await purgeMoviesRecords(userToDelete);
+            const udel = await userToDelete.deleteOne();
+            Promise.all([users, udel]);
+            return udel;
+        } catch (error) {
+            throw new HttpException(`Error: ${error.message}`, HttpStatus.BAD_REQUEST);
+        }
     }
 }

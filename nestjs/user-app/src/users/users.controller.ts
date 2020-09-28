@@ -60,7 +60,7 @@ export class UsersController {
     }
 
     @Delete()
-    deleteUser(@Body() user: CreateUserDto): string {
-        return this.usersService.deleteUser(user);
+    async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
+        return this.usersService.deleteUser(id);
     }
 }
