@@ -25,8 +25,7 @@ export class UsersService {
     }
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-        const u = await this.personModel.findById(id).populate('friends');
-        return u.friends;
+        return (await this.personModel.findById(id).populate('friends')).friends;
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {
@@ -34,8 +33,11 @@ export class UsersService {
         return await (new this.personModel(user)).save();
     }
 
-    loginUser(user: LoginUserDto): string {
-        return `logs in user: name ${user.name} age ${user.password}`;
+    async loginUser(user: LoginUserDto): Promise<string> {
+        const userToLogin = await this.personModel.findOne({name: user.name});
+        const passwordDigest = Md5.hashStr(user.password).toString();
+        if (passwordDigest !== userToLogin.password) throw new HttpException(`Can not login: wrong password. User #${user.name}`, HttpStatus.BAD_REQUEST);
+        return `logs in user name ${user.name}`;
     }
     
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
@@ -63,13 +65,13 @@ export class UsersService {
         return await userToUpdate.updateOne({password: passwordDigest, age: user.age, email: user.email});
     }
     
-    async deleteUser(id: ObjectID): Promise<[Person[], Person]> {
+    async deleteUser(id: ObjectID): Promise<Person> {
         try {
-            const userToDelete = await this.personModel.findById(id);
-            const users = await this.usersHelper.purgeUsersRecords(userToDelete._id);
-            // const movies = await purgeMoviesRecords(userToDelete);
-            const udel = await userToDelete.deleteOne();
-            return Promise.all([users, udel]);
+            const users = await this.usersHelper.purgeUsersRecords(id);
+            // const movies = await purgeMoviesRecords(id);
+            const userDeleted = await this.personModel.findOneAndDelete({_id: id});
+            Promise.all([users, userDeleted]);
+            return userDeleted;
         } catch (error) {
             throw new HttpException(`Error: ${error.message}`, HttpStatus.BAD_REQUEST);
         }

@@ -41,8 +41,7 @@ export class UsersController {
     }
 
     @Post('login')
-    // logindto := uname and pswd
-    loginUser(@Body() user: LoginUserDto): string {
+    async loginUser(@Body() user: LoginUserDto): Promise<string> {
         return this.usersService.loginUser(user);
     }
 
@@ -63,7 +62,7 @@ export class UsersController {
     }
 
     @Delete()
-    async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<[Person[], Person]> {
+    async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
         return this.usersService.deleteUser(id);
     }
 }
