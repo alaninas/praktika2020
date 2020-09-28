@@ -11,7 +11,7 @@ export class UsersHelper {
     this.myModel = personModel;
   }
 
-  getPersonModel(): Model<Person>{
+  getPersonModel(): Model<Person> {
     return this.myModel;
   }
 
@@ -43,12 +43,6 @@ export class UsersHelper {
             {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
     };
     return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
-  }
-
-  async populateFriends(id: ObjectID): Promise<Person[]> {
-    const lookup = {from: "people", localField: "friends", foreignField: "_id", as: "friends"};
-    const docs = await this.personModel.aggregate([{$lookup: lookup}, {$match: {_id: id}}, {$project: {"friends": 1, "_id": 0}}]);
-    return docs[0];
   }
 
   async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Person]> {

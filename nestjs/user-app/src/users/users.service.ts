@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { LoginUserDto } from './dtos/login-user.dto';
-import mongoose from 'mongoose';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { Md5 } from 'ts-md5/dist/md5';

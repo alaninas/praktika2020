@@ -1,4 +1,4 @@
-import { ParseObjectIdPipe } from './users.pipe';
+import { ParseObjectIdPipe } from './movies.pipe';
 
 describe('ParseObjectIdPipe', () => {
   it('should be defined', () => {
