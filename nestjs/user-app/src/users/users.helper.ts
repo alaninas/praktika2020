@@ -37,15 +37,17 @@ export class UsersHelper {
 
   async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<string> {
     const {matchIds, matchDuplicate, projectUtil, projectNew} = this.createPipeStages(uid, fid, deleteItemFlag);
+    let s: string | undefined;
     try {
       const newFriends = await this.myModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
       Promise.all([
-          this.myModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
-          this.myModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
+        this.myModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
+        this.myModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})
       ]);
+      s = `User #${uid} ` + (!deleteItemFlag ? `` : `un`) + `friended #${fid}`;
     } catch (error) {
-      throw new HttpException(`Error writing data to DB: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(`Can not ` + (!deleteItemFlag ? `add` : `remove`) + ` friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
     }
-    return `User #${uid} ` + (!deleteItemFlag ? `` : `un`) + `friended #${fid}`;
+    return s;
   }
 }

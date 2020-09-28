@@ -24,7 +24,12 @@ export class UsersController {
     }
 
     @Get(':id/friends')
-    async getUserById(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+    async getUserFriends(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+        return this.usersService.getUserFriends(id);
+    }
+
+    @Get(':id/movies')
+    async getUserMovies(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         return this.usersService.getUserFriends(id);
     }
     

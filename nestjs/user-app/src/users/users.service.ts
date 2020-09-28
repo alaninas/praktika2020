@@ -42,13 +42,11 @@ export class UsersService {
     // if success on modelFindById('friendIdToAdd') --> then add to the current user friends[]
     // else throw 'Cannot find such friend in a DB'
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
-        const s = await this.usersHelper.updateFriends(uid, fid, '');
-        return s;
+        return await this.usersHelper.updateFriends(uid, fid, '');
     }
 
     async removeUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
-        const s = await this.usersHelper.updateFriends(uid, fid, 'true');
-        return s;
+        return await this.usersHelper.updateFriends(uid, fid, 'delete');
     }
 
     updateUser(user: CreateUserDto): string {
