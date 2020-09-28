@@ -1,7 +1,7 @@
 // import { Type } from "class-transformer/decorators";
 import { IsArray, IsEmail, IsString, IsInt, IsMongoId, IsNotEmpty, IsOptional, MaxLength, MinLength } from "class-validator";
 // import { Person } from "./schemas/user.schema";
-import { IsEqualTo } from '../decorators/isequal'
+import { IsEqualTo } from '../decorators/IsEqualTo'
 
 export class CreateUserDto {
     @IsNotEmpty()

@@ -29,6 +29,7 @@ export class UsersService {
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {
+        if (await this.personModel.findOne({name: user.name})) throw new HttpException(`User name already in use #${user.name}`, HttpStatus.BAD_REQUEST);
         user.password = Md5.hashStr(user.password).toString();
         return await (new this.personModel(user)).save();
     }
