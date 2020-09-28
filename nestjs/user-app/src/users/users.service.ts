@@ -7,6 +7,7 @@ import { LoginUserDto } from './dtos/login-user.dto';
 import mongoose from 'mongoose';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
+import { Md5 } from 'ts-md5/dist/md5';
 
 @Injectable()
 export class UsersService {
@@ -50,9 +51,10 @@ export class UsersService {
 
     async createUser(user: CreateUserDto): Promise<Person> {
         try {
+            user.password = Md5.hashStr(user.password).toString();
             return await (new this.personModel(user)).save();
         } catch (error) {
-            throw new HttpException(`Can save user to BD: user #${user.name}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Can't save user to BD: user #${user.name}`, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -79,7 +81,9 @@ export class UsersService {
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
-        return await this.personModel.findOneAndUpdate({name: user.name}, user);
+        // check if new pswd matches the old
+        const passwordDigest = Md5.hashStr(user.password).toString();
+        return await this.personModel.findOneAndUpdate({name: user.name}, {password: passwordDigest, age: user.age, email: user.email});
     }
     
     async deleteUser(id: ObjectID): Promise<Person> {
