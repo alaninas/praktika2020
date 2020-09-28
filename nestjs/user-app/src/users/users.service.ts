@@ -15,21 +15,36 @@ export class UsersService {
         this.personModel = usersHelper.getPersonModel();
     }
 
+    /**
+    * @param { Promise } promise
+    * @param { Object } improved - If you need to enhance the error.
+    * @return { Promise }
+    */
+    to(promise, improved?){
+        return promise
+          .then((data) => [null, data])
+          .catch((err) => {
+            if (improved) {
+              Object.assign(err, improved);
+            }
+            return [err]; // which is same as [err, undefined];
+          });
+    }
+
     async getAllUsers(): Promise<Person[]> {
-        const u =  await this.personModel.find();
-        if (!u) throw new HttpException(`DB is empty`, HttpStatus.NOT_FOUND);
-        return u;
+        return await this.personModel.find();
     }
 
     async getOneUser(id: ObjectID): Promise<Person> {
-        const u = await this.personModel.findById(id).exec();
-        if (!u) throw new HttpException(`No user #${id} in DB`, HttpStatus.NOT_FOUND);
-        return u;
+        // const u = await this.personModel.findById(id).exec();
+        // if (!u) throw new HttpException(`No user #${id} in DB`, HttpStatus.NOT_FOUND);
+        // return u;
+        const [error, result] = await this.to(this.personModel.findById(id).exec());
+        return result;
     }
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         const u = await this.personModel.findById(id).populate('friends');
-        if (u.friends.length < 1) throw new HttpException(`User #${id} has no friends`, HttpStatus.NOT_FOUND);
         return u.friends;
     }
 
