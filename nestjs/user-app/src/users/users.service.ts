@@ -78,8 +78,8 @@ export class UsersService {
         }
     }
 
-    updateUser(user: UpdateUserDto): string {
-        return `updates user: name ${user.name} age ${user.age} email ${user.email}`;
+    async updateUser(user: UpdateUserDto): Promise<Person> {
+        return await this.personModel.findOneAndUpdate({name: user.name}, user);
     }
     
     async deleteUser(id: ObjectID): Promise<Person> {

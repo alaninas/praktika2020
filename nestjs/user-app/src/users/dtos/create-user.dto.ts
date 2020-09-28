@@ -1,7 +1,7 @@
 // import { Type } from "class-transformer/decorators";
 import { IsArray, IsEmail, IsString, IsInt, IsMongoId, IsNotEmpty, IsOptional, MaxLength, MinLength } from "class-validator";
 // import { Person } from "./schemas/user.schema";
-import { IsEqual } from './decorators/isequal'
+import { IsEqualTo } from '../decorators/isequal'
 
 export class CreateUserDto {
     @IsNotEmpty()
@@ -18,7 +18,7 @@ export class CreateUserDto {
     @IsString()
     @MinLength(4)
     @MaxLength(20)
-    @IsEqual('password', {message: 'passwords do not match'})
+    @IsEqualTo('password', {message: 'passwords do not match'})
     passwordConfirm: string;
 
     @IsOptional()

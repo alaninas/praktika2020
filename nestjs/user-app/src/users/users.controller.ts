@@ -39,6 +39,7 @@ export class UsersController {
     async createUser(@Body() user: CreateUserDto): Promise<Person> {
         return this.usersService.createUser(user);
     }
+
     @Post('login')
     // logindto := uname and pswd
     loginUser(@Body() user: LoginUserDto): string {
@@ -52,12 +53,12 @@ export class UsersController {
     }
 
     @Post('friends/remove')
-    removeUserFriends(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('friend', ParseObjectIdPipe) fid: ObjectID): Promise<string> {
+    async removeUserFriends(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('friend', ParseObjectIdPipe) fid: ObjectID): Promise<string> {
         return this.usersService.removeUserFriends(uid, fid);
     }
 
     @Put()
-    updateUser(@Body() user: UpdateUserDto): string {
+    async updateUser(@Body() user: UpdateUserDto): Promise<Person> {
         return this.usersService.updateUser(user);
     }
 
