@@ -8,6 +8,7 @@ import { Movie, MovieSchema } from '../movies/schemas/movie.schema';
 
 @Module({
   imports: [
+    // forwardRef(() => MoviesModule),
     MongooseModule.forFeature([{ name: Person.name, schema: PersonSchema }]),
     MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }])
   ],

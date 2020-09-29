@@ -28,8 +28,13 @@ export class CreateUserDto {
     @IsEmail()
     email: string;
 
-    @IsOptional()
-    @IsArray()
-    @IsMongoId({each:true})
-    friends: string[];
+    // @IsOptional()
+    // @IsArray()
+    // @IsMongoId({each:true})
+    // friends: string[];
+// 
+    // @IsOptional()
+    // @IsArray()
+    // @IsMongoId({each:true})
+    // movies: string[];
 }
