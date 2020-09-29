@@ -11,7 +11,7 @@ export class UsersHelper {
     private myMModel: Model<Movie>;
     constructor(
         @InjectModel(Person.name) private personModel: Model<Person>,
-        @InjectModel(Person.name) private movieModel: Model<Movie>) {
+        @InjectModel(Movie.name) private movieModel: Model<Movie>) {
         this.myPModel = personModel;
         this.myMModel = movieModel;
     }
@@ -57,7 +57,7 @@ export class UsersHelper {
     }
     
     async purgeUsersRecords(uid: ObjectID): Promise<Person[]> {
-        const allUsers = await this.myPModel.find({});
+        const allUsers = await this.myPModel.find();
         for (const user of allUsers) {
             const index = user.friends.indexOf(uid);
             if (index > -1) {
@@ -66,5 +66,18 @@ export class UsersHelper {
             }
         }
         return allUsers;
+    }
+
+    async purgeMoviesRecords(uid: ObjectID): Promise<Movie[]> {
+        const allMovies = await this.myMModel.find();
+        console.log(allMovies);
+        for (const movie of allMovies) {
+            const index = movie.directors.indexOf(uid);
+            if (index > -1) {
+                movie.directors.splice(index, 1);
+                await movie.save();
+            }
+        }
+        return allMovies;
     }
 }

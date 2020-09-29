@@ -11,7 +11,7 @@ export class MoviesHelper {
     private myPModel: Model<Person>;
     constructor(
         @InjectModel(Person.name) private personModel: Model<Person>,
-        @InjectModel(Person.name) private movieModel: Model<Movie>) {
+        @InjectModel(Movie.name) private movieModel: Model<Movie>) {
         this.myPModel = personModel;
         this.myMModel = movieModel;
     }

@@ -68,9 +68,9 @@ export class UsersService {
     async deleteUser(id: ObjectID): Promise<Person> {
         try {
             const users = await this.usersHelper.purgeUsersRecords(id);
-            // const movies = await purgeMoviesRecords(id);
+            const movies = await this.usersHelper.purgeMoviesRecords(id);
             const userDeleted = await this.personModel.findOneAndDelete({_id: id});
-            Promise.all([users, userDeleted]);
+            Promise.all([users, movies, userDeleted]);
             return userDeleted;
         } catch (error) {
             throw new HttpException(`Error: ${error.message}`, HttpStatus.BAD_REQUEST);

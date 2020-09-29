@@ -21,8 +21,8 @@ export class CreateUserDto {
     @Matches(/^(\.*?\/)*([A-z0-9-_+]+\/)*([A-z0-9]+\.(png|jpg|jpeg|gif|svg))$/, {message: 'not a picture file path'})
     poster: string;
 
-    // @IsOptional()
-    // @IsArray()
-    // @IsMongoId({each:true})
-    // directors: string[];
+    @IsOptional()
+    @IsArray()
+    @IsMongoId({each:true})
+    directors: string[];
 }

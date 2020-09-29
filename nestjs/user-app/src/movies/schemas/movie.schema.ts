@@ -1,7 +1,5 @@
-import { forwardRef, Inject } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Person } from 'src/users/schemas/user.schema';
 
 @Schema()
 export class Movie extends Document {
