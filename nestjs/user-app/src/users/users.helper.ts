@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
 import { Movie } from '../movies/schemas/movie.schema'
 import { ObjectID } from 'mongodb';
@@ -20,9 +20,6 @@ export class UsersHelper {
         return this.myPModel;
     }
     
-    getMovieModel(): Model<Movie> {
-        return this.myMModel;
-    }
     /**
     * @param { Promise } promise
     * @param { Object } improved - If you need to enhance the error.
@@ -51,6 +48,13 @@ export class UsersHelper {
                 {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
         };
         return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
+    }
+
+    async populateMovies(uid: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+        const lookup = {from: "movies", localField: "movies", foreignField: "_id", as: "movies"};
+        const match = {_id: uid};
+        const docs = await this.myPModel.aggregate([ {$match: match}, {$lookup: lookup}, {$project: {"movies": 1, _id: 0}} ]);
+        return docs[0];
     }
 
     async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Person]> {

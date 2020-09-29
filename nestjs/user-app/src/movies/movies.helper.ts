@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { Person } from '../users/schemas/user.schema'
 import { ObjectID } from 'mongodb';
@@ -32,6 +32,14 @@ export class MoviesHelper {
         const uProjectNew = { movies: !deleteItemFlag ? {$concatArrays: ["$movies", ["$addedMovies"]]}:
                               {$filter: {input: "$movies", as: "movie", cond: {$ne: ["$$movie", "$addedMovies"]}}} };
         return {uMatchId: {_id: did}, uMatchDuplicate, uProjectUtil: {"movies": 1, addedMovies: mid}, uProjectNew};
+    }
+
+    async populateDirectors(mid: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+        const lookup = {from: "people", localField: "directors", foreignField: "_id", as: "directors"};
+        const match = {_id: mid};
+        const docs = await this.myMModel.aggregate([ {$match: match}, {$lookup: lookup}, {$project: {"directors": 1, _id: 0}} ]);
+        // console.log(docs);
+        return docs[0];
     }
 
     async updateDirectors(mid: ObjectID, did: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Movie]> {

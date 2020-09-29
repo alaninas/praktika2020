@@ -22,7 +22,8 @@ export class MoviesService {
     }
 
     async getUserDirectors(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-        return (await this.movieModel.findById(id).populate('director')).directors;
+        // return (await this.movieModel.findById(id).populate('director')).directors;
+        return await this.moviesHelper.populateDirectors(id);
     }
 
     async createMovie(movie: CreateMovieDto): Promise<Movie> {

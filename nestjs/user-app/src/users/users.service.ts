@@ -23,7 +23,9 @@ export class UsersService {
     }
 
     async getOneUser(id: ObjectID): Promise<Person> {
-        return await this.personModel.findById(id).exec();
+        const u = await this.personModel.findById(id).exec();
+        console.log(u);
+        return u;
     }
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
@@ -31,7 +33,16 @@ export class UsersService {
     }
 
     async getUserMovies(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-        return (await this.personModel.findById(id).populate('movies')).movies;
+        // mongoose.populate working for single collection lookup
+        // doesn't work on lookup with foreign colllection: some issue with _id fields...
+        // https://github.com/Automattic/mongoose/issues/2562
+            // const u = await this.personModel.findById(id).exec();
+            // console.log(u);
+            // const ms = await u.populate('movies').execPopulate();
+            // console.log(ms)
+            // console.log(id)
+            // return ms;
+        return await this.usersHelper.populateMovies(id);
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {

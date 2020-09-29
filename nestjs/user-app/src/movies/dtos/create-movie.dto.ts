@@ -2,7 +2,7 @@ import { IsArray, IsString, IsMongoId, IsNotEmpty, IsOptional, IsDateString, Len
 
 export class CreateMovieDto {
     @IsNotEmpty()
-    @Length(3, 20)
+    @Length(3, 40)
     @IsString()
     readonly title: string;
 
@@ -17,7 +17,7 @@ export class CreateMovieDto {
 
     @IsOptional()
     @IsNotEmpty()
-    @Length(2, 20)
+    @Length(2, 60)
     @Matches(/^(\.*?\/)*([A-z0-9-_+]+\/)*([A-z0-9]+\.(png|jpg|jpeg|gif|svg))$/, {message: 'not a picture file path'})
     poster: string;
 

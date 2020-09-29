@@ -24,7 +24,8 @@ export class Person extends Document {
   @Prop({ ref: Person })
   friends: mongoose.Types.ObjectId[];
 
-  @Prop({ ref: async ()=> (await import('../../movies/schemas/movie.schema')).Movie })
+  // Probably 'ref' not neede at all, seein as that mongoose.populate() not working properly
+  @Prop({ ref: async ()=> (await import('src/movies/schemas/movie.schema')).Movie })
   movies: mongoose.Types.ObjectId[];
 }
 
