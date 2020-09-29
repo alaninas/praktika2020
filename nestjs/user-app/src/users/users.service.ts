@@ -7,12 +7,15 @@ import { LoginUserDto } from './dtos/login-user.dto';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { Md5 } from 'ts-md5/dist/md5';
+import { Movie } from 'src/movies/schemas/movie.schema';
 
 @Injectable()
 export class UsersService {
     private personModel: Model<Person>;
+    // private movieModel: Model<Movie>;
     constructor(private readonly usersHelper: UsersHelper) {
         this.personModel = usersHelper.getPersonModel();
+        // this.movieModel = usersHelper.getMovieModel();
     }
 
     async getAllUsers(): Promise<Person[]> {
@@ -25,6 +28,10 @@ export class UsersService {
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         return (await this.personModel.findById(id).populate('friends')).friends;
+    }
+
+    async getUserMovies(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+        return (await this.personModel.findById(id).populate('movies')).movies;
     }
 
     async createUser(user: CreateUserDto): Promise<Person> {

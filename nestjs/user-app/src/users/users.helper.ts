@@ -19,6 +19,10 @@ export class UsersHelper {
     getPersonModel(): Model<Person> {
         return this.myPModel;
     }
+    
+    getMovieModel(): Model<Movie> {
+        return this.myMModel;
+    }
     /**
     * @param { Promise } promise
     * @param { Object } improved - If you need to enhance the error.
@@ -70,7 +74,7 @@ export class UsersHelper {
 
     async purgeMoviesRecords(uid: ObjectID): Promise<Movie[]> {
         const allMovies = await this.myMModel.find();
-        console.log(allMovies);
+        // console.log(allMovies);
         for (const movie of allMovies) {
             const index = movie.directors.indexOf(uid);
             if (index > -1) {

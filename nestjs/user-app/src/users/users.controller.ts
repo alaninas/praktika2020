@@ -32,7 +32,7 @@ export class UsersController {
 
     @Get(':id/movies')
     async getUserMovies(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-        return this.usersService.getUserFriends(id);
+        return this.usersService.getUserMovies(id);
     }
     
     @Post()
