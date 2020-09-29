@@ -1,6 +1,6 @@
 import { IsArray, IsString, IsMongoId, IsNotEmpty, IsOptional, IsDateString, Length, Matches } from "class-validator";
 
-export class CreateUserDto {
+export class CreateMovieDto {
     @IsNotEmpty()
     @Length(3, 20)
     @IsString()

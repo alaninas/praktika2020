@@ -2,7 +2,7 @@
 import { IsDateString, IsNotEmpty, IsOptional, IsString, Length, Matches } from "class-validator";
 // import { Person } from "./schemas/user.schema";
 
-export class UpdateUserDto {
+export class UpdateMovieDto {
     @IsNotEmpty()
     @Length(3, 20)
     @IsString()

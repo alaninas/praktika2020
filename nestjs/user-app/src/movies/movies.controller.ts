@@ -1,45 +1,54 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { CreateMovieDto } from './create-movie.dto';
+import { CreateMovieDto } from './dtos/create-movie.dto';
+import { UpdateMovieDto } from './dtos/update-movie.dto';
 import { MoviesService } from './movies.service';
+import { ParseObjectIdPipe } from './movies.pipe';
+import { ObjectID } from 'mongodb';
+import { Movie } from './schemas/movie.schema';
+import mongoose from 'mongoose';
 
 @Controller('movies')
 export class MoviesController {
     constructor(private readonly moviesService: MoviesService) { }
 
     @Get()
-    getAllMovies(): string {
+    async getAllMovies(): Promise<Movie[]> {
         return this.moviesService.getAllMovies();
     }
+    
     @Get(':id')
-    getOneMovie(@Param('id') id: string): string {
+    async getOneMovie(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Movie> {
         return this.moviesService.getOneMovie(id);
     }
-    
+
     @Get(':id/directors')
-    getMovieDirectors(@Param('id') id: string): string {
-        return this.moviesService.getMovieDirectors(id);
+    async getUserDirectors(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+        return this.moviesService.getUserDirectors(id);
     }
-    
+
     @Post()
-    createMovie(@Body() movie: CreateMovieDto): string {
+    async createMovie(@Body() movie: CreateMovieDto): Promise<Movie> {
         return this.moviesService.createMovie(movie);
     }
+
     @Post('directors/add')
-    addMovieDirectors(@Body() movie: CreateMovieDto): string {
-        return this.moviesService.addMovieDirectors(movie);
+    // @Param('id')
+    async addMovieDirectors(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('director', ParseObjectIdPipe) fid: ObjectID): Promise<string> {
+        return this.moviesService.addMovieDirectors(uid, fid);
     }
+
     @Post('directors/remove')
-    removeMovieDirectors(@Body() movie: CreateMovieDto): string {
-        return this.moviesService.removeMovieDirectors(movie);
+    async removeMovieDirectors(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('director', ParseObjectIdPipe) fid: ObjectID): Promise<string> {
+        return this.moviesService.removeMovieDirectors(uid, fid);
     }
 
     @Put()
-    updateMovie(@Body() movie: CreateMovieDto): string {
+    async updateMovie(@Body() movie: UpdateMovieDto): Promise<Movie> {
         return this.moviesService.updateMovie(movie);
     }
 
     @Delete()
-    deleteMovie(@Body() movie: CreateMovieDto): string {
-        return this.moviesService.deleteMovie(movie);
+    async deleteMovie(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<Movie> {
+        return this.moviesService.deleteMovie(id);
     }
 }
