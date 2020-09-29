@@ -7,7 +7,7 @@ import { LoginUserDto } from './dtos/login-user.dto';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { Md5 } from 'ts-md5/dist/md5';
-import { Movie } from 'src/movies/schemas/movie.schema';
+// import { Movie } from 'src/movies/schemas/movie.schema';
 
 @Injectable()
 export class UsersService {

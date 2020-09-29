@@ -20,32 +20,35 @@ export class MoviesHelper {
         return this.myMModel;
     }
 
-    createPipeStages(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): any {
-        const matchDuplicate = !deleteItemFlag ? {friends: {$not: {$in: [uid, fid]}}} : {friends: {$in: [uid, fid]}};
-        const projectUtil = {
-            "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
-        };
-        const projectNew = {
-            friends: !deleteItemFlag ?
-                {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
-                {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
-        };
-        return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
+    createMoviePipe(mid: ObjectID, did: ObjectID, deleteItemFlag: string | undefined): any {
+        const mMatchDuplicate = !deleteItemFlag ? {directors: {$not: {$in: [did]}}} : {directors: {$in: [did]}};
+        const mProjectNew = { directors: !deleteItemFlag ? {$concatArrays: ["$directors", ["$addedDirs"]]}:
+                              {$filter: {input: "$directors", as: "director", cond: {$ne: ["$$director", "$addedDirs"]}}} };
+        return {mMatchId: {_id: mid}, mMatchDuplicate, mProjectUtil: {"directors": 1, addedDirs: did}, mProjectNew};
     }
 
-    async updateDirectors(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Person]> {
-        const {matchIds, matchDuplicate, projectUtil, projectNew} = this.createPipeStages(uid, fid, deleteItemFlag);
-        const newFriends = await this.myPModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
-        return Promise.all([this.myPModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
-                            this.myPModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})]);
+    createUserPipe(did: ObjectID, mid: ObjectID, deleteItemFlag: string | undefined): any {
+        const uMatchDuplicate = !deleteItemFlag ? {movies: {$not: {$in: [mid]}}} : {movies: {$in: [mid]}};
+        const uProjectNew = { movies: !deleteItemFlag ? {$concatArrays: ["$movies", ["$addedMovies"]]}:
+                              {$filter: {input: "$movies", as: "movie", cond: {$ne: ["$$movie", "$addedMovies"]}}} };
+        return {uMatchId: {_id: did}, uMatchDuplicate, uProjectUtil: {"movies": 1, addedMovies: mid}, uProjectNew};
     }
 
-    async purgeUsersRecords(uid: ObjectID): Promise<Person[]> {
+    async updateDirectors(mid: ObjectID, did: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Movie]> {
+        const {mMatchId, mMatchDuplicate, mProjectUtil, mProjectNew} = this.createMoviePipe(mid, did, deleteItemFlag);
+        const {uMatchId, uMatchDuplicate, uProjectUtil, uProjectNew} = this.createUserPipe(did, mid, deleteItemFlag);
+        const newPMovies = await this.myPModel.aggregate([{$match: uMatchId}, {$project: uProjectUtil}, {$match: uMatchDuplicate}, {$project: uProjectNew}]);
+        const newMDirectors = await this.myMModel.aggregate([{$match: mMatchId}, {$project: mProjectUtil}, {$match: mMatchDuplicate}, {$project: mProjectNew}]);
+        return Promise.all([this.myPModel.findByIdAndUpdate(newPMovies[0]._id, {movies: newPMovies[0].movies}),
+                            this.myMModel.findByIdAndUpdate(newMDirectors[0]._id, {directors: newMDirectors[0].directors})]);
+    }
+
+    async purgeUsersRecords(mid: ObjectID): Promise<Person[]> {
         const allUsers = await this.myPModel.find({});
         for (const user of allUsers) {
-            const index = user.friends.indexOf(uid);
+            const index = user.movies.indexOf(mid);
             if (index > -1) {
-                user.friends.splice(index, 1);
+                user.movies.splice(index, 1);
                 await user.save();
             }
         }
