@@ -1,9 +1,7 @@
 import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-// import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
-// import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Controller()
 export class AppController {
@@ -16,8 +14,16 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
-    return req.user._doc;
+    return this.authService.login(req.user);
   }
+
+  // Check how the passport package works: curl to the auth/login via POST
+  // Get in return user._doc object with user information, stored in DB
+  // @UseGuards(LocalAuthGuard)
+  // @Post('auth/login')
+  // async login(@Request() req) {
+    // return req.user._doc;
+  // }
 
   @Get()
   getHello(): string {
