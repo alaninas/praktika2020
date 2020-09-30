@@ -13,6 +13,7 @@ import { Movie, MovieSchema } from '../movies/schemas/movie.schema';
     MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }])
   ],
   controllers: [UsersController],
-  providers: [UsersService, UsersHelper]
+  providers: [UsersService, UsersHelper],
+  exports: [UsersService]
 })
 export class UsersModule {}

@@ -8,7 +8,11 @@ export class AuthService {
 
     async validateUser(name: string, pass: string): Promise<any> {
       const user = await this.usersService.getOneUserByName(name);
-      if (user && Md5.hashStr(user.password).toString() === Md5.hashStr(pass).toString()) {
+      // console.log(user);
+      // console.log(pass);
+      // console.log(user.password);
+      // console.log(Md5.hashStr(pass).toString());
+      if (user && user.password === Md5.hashStr(pass).toString()) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...result } = user;
         return result;
