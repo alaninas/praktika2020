@@ -21,7 +21,7 @@ export class UsersController {
     
     @Get(':id')
     async getOneUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
-        return this.usersService.getOneUser(id);
+        return this.usersService.getOneUserById(id);
     }
 
     @Get(':id/friends')

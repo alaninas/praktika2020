@@ -12,19 +12,16 @@ import { Md5 } from 'ts-md5/dist/md5';
 @Injectable()
 export class UsersService {
     private personModel: Model<Person>;
-    // private movieModel: Model<Movie>;
     constructor(private readonly usersHelper: UsersHelper) {
         this.personModel = usersHelper.getPersonModel();
-        // this.movieModel = usersHelper.getMovieModel();
     }
 
     async getAllUsers(): Promise<Person[]> {
         return await this.personModel.find();
     }
 
-    async getOneUser(id: ObjectID): Promise<Person> {
+    async getOneUserById(id: ObjectID): Promise<Person> {
         const u = await this.personModel.findById(id).exec();
-        console.log(u);
         return u;
     }
 
@@ -42,17 +39,21 @@ export class UsersService {
             // console.log(ms)
             // console.log(id)
             // return ms;
-        return await this.usersHelper.populateMovies(id);
+        return await this.usersHelper.populateUserMovies(id);
     }
 
+    async getOneUserByName(username: string): Promise<Person> {
+        return this.personModel.findOne({name: username});
+    }
+    
     async createUser(user: CreateUserDto): Promise<Person> {
-        if (await this.personModel.findOne({name: user.name})) throw new HttpException(`User name already in use #${user.name}`, HttpStatus.BAD_REQUEST);
+        if (await this.getOneUserByName(user.name)) throw new HttpException(`User name already in use #${user.name}`, HttpStatus.BAD_REQUEST);
         user.password = Md5.hashStr(user.password).toString();
         return await (new this.personModel(user)).save();
     }
 
     async loginUser(user: LoginUserDto): Promise<string> {
-        const userToLogin = await this.personModel.findOne({name: user.name});
+        const userToLogin = await this.getOneUserByName(user.name);
         const passwordDigest = Md5.hashStr(user.password).toString();
         if (passwordDigest !== userToLogin.password) throw new HttpException(`Can not login: wrong password. User #${user.name}`, HttpStatus.BAD_REQUEST);
         return `logs in user name ${user.name}`;
@@ -77,7 +78,7 @@ export class UsersService {
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
-        const userToUpdate = await this.personModel.findOne({name: user.name});
+        const userToUpdate = await this.getOneUserByName(user.name);
         const passwordDigest = Md5.hashStr(user.password).toString();
         if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${user.name}`, HttpStatus.BAD_REQUEST);
         return await userToUpdate.updateOne({password: passwordDigest, age: user.age, email: user.email});
