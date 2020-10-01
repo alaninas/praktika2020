@@ -1,18 +1,32 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, Request, UseGuards} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { LoginUserDto } from './dtos/login-user.dto';
+// import { LoginUserDto } from './dtos/login-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
 import { ParseObjectIdPipe } from './users.pipe';
 import { ObjectID } from 'mongodb';
+import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthService } from '../auth/auth.service';
 
 @Catch(HttpException)
 @Controller('users')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
+
+    @UseGuards(LocalAuthGuard)
+    @Post('auth/login')
+    async login(@Request() req) {
+      return this.authService.login(req.user._doc);
+    }
+
+    // @Post('login')
+    // async loginUser(@Body() user: LoginUserDto): Promise<string> {
+        // return this.usersService.loginUser(user);
+    // }
 
     @Get()
     async getAllUsers(): Promise<Person[]> {
@@ -39,13 +53,7 @@ export class UsersController {
         return this.usersService.createUser(user);
     }
 
-    @Post('login')
-    async loginUser(@Body() user: LoginUserDto): Promise<string> {
-        return this.usersService.loginUser(user);
-    }
-
     @Post('friends/add')
-    // @Param('id')
     async addUserFriends(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('friend', ParseObjectIdPipe) fid: ObjectID): Promise<string> {
         return this.usersService.addUserFriends(uid, fid);
     }
@@ -55,6 +63,13 @@ export class UsersController {
         return this.usersService.removeUserFriends(uid, fid);
     }
 
+    // @UseGuards(JwtAuthGuard)
+    // @Get('profile')
+    // getProfile(@Request() req) {
+        // return req.user;
+    // }
+
+    @UseGuards(JwtAuthGuard)
     @Put()
     async updateUser(@Body() user: UpdateUserDto): Promise<Person> {
         return this.usersService.updateUser(user);
