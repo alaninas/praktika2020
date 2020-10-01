@@ -75,6 +75,7 @@ export class UsersController {
         return this.usersService.updateUser(user);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete()
     async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
         return this.usersService.deleteUser(id);
