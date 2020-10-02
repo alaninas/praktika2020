@@ -34,7 +34,7 @@ export class MoviesHelper {
         return {uMatchId: {_id: did}, uMatchDuplicate, uProjectUtil: {"movies": 1, addedMovies: mid}, uProjectNew};
     }
 
-    async populateDirectors(mid: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+    async getDirectorsDetails(mid: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         const lookup = {from: "people", localField: "directors", foreignField: "_id", as: "directors"};
         const match = {_id: mid};
         const docs = await this.myMModel.aggregate([ {$match: match}, {$lookup: lookup}, {$project: {"directors": 1, _id: 0}} ]);

@@ -3,11 +3,9 @@ import mongoose, { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-// import { LoginUserDto } from './dtos/login-user.dto';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { Md5 } from 'ts-md5/dist/md5';
-// import { Movie } from 'src/movies/schemas/movie.schema';
 
 @Injectable()
 export class UsersService {
@@ -30,12 +28,7 @@ export class UsersService {
     }
 
     async getUserMovies(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-        // mongoose.populate working for single collection lookup
-        // doesn't work on lookup with foreign colllection: some issue with _id fields...
-        // https://github.com/Automattic/mongoose/issues/2562
-            // const u = await this.personModel.findById(id).exec();
-            // const ms = await u.populate('movies').execPopulate();
-        return await this.usersHelper.populateUserMovies(id);
+        return await this.usersHelper.getMoviesDetails(id);
     }
 
     async getOneUserByName(username: string): Promise<Person> {
@@ -47,13 +40,6 @@ export class UsersService {
         user.password = Md5.hashStr(user.password).toString();
         return await (new this.personModel(user)).save();
     }
-
-    // async loginUser(user: LoginUserDto): Promise<string> {
-        // const userToLogin = await this.getOneUserByName(user.name);
-        // const passwordDigest = Md5.hashStr(user.password).toString();
-        // if (passwordDigest !== userToLogin.password) throw new HttpException(`Can not login: wrong password. User #${user.name}`, HttpStatus.BAD_REQUEST);
-        // return `logs in user name ${user.name}`;
-    // }
     
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
         try {

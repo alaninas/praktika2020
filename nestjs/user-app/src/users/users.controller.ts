@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, Request, UseGuards} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-// import { LoginUserDto } from './dtos/login-user.dto';
 import { Person } from './schemas/user.schema';
 import { UsersService } from './users.service';
 import mongoose from 'mongoose';
@@ -23,9 +22,10 @@ export class UsersController {
       return this.authService.login(req.user._doc);
     }
 
-    // @Post('login')
-    // async loginUser(@Body() user: LoginUserDto): Promise<string> {
-        // return this.usersService.loginUser(user);
+    // @UseGuards(JwtAuthGuard)
+    // @Get('profile')
+    // getProfile(@Request() req) {
+        // return req.user;
     // }
 
     @Get()
@@ -62,12 +62,6 @@ export class UsersController {
     async removeUserFriends(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('friend', ParseObjectIdPipe) fid: ObjectID): Promise<string> {
         return this.usersService.removeUserFriends(uid, fid);
     }
-
-    // @UseGuards(JwtAuthGuard)
-    // @Get('profile')
-    // getProfile(@Request() req) {
-        // return req.user;
-    // }
 
     @UseGuards(JwtAuthGuard)
     @Put()

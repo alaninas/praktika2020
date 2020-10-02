@@ -15,8 +15,6 @@ export class AuthService {
         if (user && user.password === Md5.hashStr(pass).toString()) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, ...result } = user;
-            // console.log(user);
-            // console.log(result);
             return result;
         }
         return null;
@@ -26,10 +24,7 @@ export class AuthService {
         const payload = { username: user.name, sub: user._id };
         // console.log(payload);
 		return {
-		    access_token: this.jwtService.sign(
-                payload, 
-                {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES},
-            ),
+		    access_token: this.jwtService.sign(payload, {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES})
 		};
 	}
 }

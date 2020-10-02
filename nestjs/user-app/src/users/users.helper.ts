@@ -50,7 +50,7 @@ export class UsersHelper {
         return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
     }
 
-    async populateUserMovies(uid: ObjectID): Promise<mongoose.Types.ObjectId[]> {
+    async getMoviesDetails(uid: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         const lookup = {from: "movies", localField: "movies", foreignField: "_id", as: "movies"};
         const match = {_id: uid};
         const docs = await this.myPModel.aggregate([ {$match: match}, {$lookup: lookup}, {$project: {"movies": 1, _id: 0}} ]);
