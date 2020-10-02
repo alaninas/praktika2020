@@ -26,7 +26,10 @@ export class AuthService {
         const payload = { username: user.name, sub: user._id };
         // console.log(payload);
 		return {
-		    access_token: this.jwtService.sign(payload),
+		    access_token: this.jwtService.sign(
+                payload, 
+                {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES},
+            ),
 		};
 	}
 }
