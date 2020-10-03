@@ -2,15 +2,23 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { AppService } from './../src/app.service'
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  const appService = { getHello: () => ['test'] };
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
-    app = moduleFixture.createNestApplication();
+      providers: [AppService],
+    })
+    // app = moduleFixture.createNestApplication();
+      .overrideProvider(AppService)
+      .useValue(appService)
+      .compile();
+
+    app = moduleRef.createNestApplication();
     await app.init();
   });
 
@@ -22,6 +30,6 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('User App running on port 3000');
+      .expect(appService.getHello());
   });
 });

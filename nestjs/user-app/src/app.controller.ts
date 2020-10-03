@@ -10,7 +10,7 @@ export class AppController {
   }
   
   @Get()
-  getHello(): string {
+  getHello(): Record<string, unknown>  {
     return this.appService.getHello();
   }
 }
