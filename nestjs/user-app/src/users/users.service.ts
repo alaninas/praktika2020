@@ -19,8 +19,7 @@ export class UsersService {
     }
 
     async getOneUserById(id: ObjectID): Promise<Person> {
-        const u = await this.personModel.findById(id).exec();
-        return u;
+        return await this.personModel.findById(id);
     }
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
