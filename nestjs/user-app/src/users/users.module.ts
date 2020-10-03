@@ -5,7 +5,7 @@ import { UsersService } from './users.service';
 import { UsersHelper } from './users.helper';
 import { Person, PersonSchema } from './schemas/user.schema';
 import { Movie, MovieSchema } from '../movies/schemas/movie.schema';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [

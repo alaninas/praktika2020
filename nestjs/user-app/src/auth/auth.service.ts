@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { Md5 } from 'ts-md5/dist/md5';
 import { JwtService } from '@nestjs/jwt';
 

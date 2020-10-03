@@ -3,12 +3,6 @@ import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class Movie extends Document {
-  // constructor(
-    // @Inject(forwardRef(() => Person))
-    // private person: Person,
-  // ) {
-    // super();
-  // }
   @Prop({ required: true })
   title: string;
 
@@ -26,7 +20,7 @@ export class Movie extends Document {
   // @prop({ ref: async ()=> (await import('./group.model')).Group })
 
   // Probably 'ref' not neede at all, seein as that mongoose.populate() not working properly
-  @Prop({ ref: async ()=> (await import('src/users/schemas/user.schema')).Person })
+  @Prop({ ref: async ()=> (await import('../../users/schemas/user.schema')).Person })
   directors: mongoose.Types.ObjectId[];
 }
 
