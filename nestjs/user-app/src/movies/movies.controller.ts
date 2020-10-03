@@ -33,12 +33,12 @@ export class MoviesController {
 
     @Post('directors/add')
     // @Param('id')
-    async addMovieDirectors(@Body('id', ParseObjectIdPipe) mid: ObjectID, @Body('director', ParseObjectIdPipe) did: ObjectID): Promise<string> {
+    async addMovieDirectors(@Body('id', ParseObjectIdPipe) mid: ObjectID, @Body('director', ParseObjectIdPipe) did: ObjectID): Promise<Record<string, unknown>> {
         return this.moviesService.addMovieDirectors(mid, did);
     }
 
     @Post('directors/remove')
-    async removeMovieDirectors(@Body('id', ParseObjectIdPipe) mid: ObjectID, @Body('director', ParseObjectIdPipe) did: ObjectID): Promise<string> {
+    async removeMovieDirectors(@Body('id', ParseObjectIdPipe) mid: ObjectID, @Body('director', ParseObjectIdPipe) did: ObjectID): Promise<Record<string, unknown>> {
         return this.moviesService.removeMovieDirectors(mid, did);
     }
 

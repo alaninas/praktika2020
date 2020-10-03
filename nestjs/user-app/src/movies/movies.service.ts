@@ -30,19 +30,19 @@ export class MoviesService {
         return await (new this.movieModel(movie)).save();
     }
 
-    async addMovieDirectors(mid: ObjectID, did: ObjectID): Promise<string> {
+    async addMovieDirectors(mid: ObjectID, did: ObjectID): Promise<Record<string, unknown>> {
         try {
             await this.moviesHelper.updateDirectors(mid, did, '');
-            return `Added user #${did} to movie #${mid} directors`;
+            return {data: `Added user #${did} to movie #${mid} directors`};
         } catch (error) {
             throw new HttpException(`Can not add director: movie #${mid}, director #${did}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async removeMovieDirectors(mid: ObjectID, did: ObjectID): Promise<string> {
+    async removeMovieDirectors(mid: ObjectID, did: ObjectID): Promise<Record<string, unknown>> {
         try {
             await this.moviesHelper.updateDirectors(mid, did, 'delete');
-            return `Removed user #${did} from movie #${mid} directors`;
+            return {data: `Removed user #${did} from movie #${mid} directors`};
         } catch (error) {
             throw new HttpException(`Can not remove director: movie #${mid}, director #${did}`, HttpStatus.BAD_REQUEST);
         }

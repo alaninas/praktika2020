@@ -41,19 +41,19 @@ export class UsersService {
         return await (new this.personModel(user)).save();
     }
     
-    async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
+    async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
         try {
             await this.usersHelper.updateFriends(uid, fid, '');
-            return `User #${uid} friended #${fid}`;
+            return {data: `User #${uid} friended #${fid}`};
         } catch (error) {
             throw new HttpException(`Can not add friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async removeUserFriends(uid: ObjectID, fid: ObjectID): Promise<string> {
+    async removeUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
         try {
             await this.usersHelper.updateFriends(uid, fid, 'delete');
-            return `User #${uid} unfriended #${fid}`;
+            return {data: `User #${uid} unfriended #${fid}`};
         } catch (error) {
             throw new HttpException(`Can not remove friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
         }
