@@ -1,33 +1,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-// import { AppModule } from './../src/app.module';
 import { UsersModule } from '../src/users/users.module';
-// import { UsersService } from '../src/users/users.service';
 import { getModelToken } from '@nestjs/mongoose';
-
-// import { UsersHelper } from '../src/users/users.helper';
+import { LocalAuthGuard } from '../src/auth/guards/local-auth.guard';
+import { AuthService } from '../src/auth/auth.service';
+import { UsersController } from '../src/users/users.controller';
 
 
 function createModelMock() {
   return {
     find: jest.fn(),
+    findOne: jest.fn(),
     findById: jest.fn()
   }
 }
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
+  const authService = { login: (data: any) => data };
+  const userLogin = {
+    name: "name",
+    password: "pswd",
+    _id: "123abc123123123123123123",
+  }
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [UsersModule],
+      providers: [AuthService, UsersController]
     })
+      .overrideProvider(AuthService)
+      .useValue(authService)
       .overrideProvider(getModelToken('Person'))
       .useValue(createModelMock())
       .overrideProvider(getModelToken('Movie'))
       .useValue(createModelMock())
+      .overrideGuard(LocalAuthGuard)
+      .useValue({ canActivate: () => true })
       .compile();
+      
     app = moduleFixture.createNestApplication();
     await app.init();
   });
@@ -36,11 +48,17 @@ describe('UsersController (e2e)', () => {
     await app.close();
   });
 
+  it('users/auth/login (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/users/auth/login')
+      .expect(201).send({name: userLogin.name, password: userLogin.password, _id: userLogin._id})
+      .expect(authService.login({name: userLogin.name, password: userLogin.password, _id: userLogin._id}));
+  });
+
   it('/users (GET)', () => {
     return request(app.getHttpServer())
       .get('/users')
       .expect(200);
-      // .expect('User App running on port 3000');
   });
 
   it('/users/:id (GET) #OK', () => {

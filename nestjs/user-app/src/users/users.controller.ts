@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, Request, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, UseGuards} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Person } from './schemas/user.schema';
@@ -9,6 +9,7 @@ import { ObjectID } from 'mongodb';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthService } from '../auth/auth.service';
+import { LoginUserDto } from './dtos/login-user.dto';
 
 @Catch(HttpException)
 @Controller('users')
@@ -18,8 +19,8 @@ export class UsersController {
 
     @UseGuards(LocalAuthGuard)
     @Post('auth/login')
-    async login(@Request() req) {
-      return this.authService.login(req.user._doc);
+    async login(@Body() user: LoginUserDto) {
+        return this.authService.login(user);
     }
 
     // @UseGuards(JwtAuthGuard)
