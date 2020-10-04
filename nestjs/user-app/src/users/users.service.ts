@@ -37,7 +37,12 @@ export class UsersService {
     async createUser(user: CreateUserDto): Promise<Person> {
         if (await this.getOneUserByName(user.name)) throw new HttpException(`User name already in use #${user.name}`, HttpStatus.BAD_REQUEST);
         user.password = Md5.hashStr(user.password).toString();
-        return await (new this.personModel(user)).save();
+        const {name, password, age, email, ...args} = user;
+        // return await (new this.personModel(user)).save();
+        return await this.personModel.create({
+            name, password, age, email
+        });
+
     }
     
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
@@ -73,7 +78,7 @@ export class UsersService {
             Promise.all([users, movies, userDeleted]);
             return userDeleted;
         } catch (error) {
-            throw new HttpException(`Error: ${error.message}`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`Error: ${error.message}`, HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -10,17 +10,16 @@ export class Person extends Document {
   password: string;
 
   @Prop()
-  age: number;
+  age?: number;
 
   @Prop()
-  email: string;
+  email?: string;
 
   @Prop({ ref: Person })
-  friends: mongoose.Types.ObjectId[];
+  friends?: mongoose.Types.ObjectId[];
 
-  // Probably 'ref' not neede at all, seein as that mongoose.populate() not working properly
-  @Prop({ ref: async ()=> (await import('../../movies/schemas/movie.schema')).Movie })
-  movies: mongoose.Types.ObjectId[];
+  @Prop()
+  movies?: mongoose.Types.ObjectId[];
 }
 
 export const PersonSchema = SchemaFactory.createForClass(Person)

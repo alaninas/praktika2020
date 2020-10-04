@@ -4,27 +4,13 @@ import * as request from 'supertest';
 import { UsersModule } from '../src/users/users.module';
 import { getModelToken } from '@nestjs/mongoose';
 import { LocalAuthGuard } from '../src/auth/guards/local-auth.guard';
+import { JwtAuthGuard } from '../src/auth/guards/jwt-auth.guard';
 import { AuthService } from '../src/auth/auth.service';
 import { UsersController } from '../src/users/users.controller';
-
-
-function createModelMock() {
-  return {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    findById: jest.fn(),
-    aggregate: jest.fn(() => 'someLookUp'),
-  }
-}
+import { createPersonModelMock, createMovieModelMock, userLogin, authService } from './users.e2e-spec.util';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
-  const authService = { login: (data: any) => data };
-  const userLogin = {
-    name: "name",
-    password: "pswd",
-    _id: "123abc123123123123123123",
-  }
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -34,15 +20,17 @@ describe('UsersController (e2e)', () => {
       .overrideProvider(AuthService)
       .useValue(authService)
       .overrideProvider(getModelToken('Person'))
-      .useValue(createModelMock())
+      .useValue(createPersonModelMock())
       .overrideProvider(getModelToken('Movie'))
-      .useValue(createModelMock())
+      .useValue(createMovieModelMock())
       .overrideGuard(LocalAuthGuard)
       .useValue({ canActivate: () => true })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
       .compile();
-
     app = moduleFixture.createNestApplication();
     await app.init();
+    // jest.clearAllMocks()
   });
 
   afterAll(async () => {
@@ -52,8 +40,8 @@ describe('UsersController (e2e)', () => {
   it('users/auth/login (POST)', () => {
     return request(app.getHttpServer())
       .post('/users/auth/login')
-      .expect(201).send({name: userLogin.name, password: userLogin.password, _id: userLogin._id})
-      .expect(authService.login({name: userLogin.name, password: userLogin.password, _id: userLogin._id}));
+      .expect(201).send(userLogin)
+      .expect(authService.login(userLogin));
   });
 
   it('/users (GET)', () => {
@@ -85,5 +73,37 @@ describe('UsersController (e2e)', () => {
     return request(app.getHttpServer())
       .get(`/users/${userLogin._id}/movies`)
       .expect(200).send({id: userLogin._id});
+  });
+
+  it('/users (POST)', async () => {
+    await request(app.getHttpServer())
+      .post(`/users`)
+      .expect(201).send(userLogin);
+      // .expect(400).send(userLogin);
+  });
+
+  it('/users/friends/add (POST)', () => {
+    return request(app.getHttpServer())
+      .post(`/users/friends/add`)
+      .expect(201).send({id: userLogin._id, friend: userLogin._id});
+  });
+
+  it('/users/friends/remove (POST)', () => {
+    return request(app.getHttpServer())
+      .post(`/users/friends/remove`)
+      .expect(201).send({id: userLogin._id, friend: userLogin._id});
+  });
+
+  // doesn't work this way, need an old user.password to test upon
+  // it('/users (PUT)', () => {
+    // return request(app.getHttpServer())
+      // .put(`/users`)
+      // .expect(201).send(userLogin);
+  // });
+
+  it('/users (DELETE)', () => {
+    return request(app.getHttpServer())
+      .delete(`/users`)
+      .expect(404).send({id: userLogin._id});
   });
 });

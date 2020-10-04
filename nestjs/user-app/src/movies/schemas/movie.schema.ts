@@ -7,21 +7,19 @@ export class Movie extends Document {
   title: string;
 
   @Prop()
-  genre: string;
+  genre?: string;
 
   @Prop()
-  date: string;
+  date?: string;
 
   @Prop()
-  poster: string;
+  poster?: string;
 
   // Use dynamic imports:
   // https://github.com/typegoose/typegoose/issues/93
   // @prop({ ref: async ()=> (await import('./group.model')).Group })
-
-  // Probably 'ref' not neede at all, seein as that mongoose.populate() not working properly
-  @Prop({ ref: async ()=> (await import('../../users/schemas/user.schema')).Person })
-  directors: mongoose.Types.ObjectId[];
+  @Prop()
+  directors?: mongoose.Types.ObjectId[];
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie)

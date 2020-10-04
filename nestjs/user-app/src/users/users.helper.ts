@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
@@ -18,23 +18,6 @@ export class UsersHelper {
 
     getPersonModel(): Model<Person> {
         return this.myPModel;
-    }
-    
-    /**
-    * @param { Promise } promise
-    * @param { Object } improved - If you need to enhance the error.
-    * @return { Promise }
-    * @usage            const [error, result] = await this.to(this.personModel.findById(id).exec());
-    */
-    to(promise, improved?) {
-        return promise
-            .then((data) => [null, data])
-            .catch((err) => {
-                if (improved) {
-                    Object.assign(err, improved);
-                }
-                return [err]; // which is same as [err, undefined];
-            });
     }
 
     createPipeStages(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): any {
@@ -73,26 +56,34 @@ export class UsersHelper {
     
     async purgeUsersRecords(uid: ObjectID): Promise<Person[]> {
         const allUsers = await this.myPModel.find();
-        for (const user of allUsers) {
-            const index = user.friends.indexOf(uid);
-            if (index > -1) {
-                user.friends.splice(index, 1);
-                await user.save();
+        try {
+            for (const user of allUsers) {
+                const index = user.friends.indexOf(uid);
+                if (index > -1) {
+                    user.friends.splice(index, 1);
+                    await user.save();
+                }
             }
+            return allUsers;
+        } catch (error) {
+            throw new HttpException(`Error: ${error.message}`, HttpStatus.NOT_FOUND); 
         }
-        return allUsers;
     }
 
     async purgeMoviesRecords(uid: ObjectID): Promise<Movie[]> {
         const allMovies = await this.myMModel.find();
         // console.log(allMovies);
-        for (const movie of allMovies) {
-            const index = movie.directors.indexOf(uid);
-            if (index > -1) {
-                movie.directors.splice(index, 1);
-                await movie.save();
+        try {
+            for (const movie of allMovies) {
+                const index = movie.directors.indexOf(uid);
+                if (index > -1) {
+                    movie.directors.splice(index, 1);
+                    await movie.save();
+                }
             }
+            return allMovies;
+        } catch (error) {
+            throw new HttpException(`Error: ${error.message}`, HttpStatus.NOT_FOUND);
         }
-        return allMovies;
     }
 }

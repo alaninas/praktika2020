@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsString, IsInt, IsMongoId, IsNotEmpty, IsOptional, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsString, IsInt, IsNotEmpty, IsOptional, MaxLength, MinLength } from "class-validator";
 import { IsEqualTo } from '../decorators/IsEqualTo'
 
 export class CreateUserDto {
@@ -21,20 +21,21 @@ export class CreateUserDto {
 
     @IsOptional()
     @IsInt()
-    age: number;
+    age?: number;
 
     @IsOptional()
     @IsNotEmpty()
     @IsEmail()
-    email: string;
+    email?: string;
 
-    @IsOptional()
-    @IsArray()
-    @IsMongoId({each:true})
-    friends: string[];
+    // type string is not assignable to Type 'string[]' is not assignable to type '{ generationTime: number; equals: {}; getTimestamp: {}; toHexString: {}; }[]'
+    // @IsOptional()
+    // @IsArray()
+    // @IsMongoId({each:true})
+    // friends?: string[];
 
-    @IsOptional()
-    @IsArray()
-    @IsMongoId({each:true})
-    movies: string[];
+    // @IsOptional()
+    // @IsArray()
+    // @IsMongoId({each:true})
+    // movies?: string[];
 }
