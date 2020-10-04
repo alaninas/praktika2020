@@ -30,7 +30,6 @@ describe('UsersController (e2e)', () => {
       .compile();
     app = moduleFixture.createNestApplication();
     await app.init();
-    // jest.clearAllMocks()
   });
 
   afterAll(async () => {

@@ -37,6 +37,7 @@ export class UsersService {
     async createUser(user: CreateUserDto): Promise<Person> {
         if (await this.getOneUserByName(user.name)) throw new HttpException(`User name already in use #${user.name}`, HttpStatus.BAD_REQUEST);
         user.password = Md5.hashStr(user.password).toString();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {name, password, age, email, ...args} = user;
         // return await (new this.personModel(user)).save();
         return await this.personModel.create({

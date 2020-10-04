@@ -26,8 +26,12 @@ export class MoviesService {
     }
 
     async createMovie(movie: CreateMovieDto): Promise<Movie> {
-        if (await this.movieModel.findOne({title: movie.title})) throw new HttpException(`Movie title already in use #${movie.title}`, HttpStatus.BAD_REQUEST);
-        return await (new this.movieModel(movie)).save();
+        const {title, genre, date, poster} = movie;
+        if (await this.movieModel.findOne({title: title})) throw new HttpException(`Movie title already in use #${movie.title}`, HttpStatus.BAD_REQUEST);
+        // return await (new this.movieModel(movie)).save();
+        return await this.movieModel.create({
+            title, genre, date, poster
+        });
     }
 
     async addMovieDirectors(mid: ObjectID, did: ObjectID): Promise<Record<string, unknown>> {
