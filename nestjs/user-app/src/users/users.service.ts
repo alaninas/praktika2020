@@ -23,7 +23,7 @@ export class UsersService {
     }
 
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
-        return (await this.personModel.findById(id).populate('friends')).friends;
+        return await this.usersHelper.getFriendsDetails(id);
     }
 
     async getUserMovies(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {

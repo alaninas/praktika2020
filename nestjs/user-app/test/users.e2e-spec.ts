@@ -12,7 +12,8 @@ function createModelMock() {
   return {
     find: jest.fn(),
     findOne: jest.fn(),
-    findById: jest.fn()
+    findById: jest.fn(),
+    aggregate: jest.fn(() => 'someLookUp'),
   }
 }
 
@@ -39,7 +40,7 @@ describe('UsersController (e2e)', () => {
       .overrideGuard(LocalAuthGuard)
       .useValue({ canActivate: () => true })
       .compile();
-      
+
     app = moduleFixture.createNestApplication();
     await app.init();
   });
@@ -62,10 +63,9 @@ describe('UsersController (e2e)', () => {
   });
 
   it('/users/:id (GET) #OK', () => {
-    const myId = "123abc123123123123123123";
     return request(app.getHttpServer())
-      .get(`/users/${myId}`)
-      .expect(200).send({id: myId});
+      .get(`/users/${userLogin._id}`)
+      .expect(200).send({id: userLogin._id});
   });
 
   it('/users/:id (GET) #BadValue', () => {
@@ -73,5 +73,17 @@ describe('UsersController (e2e)', () => {
     return request(app.getHttpServer())
       .get(`/users/${myId}`)
       .expect(400).send({id: myId});
+  });
+
+  it('/users/:id/friends (GET)', () => {
+    return request(app.getHttpServer())
+      .get(`/users/${userLogin._id}/friends`)
+      .expect(200).send({id: userLogin._id});
+  });
+
+  it('/users/:id/movies (GET)', () => {
+    return request(app.getHttpServer())
+      .get(`/users/${userLogin._id}/movies`)
+      .expect(200).send({id: userLogin._id});
   });
 });
