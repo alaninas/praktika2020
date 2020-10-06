@@ -1,36 +1,31 @@
 <template>
   <div class="users">Users</div>
-  <div></div>
-  <button @click="increment">
-    Count is: {{ state.count }}, double is: {{ state.double }}
-  </button>
-  <button @click="clear">
-    Clear counter
-  </button>
+  <div v-for="user in users" :key="user">
+    {{ user }}
+  </div>
+  <!-- <button @click="increment"> -->
+    <!-- Count is: {{ state.count }}, double is: {{ state.double }} -->
+  <!-- </button> -->
+  <!-- <button @click="clear"> -->
+    <!-- Clear counter -->
+  <!-- </button> -->
 </template>
 
 <script lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive } from 'vue'
 
 export default {
   setup () {
-    const state: {count: number; double: number} = reactive({
-      count: 0,
-      double: computed(() => state.count * 2)
+    const users = reactive({
+      data: [{ user: 'user1' }, { user: 'u2' }]
     })
 
-    function increment () {
-      state.count++
-    }
-
-    function clear () {
-      state.count = 0
-    }
+    // function clear () {
+    // state.count = 0
+    // }
 
     return {
-      state,
-      increment,
-      clear
+      users
     }
   }
 }
