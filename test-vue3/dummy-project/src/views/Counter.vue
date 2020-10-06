@@ -22,6 +22,10 @@
     <!-- <p v-show="!isNinja">Here I am!</p> -->
     <button v-on:click="isNinja = !isNinja">Toggle Ninja Skills</button>
   </div>
+  <div class="setting">
+    Remove "{{ bgColor }}" and type "yellow":
+    <input class="setting" type="text" v-model="bgColor" :style="inputStyles">
+  </div>
 </template>
 
 .active {
@@ -37,7 +41,8 @@ export default defineComponent({
     return {
       message: 'Hello',
       hover: false,
-      isNinja: true
+      isNinja: true,
+      bgColor: 'red'
     }
   },
   computed: {
@@ -52,6 +57,11 @@ export default defineComponent({
       },
       set (newValue: string) {
         this.message = newValue.toUpperCase()
+      }
+    },
+    inputStyles (): { background: string } {
+      return {
+        background: this.bgColor
       }
     }
   },
