@@ -1,5 +1,5 @@
 <template>
-  <div class="users">Users</div>
+  <div class="counter">Counter</div>
   <div></div>
   <button @click="increment">
     Count is: {{ state.count }}, double is: {{ state.double }}
