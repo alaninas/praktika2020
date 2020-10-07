@@ -11,19 +11,19 @@
   </div>
   <div class="counter">Counter: {{ message }}</div>
   <div></div>
-  <button @click="increment">
+  <button class="button primary" @click="increment">
     Count is: {{ state.count }}, double is: {{ state.double }}
   </button>
-  <button @click="clear">
+  <button class="button inverse" @click="clear">
     Clear counter
   </button>
-  <div id="mapp">
+  <div v-show="isNinja" id="mapp">
     <p v-show="isNinja">Invisible like a ninja!</p>
     <!-- <p v-show="!isNinja">Here I am!</p> -->
-    <button v-on:click="isNinja = !isNinja">Toggle Ninja Skills</button>
+    <button class="button inverse" v-on:click="isNinja = !isNinja">Toggle Ninja Skills</button>
   </div>
   <div class="setting">
-    Remove "{{ bgColor }}" and type "yellow":
+    Remove "{{ bgColor }}" and type some other color:
     <input class="setting" type="text" v-model="bgColor" :style="inputStyles">
   </div>
 </template>
@@ -33,7 +33,7 @@
 }
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, computed } from 'vue'
+import { defineComponent, reactive, computed } from 'vue'
 
 export default defineComponent({
   el: '#mapp',
