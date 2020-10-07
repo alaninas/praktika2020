@@ -10,11 +10,19 @@
     </ul>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-        <input class="col-lg-10 col-md-9 col-sm-11"
+        <form>
+        <label for="userName">Name</label>
+        <input class="col-lg-5 col-md-6 col-sm-11"
           v-bind:class="{ invalid: newUserError.errFlag, valid: !newUserError.errFlag }"
-          type="text" name="userInput" v-model="newUser" required
+          type="text" name="userName" v-model="newUser" required
         />
-        <button class="button primary col-lg-2 col-md-3 col-sm-12" @click="addUser(newUser)">Add</button>
+        <label for="ageInput">Age</label>
+        <input class="col-lg-5 col-md-3 col-sm-11"
+          type="number" name="ageInput" v-model="newAge" min="18" max="65"
+        />
+        <input type="submit" value="Submit" class="button primary col-lg-2 col-md-3 col-sm-12" @click="addUser(newUser, newAge)">
+        <!-- <button class="button primary col-lg-2 col-md-3 col-sm-12" @click="addUser(newUser)">Add</button> -->
+        </form>
         <div class="card fluid error" v-if="newUserError.errFlag"> {{newUserError.message}} </div>
       </div>
     </div>
@@ -32,11 +40,11 @@ export default defineComponent({
       message: 'my error message'
     })
     const users = reactive({
-      data: [{ name: 'user1', isNinja: true }, { name: 'u2', isNinja: true }]
+      data: [{ name: 'user1', age: 25 }, { name: 'u2', age: 33 }]
     })
     // name, age, email ..
-    function addUser (newUser: string) {
-      if (users && newUser && newUser.length > 0) {
+    function addUser (newUser: string, newAge: number) {
+      if (users && newUser && newUser.length > 0 && newAge && newAge > 17) {
         newUserError.errFlag = false
         const index = users.data.findIndex(fr => fr.name === newUser)
         if (index > -1) {
@@ -44,11 +52,11 @@ export default defineComponent({
           newUserError.errFlag = true
         } else {
           newUserError.errFlag = false
-          const nu = { name: newUser, isNinja: true }
+          const nu = { name: newUser, age: newAge }
           users.data.push(nu)
         }
       } else {
-        newUserError.message = 'Please enter the user name'
+        newUserError.message = 'Please provide valid input'
         newUserError.errFlag = true
       }
     }
