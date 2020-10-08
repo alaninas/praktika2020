@@ -9,14 +9,19 @@
       v-bind:userErrors="{flag: errors.flag, message: errors.message}"
     />
     <p class="section">Users Saved</p>
-    <ul class="row">
-      <li class="col-lg-12 col-md-12 col-sm-12" v-for="user in users.data" :key="user">
-        {{ user }}
-        <button class="button responsive-padding responsive-margin inverse col-lg-1 col-md-2 col-sm-3" @click="removeUser(user.name)">
-          Remove
-        </button>
-      </li>
-    </ul>
+    <table class="hoverable">
+      <thead>
+        <tr><th>Nr | Del</th><th>Name</th><th>Age</th><th>Email</th></tr>
+      </thead>
+      <tbody>
+        <tr v-for="(user, i) in users.data" :key="user">
+          <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(user.name)">Del</label></td>
+          <td data-label="Name">{{ user.name }}</td>
+          <td data-label="Age">{{ user.age }}</td>
+          <td data-label="Email">{{ user.email }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -69,3 +74,14 @@ export default {
   }
 }
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+table tr {
+  text-align: left;
+}
+
+table:not(.horizontal) {
+  max-height: 100%;
+}
+</style>
