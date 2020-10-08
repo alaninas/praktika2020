@@ -1,25 +1,28 @@
 <template>
-    <div class="row" id="userInput">
-      <div class="col-lg-12 col-md-12 col-sm-12">
-        <form @submit.prevent="dummy">
-          <span class="col-lg-5 col-md-5 col-sm-12">
-            <label for="userName">Name</label>
-            <input
-              v-bind:class="{ invalid: userErrors.flag, valid: !userErrors.flag }"
-              type="text" name="userName" v-model="newName" required
-            />
-          </span>
-          <span class="col-lg-5 col-md-5 col-sm-12">
-            <label for="ageInput">Age</label>
-            <input type="number" name="ageInput" v-model="newAge" min="18" max="100"/>
-          </span>
-          <input type="submit" value="Submit"
-                 class="button primary responsive-padding responsive-margin col-lg col-md-2 col-sm-12"
-                 @click="addUser(newName, newAge)"/>
-        </form>
-        <div class="card fluid error" v-if="userErrors.flag"> {{ getErrorMessage() }} </div>
-      </div>
+  <p class="section">Add User</p>
+  <div class="row" id="userInput">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <form @submit.prevent="dummy">
+        <span class="col-lg-3 col-md-7 col-sm-12">
+          <label for="userName">Name</label>
+          <input
+            v-bind:class="{ invalid: userErrors.flag, valid: !userErrors.flag }"
+            type="text" name="userName" v-model="newName" required
+          />
+        </span>
+        <span class="col-lg-3 col-md-5 col-sm-12">
+          <label for="ageInput">Age</label><input type="number" name="ageInput" v-model="newAge" min="18" max="100"/>
+        </span>
+        <span class="col-lg-3 col-md-8 col-sm-12">
+          <label for="emailInput">Email</label><input type="email" name="emailInput" v-model="newEmail"/>
+        </span>
+        <input type="submit" value="Submit"
+               class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
+               @click="addUser(newName, newAge, newEmail)"/>
+      </form>
+      <div class="card fluid error" v-if="userErrors.flag"> {{ getErrorMessage() }} </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,6 +37,7 @@ export default defineComponent({
       required: true
     },
     userAge: Number,
+    userEmail: String,
     userErrors: {
       type: Object,
       required: true
@@ -43,7 +47,8 @@ export default defineComponent({
   data: function () {
     return {
       newAge: this.userAge,
-      newName: this.userName
+      newName: this.userName,
+      newEmail: this.userEmail
     }
   },
   methods: {

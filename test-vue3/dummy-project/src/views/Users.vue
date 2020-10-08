@@ -1,6 +1,14 @@
 <template>
   <div id="mapp" class="users card fluid">
-    <p class="section">Users</p>
+    <!-- User interface relevant? -->
+    <UserComponent
+      v-bind:userName="newName"
+      v-bind:userAge="newAge"
+      v-bind:userEmail="newEmail"
+      v-bind:addUser="addUser"
+      v-bind:userErrors="{flag: errors.flag, message: errors.message}"
+    />
+    <p class="section">Users Saved</p>
     <ul class="row">
       <li class="col-lg-12 col-md-12 col-sm-12" v-for="user in users.data" :key="user">
         {{ user }}
@@ -9,29 +17,21 @@
         </button>
       </li>
     </ul>
-    <UserComponent
-      v-bind:userName="newName"
-      v-bind:userAge="newAge"
-      v-bind:addUser="addUser"
-      v-bind:userErrors="{flag: errors.flag, message: errors.message}"
-    />
   </div>
 </template>
 
 <script lang="ts">
-// import the component
-import UserComponent from '@/components/UserComponent.vue' // @ is an alias to /src
+import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
 import { reactive } from 'vue'
 
 export default {
   el: '#mapp',
   name: 'Users',
   components: {
-    // declare the component
-    UserComponent
+    UserComponent // declare the component
   },
   setup () {
-    const users = reactive({ data: [{ name: 'u1', age: 25 }, { name: 'u3', age: 26 }] })
+    const users = reactive({ data: [{ name: 'u1', age: 25, email: 'u1@gmail.com' }, { name: 'u3', age: 26, email: 'u3@yahoo.co.uk' }] })
     let errors = reactive({ flag: false, message: [''] })
     function unsetErrors () {
       errors.flag = false
@@ -50,11 +50,11 @@ export default {
       errors.flag = true
       return errors
     }
-    function addUser (newName: string, newAge: number) {
+    function addUser (newName: string, newAge: number, newEmail: string) {
       let index = -1
       if (newName && newName.length > 0 && newAge && newAge > 17) {
         index = users.data.findIndex(fr => fr.name === newName)
-        if (index < 0) users.data.push({ name: newName, age: newAge })
+        if (index < 0) users.data.push({ name: newName, age: newAge, email: newEmail })
       }
       errors = validateForm(newName, newAge, index)
       // alert(JSON.stringify(errors.message))
