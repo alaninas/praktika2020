@@ -7,18 +7,18 @@
           <label for="userName">Name</label>
           <input
             v-bind:class="{ invalid: userErrors.flag, valid: !userErrors.flag }"
-            type="text" name="userName" v-model="newName" required
+            type="text" name="userName" v-model="newName.data" required
           />
         </span>
         <span class="col-lg-3 col-md-5 col-sm-12">
-          <label for="ageInput">Age</label><input type="number" name="ageInput" v-model="newAge" min="18" max="100"/>
+          <label for="ageInput">Age</label><input type="number" name="ageInput" v-model="newAge.data" min="18" max="100"/>
         </span>
         <span class="col-lg-3 col-md-8 col-sm-12">
-          <label for="emailInput">Email</label><input type="email" name="emailInput" v-model="newEmail"/>
+          <label for="emailInput">Email</label><input type="email" name="emailInput" v-model="newEmail.data"/>
         </span>
         <input type="submit" value="Submit"
                class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
-               @click="addUser(newName, newAge, newEmail)"/>
+               @click="addUser(newName.data, newAge.data, newEmail.data)"/>
       </form>
       <div class="card fluid error" v-if="userErrors.flag"> {{ getErrorMessage() }} </div>
     </div>
@@ -26,9 +26,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { reactive } from 'vue'
 
-export default defineComponent({
+export default {
   name: 'UserComponent',
   el: '#userInput',
   props: {
@@ -44,22 +44,21 @@ export default defineComponent({
     },
     addUser: Function
   },
-  data: function () {
-    return {
-      newAge: this.userAge,
-      newName: this.userName,
-      newEmail: this.userEmail
-    }
-  },
-  methods: {
-    dummy (): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setup (props: any) {
+    console.log(props.userAge)
+    const newAge = reactive({ data: props.age })
+    const newName = reactive({ data: props.userName })
+    const newEmail = reactive({ data: props.userEmail })
+    function dummy () {
       return true
-    },
-    getErrorMessage (): string {
-      return JSON.stringify(this.userErrors.message)
     }
+    function getErrorMessage () {
+      return JSON.stringify(props.userErrors.message)
+    }
+    return { newAge, newName, newEmail, getErrorMessage, dummy }
   }
-})
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

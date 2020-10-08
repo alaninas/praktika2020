@@ -2,9 +2,9 @@
   <div id="mapp" class="users card fluid">
     <!-- User interface relevant? -->
     <UserComponent
-      v-bind:userName="newName"
-      v-bind:userAge="newAge"
-      v-bind:userEmail="newEmail"
+      v-bind:userName="newName.data"
+      v-bind:userAge="newAge.data"
+      v-bind:userEmail="newEmail.data"
       v-bind:addUser="addUser"
       v-bind:userErrors="{flag: errors.flag, message: errors.message}"
     />
@@ -29,6 +29,8 @@
 import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
 import { reactive } from 'vue'
 
+// filtravimas
+// sort by age, name
 export default {
   el: '#mapp',
   name: 'Users',
@@ -36,12 +38,14 @@ export default {
     UserComponent // declare the component
   },
   setup () {
-    const users = reactive({ data: [{ name: 'u1', age: 25, email: 'u1@gmail.com' }, { name: 'u3', age: 26, email: 'u3@yahoo.co.uk' }] })
+    const newAge = reactive({ data: 18 })
+    const newName = reactive({ data: 'userName' })
+    const newEmail = reactive({ data: 'myemail@gmail.com' })
+    const users = reactive({ data: [{ name: newName.data, age: newAge.data, email: newEmail.data }] })
     let errors = reactive({ flag: false, message: [''] })
     function unsetErrors () {
       errors.flag = false
       errors.message = []
-      // return reactive({ flag: false, message: [] }) Reason for not working ???
       return errors
     }
     // Paklausti del validavimo -- kiekvienam laukui, kur ir kaip geriau daryt?
@@ -62,7 +66,6 @@ export default {
         if (index < 0) users.data.push({ name: newName, age: newAge, email: newEmail })
       }
       errors = validateForm(newName, newAge, index)
-      // alert(JSON.stringify(errors.message))
       return users
     }
     function removeUser (delUser: string) {
@@ -70,7 +73,7 @@ export default {
       if (index > -1) users.data.splice(index, 1)
       return users
     }
-    return { removeUser, addUser, users, errors }
+    return { removeUser, addUser, users, errors, newName, newAge, newEmail }
   }
 }
 </script>
