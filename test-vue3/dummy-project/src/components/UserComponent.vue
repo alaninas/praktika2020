@@ -20,7 +20,12 @@
                class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
                @click="addUser(newName.data, newAge.data, newEmail.data)"/>
       </form>
-      <div class="card fluid error" v-if="userErrors.flag"> {{ getErrorMessage() }} </div>
+      <div class="card fluid error" v-if="userErrors.flag">
+        <div class="section">Please update input</div>
+          <ul>
+            <li v-for="error in userErrors.message" :key="error">{{ error }}</li>
+          </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -44,19 +49,17 @@ export default {
     },
     addUser: Function
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setup (props: any) {
+  // Record<string, unknown>
+  // userName: string; userErrors: Record<string, any>; } & { userAge?: number | undefined; userEmail?: string | undefined; addUser?: Function | undefined;
+  setup (props: Record<string, unknown>) {
     console.log(props.userAge)
-    const newAge = reactive({ data: props.age })
+    const newAge = reactive({ data: props.userAge })
     const newName = reactive({ data: props.userName })
     const newEmail = reactive({ data: props.userEmail })
     function dummy () {
       return true
     }
-    function getErrorMessage () {
-      return JSON.stringify(props.userErrors.message)
-    }
-    return { newAge, newName, newEmail, getErrorMessage, dummy }
+    return { newAge, newName, newEmail, dummy }
   }
 }
 </script>
