@@ -55,7 +55,7 @@
 
 <script lang="ts">
 // import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
-import { createUsersArray, usersAdd, usersRemove, isNameUnique } from '@/modules/UsersFactory'
+import { createUsersArrayRef, usersAdd, usersRemove, isNameUnique, usersSortByName, usersSortByAge, usersSortByEmail, usersSearchByName } from '@/modules/UsersFactory'
 import ValidationErrors from '@/modules/ValidationErrors'
 import User from '@/modules/User'
 import { reactive } from 'vue'
@@ -69,20 +69,23 @@ export default {
   setup () {
     const user = new User({})
     const userValidate = reactive({ data: new ValidationErrors({}) })
-    const users = createUsersArray([new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' })])
-    // const users = createUsersArray([])
+    const users = createUsersArrayRef([new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' })])
+    // const users = createUsersArrayRef([])
 
     function dummy () {
       return true
     }
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
-      // alert(JSON.stringify(users))
-      tuser.name && isNameUnique(users, tuser.name) ? usersAdd(users, nu) : nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
+      isNameUnique({ users, user: tuser }) ? usersAdd({ users, user: nu }) : nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
+      // alert(JSON.stringify(usersSortByName({ users })))
+      // alert(JSON.stringify(usersSortByEmail({ users })))
+      // alert(JSON.stringify(usersSortByAge({ users, reverse: true })))
+      // alert(JSON.stringify(usersSearchByName({ users, pattern: 'a' })))
       userValidate.data = nu.getUserValidate()
     }
     function removeUser (tuser: User) {
-      usersRemove(users, tuser)
+      usersRemove({ users, user: tuser })
     }
 
     return { dummy, user, users, addUser, removeUser, userValidate }
