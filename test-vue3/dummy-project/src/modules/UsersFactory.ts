@@ -22,7 +22,7 @@ export function usersRemove ({ users, user }: { users: User[]; user: User }): Us
   return users
 }
 
-export function usersSearchByName ({ users, pattern }: { users: User[]; pattern: string }): User[] {
+export function usersSearchByName ({ users, pattern = '' }: { users: User[]; pattern?: string }): User[] {
   const re = new RegExp(pattern, 'i')
-  return users.filter(el => el.name && re.test(el.name))
+  return pattern ? users.filter(el => el.name && re.test(el.name)) : []
 }
