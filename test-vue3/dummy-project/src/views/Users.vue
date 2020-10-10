@@ -39,7 +39,27 @@
     <p class="section">Users Saved</p>
     <table class="hoverable">
       <thead>
-        <tr><th>Nr | Del</th><th>Name</th><th>Age</th><th>Email</th></tr>
+        <tr>
+          <th>Nr <div class="sort-arrows"><span class="arrow"></span><span class="arrow down"></span></div> | Del</th>
+          <th>Name
+            <div class="sort-arrows">
+              <span class="arrow" @click="sortByName()"></span>
+              <span class="arrow down" @click="sortByName(true)"></span>
+            </div>
+          </th>
+          <th>Age
+            <div class="sort-arrows">
+              <span class="arrow" @click="sortByAge()"></span>
+              <span class="arrow down" @click="sortByAge(true)"></span>
+            </div>
+          </th>
+          <th>Email
+            <div class="sort-arrows">
+              <span class="arrow" @click="sortByEmail()"></span>
+              <span class="arrow down" @click="sortByEmail(true)"></span>
+            </div>
+          </th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="(kuser, i) in users" :key="kuser">
@@ -55,7 +75,8 @@
 
 <script lang="ts">
 // import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
-import { createUsersArrayRef, usersAdd, usersRemove, isNameUnique, usersSortByName, usersSortByAge, usersSortByEmail, usersSearchByName } from '@/modules/UsersFactory'
+import { createUsersArrayRef, usersAdd, usersRemove, isNameUnique, usersSearchByName } from '@/modules/UsersFactory'
+import { usersSortByName, usersSortByAge, usersSortByEmail } from '@/modules/UsersSort'
 import ValidationErrors from '@/modules/ValidationErrors'
 import User from '@/modules/User'
 import { reactive } from 'vue'
@@ -87,14 +108,24 @@ export default {
     function removeUser (tuser: User) {
       usersRemove({ users, user: tuser })
     }
+    function sortByName (reverse?: boolean) {
+      usersSortByName({ users, reverse })
+    }
+    function sortByEmail (reverse?: boolean) {
+      usersSortByEmail({ users, reverse })
+    }
+    function sortByAge (reverse?: boolean) {
+      usersSortByAge({ users, reverse })
+    }
 
-    return { dummy, user, users, addUser, removeUser, userValidate }
+    return { dummy, user, users, addUser, removeUser, userValidate, sortByName, sortByEmail, sortByAge }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+// Table
 table tr {
   text-align: left;
 }
@@ -103,6 +134,7 @@ table:not(.horizontal) {
   max-height: 100%;
 }
 
+// Form
 input {
   border-width: .1em;
 }
@@ -120,5 +152,37 @@ input {
 form span {
   display: inline-block;
   white-space: nowrap;
+}
+
+// Sort
+.arrow {
+  width: 0;
+  height: 0;
+  border-left:   .475rem solid transparent;
+  border-right:  .475rem solid transparent;
+  border-bottom: .825rem solid #7d7d7d;
+  display: inline-block;
+}
+
+.down {
+  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+}
+
+span.arrow {
+  cursor: pointer;
+}
+
+span.arrow:hover {
+  border-bottom-color: #3b4146;
+}
+
+.sort-arrows {
+  display: inline;
+  padding: .125rem;
+}
+
+.sort-arrows span ~ span {
+  margin-left: .0125rem;
 }
 </style>
