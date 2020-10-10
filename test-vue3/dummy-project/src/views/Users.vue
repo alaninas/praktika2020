@@ -12,31 +12,50 @@
       <div class="col-lg-12 col-md-12 col-sm-12">
         <form @submit.prevent="dummy">
           <span class="col-lg-3 col-md-7 col-sm-12">
-            <label for="userName">Name {{ user.name }}</label>
+            <label for="userName">Name</label>
             <input
               v-bind:class="{ invalid: !userValidate.data.isValid, valid: userValidate.data.isValid }"
               type="text" name="userName" v-model="user.name" required
             />
           </span>
           <span class="col-lg-3 col-md-5 col-sm-12">
-            <label for="ageInput">Age {{ user.age }}</label><input type="number" name="ageInput" v-model="user.age" min="18" max="100"/>
+            <label for="ageInput">Age</label><input type="number" name="ageInput" v-model="user.age" min="18" max="100"/>
           </span>
           <span class="col-lg-3 col-md-8 col-sm-12">
-            <label for="emailInput">Email {{ user.email }}</label><input type="email" name="emailInput" v-model="user.email"/>
+            <label for="emailInput">Email</label><input type="email" name="emailInput" v-model="user.email" required/>
           </span>
           <input type="submit" value="Submit"
                  class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
                  @click="addUser(user)"/>
         </form>
-        <div class="card fluid error" v-if="!userValidate.data.isValid">
-          <div class="section">Please update input</div>
-            <ul>
-              <li v-for="error in userValidate.data.messages" :key="error">{{ error }}</li>
-            </ul>
+        <div class="collapse error" v-if="!userValidate.data.isValid">
+          <input type="checkbox" id="collapse-section1" checked aria-hidden="true">
+          <label for="collapse-section1" aria-hidden="true">Please update input</label>
+          <div>
+              <ul>
+                <li v-for="error in userValidate.data.messages" :key="error">{{ error }}</li>
+              </ul>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="card fluid">
+    <p class="section">Search</p>
+      <input
+        type="text" name="searchInput" v-model="userToSearch.data"
+        placeholder="user name to search" @input="userSearch(userToSearch.data)"
+      />
+    <div class="section" v-if="searchResults.data.length">
+      <ul>
+        <li v-for="user in searchResults.data" :key="user">{{ user }}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card fluid">
     <p class="section">Users Saved</p>
+      <div class="row" id="userInput">
+      <div class="col-lg-12 col-md-12 col-sm-12">
     <table class="hoverable">
       <thead>
         <tr>
@@ -70,6 +89,7 @@
         </tr>
       </tbody>
     </table>
+    </div></div>
   </div>
 </template>
 
@@ -81,29 +101,27 @@ import ValidationErrors from '@/modules/ValidationErrors'
 import User from '@/modules/User'
 import { reactive } from 'vue'
 
-// filtravimas
-// sort by age, name
 export default {
   el: '#mapp',
   name: 'Users',
   // props: Readonly<{test: User;} & {}>
   setup () {
+    const userToSearch = reactive({ data: '' })
     const user = new User({})
     const userValidate = reactive({ data: new ValidationErrors({}) })
     const users = createUsersArrayRef([new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' })])
+    // const users = reactive()
     // const users = createUsersArrayRef([])
+    const searchResults: { data: User[] | undefined } = reactive({ data: [] })
 
     function dummy () {
       return true
     }
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
-      isNameUnique({ users, user: tuser }) ? usersAdd({ users, user: nu }) : nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
-      // alert(JSON.stringify(usersSortByName({ users })))
-      // alert(JSON.stringify(usersSortByEmail({ users })))
-      // alert(JSON.stringify(usersSortByAge({ users, reverse: true })))
-      // alert(JSON.stringify(usersSearchByName({ users, pattern: 'a' })))
+      if (!isNameUnique({ users, user: tuser })) nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
       userValidate.data = nu.getUserValidate()
+      if (userValidate.data.isValid) usersAdd({ users, user: nu })
     }
     function removeUser (tuser: User) {
       usersRemove({ users, user: tuser })
@@ -117,8 +135,12 @@ export default {
     function sortByAge (reverse?: boolean) {
       usersSortByAge({ users, reverse })
     }
+    function userSearch (pattern?: string) {
+      searchResults.data = usersSearchByName({ users, pattern })
+      // alert(JSON.stringify(searchResults.data.length))
+    }
 
-    return { dummy, user, users, addUser, removeUser, userValidate, sortByName, sortByEmail, sortByAge }
+    return { dummy, user, users, addUser, removeUser, userValidate, sortByName, sortByEmail, sortByAge, userToSearch, userSearch, searchResults }
   }
 }
 </script>
@@ -158,8 +180,8 @@ form span {
 .arrow {
   width: 0;
   height: 0;
-  border-left:   .475rem solid transparent;
-  border-right:  .475rem solid transparent;
+  border-left: .475rem solid transparent;
+  border-right: .475rem solid transparent;
   border-bottom: .825rem solid #7d7d7d;
   display: inline-block;
 }
@@ -184,5 +206,26 @@ span.arrow:hover {
 
 .sort-arrows span ~ span {
   margin-left: .0125rem;
+}
+
+// Sections
+div.card.fluid > p {
+  font-variant-caps: all-small-caps;
+}
+
+// Errors
+.collapse.error > :checked + label {
+  border-bottom-color: var(--input-invalid-color);
+  border-bottom-width: .225rem;
+}
+
+.collapse.error > label,
+.collapse.error > :checked + label + div {
+  border-color: var(--input-invalid-color);
+}
+
+.collapse.error > label {
+  color: var(--input-invalid-color);
+  font-weight: bold;
 }
 </style>
