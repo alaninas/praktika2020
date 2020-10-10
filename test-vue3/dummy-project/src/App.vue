@@ -18,10 +18,15 @@
 }
 
 #nav {
-  padding: 30px;
+  background-color: #e1e1e1;
+  padding: .625rem;
+  border-bottom: .125rem solid rgb(41, 41, 41);
+  margin-bottom: .625rem;
 
   a {
-    font-weight: bold;
+    // font-weight: bold;
+    font-variant-caps: all-small-caps;
+    font-size: larger;
     color: #2c3e50;
 
     &.router-link-exact-active {
