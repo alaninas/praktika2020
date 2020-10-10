@@ -32,9 +32,7 @@
           <input type="checkbox" id="collapse-section1" checked aria-hidden="true">
           <label for="collapse-section1" aria-hidden="true">Please update input</label>
           <div>
-              <ul>
-                <li v-for="error in userValidate.data.messages" :key="error">{{ error }}</li>
-              </ul>
+            <ul><li v-for="error in userValidate.data.messages" :key="error">{{ error }}</li></ul>
           </div>
         </div>
       </div>
@@ -43,8 +41,10 @@
   <div class="card fluid">
     <p class="section">Search</p>
       <input
-        type="text" name="searchInput" v-model="userToSearch.data"
-        placeholder="user name to search" @input="userSearch(userToSearch.data)"
+        type="text" name="searchInput"
+        v-model="userToSearch.data"
+        placeholder="user name to search"
+        @input="userSearch(userToSearch.data)" @keyup.enter="userSearch(userToSearch.data)"
       />
     <div class="section" v-if="searchResults.data.length">
       <ul>
