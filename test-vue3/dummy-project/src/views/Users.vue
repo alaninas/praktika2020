@@ -1,24 +1,52 @@
 <template>
   <div id="mapp" class="users card fluid">
-    <!-- User interface relevant? -->
-    <UserComponent
+    <!-- <UserComponent
       v-bind:userName="newName.data"
       v-bind:userAge="newAge.data"
       v-bind:userEmail="newEmail.data"
       v-bind:addUser="addUser"
       v-bind:userErrors="{flag: errors.flag, message: errors.message}"
-    />
+    /> -->
+    <p class="section">Add User</p>
+    <div class="row" id="userInput">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <form @submit.prevent="dummy">
+          <span class="col-lg-3 col-md-7 col-sm-12">
+            <label for="userName">Name {{ user.name }}</label>
+            <input
+              v-bind:class="{ invalid: !userValidate.data.isValid, valid: userValidate.data.isValid }"
+              type="text" name="userName" v-model="user.name" required
+            />
+          </span>
+          <span class="col-lg-3 col-md-5 col-sm-12">
+            <label for="ageInput">Age {{ user.age }}</label><input type="number" name="ageInput" v-model="user.age" min="18" max="100"/>
+          </span>
+          <span class="col-lg-3 col-md-8 col-sm-12">
+            <label for="emailInput">Email {{ user.email }}</label><input type="email" name="emailInput" v-model="user.email"/>
+          </span>
+          <input type="submit" value="Submit"
+                 class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
+                 @click="addUser(user)"/>
+        </form>
+        <div class="card fluid error" v-if="!userValidate.data.isValid">
+          <div class="section">Please update input</div>
+            <ul>
+              <li v-for="error in userValidate.data.messages" :key="error">{{ error }}</li>
+            </ul>
+        </div>
+      </div>
+    </div>
     <p class="section">Users Saved</p>
     <table class="hoverable">
       <thead>
         <tr><th>Nr | Del</th><th>Name</th><th>Age</th><th>Email</th></tr>
       </thead>
       <tbody>
-        <tr v-for="(user, i) in users.data" :key="user">
-          <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(user.name)">Del</label></td>
-          <td data-label="Name">{{ user.name }}</td>
-          <td data-label="Age">{{ user.age }}</td>
-          <td data-label="Email">{{ user.email }}</td>
+        <tr v-for="(kuser, i) in users" :key="kuser">
+          <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(kuser)">Del</label></td>
+          <td data-label="Name">{{ kuser.name }}</td>
+          <td data-label="Age">{{ kuser.age }}</td>
+          <td data-label="Email">{{ kuser.email }}</td>
         </tr>
       </tbody>
     </table>
@@ -26,7 +54,10 @@
 </template>
 
 <script lang="ts">
-import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
+// import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
+import { createUsersArray, usersAdd, usersRemove, isNameUnique } from '@/modules/UsersFactory'
+import ValidationErrors from '@/modules/ValidationErrors'
+import User from '@/modules/User'
 import { reactive } from 'vue'
 
 // filtravimas
@@ -34,46 +65,27 @@ import { reactive } from 'vue'
 export default {
   el: '#mapp',
   name: 'Users',
-  components: {
-    UserComponent // declare the component
-  },
+  // props: Readonly<{test: User;} & {}>
   setup () {
-    const newAge = reactive({ data: 18 })
-    const newName = reactive({ data: 'userName' })
-    const newEmail = reactive({ data: 'myemail@gmail.com' })
-    const users = reactive({ data: [{ name: newName.data, age: newAge.data, email: newEmail.data }] })
-    let errors = reactive({ flag: false, message: [''] })
-    function unsetErrors () {
-      errors.flag = false
-      errors.message = []
-      return errors
+    const user = new User({})
+    const userValidate = reactive({ data: new ValidationErrors({}) })
+    const users = createUsersArray([new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' })])
+    // const users = createUsersArray([])
+
+    function dummy () {
+      return true
     }
-    // Paklausti del validavimo -- kiekvienam laukui, kur ir kaip geriau daryt?
-    function validateForm (newName: string, newAge: number, indexOfDuplicate: number) {
-      errors = unsetErrors()
-      if (newName && newAge && indexOfDuplicate < 0) return errors
-      if (!newName) errors.message.push('Name required.')
-      if (!newAge) errors.message.push('Age required.')
-      if (indexOfDuplicate > -1) errors.message.push('User name already taken.')
-      if (newAge && (newAge < 18 || newAge > 99)) errors.message.push('User age is not in range 18 to 99')
-      errors.flag = true
-      return errors
+    function addUser (tuser: User) {
+      const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
+      // alert(JSON.stringify(users))
+      tuser.name && isNameUnique(users, tuser.name) ? usersAdd(users, nu) : nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
+      userValidate.data = nu.getUserValidate()
     }
-    function addUser (newName: string, newAge: number, newEmail: string) {
-      let index = -1
-      if (newName && newName.length > 0 && newAge && newAge > 17) {
-        index = users.data.findIndex(fr => fr.name === newName)
-        if (index < 0) users.data.push({ name: newName, age: newAge, email: newEmail })
-      }
-      errors = validateForm(newName, newAge, index)
-      return users
+    function removeUser (tuser: User) {
+      usersRemove(users, tuser)
     }
-    function removeUser (delUser: string) {
-      const index = users.data.findIndex(fr => fr.name === delUser)
-      if (index > -1) users.data.splice(index, 1)
-      return users
-    }
-    return { removeUser, addUser, users, errors, newName, newAge, newEmail }
+
+    return { dummy, user, users, addUser, removeUser, userValidate }
   }
 }
 </script>
@@ -86,5 +98,24 @@ table tr {
 
 table:not(.horizontal) {
   max-height: 100%;
+}
+
+input {
+  border-width: .1em;
+}
+
+.invalid {
+  border-color: red;
+  background-color: #fff5f5;
+}
+
+.valid {
+  border-color: grey;
+  background-color: white;
+}
+
+form span {
+  display: inline-block;
+  white-space: nowrap;
 }
 </style>
