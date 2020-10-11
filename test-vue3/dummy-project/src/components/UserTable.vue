@@ -24,25 +24,25 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(kuser, i) in users" :key="kuser">
-        <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(kuser)">Del</label></td>
-        <td data-label="Name">{{ kuser.name }}</td>
-        <td data-label="Age">{{ kuser.age }}</td>
-        <td data-label="Email">{{ kuser.email }}</td>
-      </tr>
+      <UserRow
+        v-bind:users="users"
+        v-bind:removeUser="removeUser"
+      />
     </tbody>
   </table>
 </template>
 
 <script lang="ts">
+import UserRow from '@/components/UserRow.vue'
 
 export default {
   name: 'UserTable',
   el: '#userTable',
+  components: {
+    UserRow
+  },
   props: {
-    users: {
-      type: Array
-    },
+    users: Array,
     sortByName: Function,
     sortByEmail: Function,
     sortByAge: Function,
