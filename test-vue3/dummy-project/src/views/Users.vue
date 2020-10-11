@@ -38,28 +38,24 @@
       </div>
     </div>
   </div>
-  <div class="card fluid">
-    <p class="section">Search</p>
-      <input
-        type="text" name="searchInput"
-        v-model="userToSearch.data"
-        placeholder="user name to search"
-        @input="userSearch(userToSearch.data)" @keyup.enter="userSearch(userToSearch.data)"
-      />
-    <div class="section" v-if="searchResults.data.length">
-      <ul>
-        <li v-for="user in searchResults.data" :key="user">{{ user }}</li>
-      </ul>
-    </div>
-  </div>
+  <UsersSearch
+      v-bind:userSearch="userSearch"
+  />
   <div class="card fluid">
     <p class="section">Users Saved</p>
       <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
-    <table class="hoverable">
+          <UserTable
+            v-bind:users="users"
+            v-bind:sortByName="sortByName"
+            v-bind:sortByEmail="sortByEmail"
+            v-bind:sortByAge="sortByAge"
+            v-bind:removeUser="removeUser"
+          />
+    <!-- <table class="hoverable">
       <thead>
         <tr>
-          <th>Nr <div class="sort-arrows"><span class="arrow"></span><span class="arrow down"></span></div> | Del</th>
+          <th>Nr | Del</th>
           <th>Name
             <div class="sort-arrows">
               <span class="arrow" @click="sortByName()"></span>
@@ -88,59 +84,61 @@
           <td data-label="Email">{{ kuser.email }}</td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
     </div></div>
   </div>
 </template>
 
 <script lang="ts">
 // import UserComponent from '@/components/UserComponent.vue' // import the component, @ is an alias to /src
-import { createUsersArrayRef, usersAdd, usersRemove, isNameUnique, usersSearchByName } from '@/modules/UsersFactory'
-import { usersSortByName, usersSortByAge, usersSortByEmail } from '@/modules/UsersSort'
+import usersFactory from '@/modules/UsersFactory'
 import ValidationErrors from '@/modules/ValidationErrors'
 import User from '@/modules/User'
 import { reactive } from 'vue'
+import UsersSearch from '@/components/UsersSearch.vue'
+import UserTable from '@/components/UserTable.vue'
 
 export default {
   el: '#mapp',
   name: 'Users',
+  components: {
+    UsersSearch,
+    UserTable
+  },
   // props: Readonly<{test: User;} & {}>
   setup () {
-    const userToSearch = reactive({ data: '' })
     const user = new User({})
     const userValidate = reactive({ data: new ValidationErrors({}) })
-    const users = createUsersArrayRef([new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' })])
-    // const users = reactive()
-    // const users = createUsersArrayRef([])
-    const searchResults: { data: User[] | undefined } = reactive({ data: [] })
-
+    const { users, usersAdd, usersRemove, isNameUnique, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail, setUsersArray } = usersFactory()
     function dummy () {
       return true
     }
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
-      if (!isNameUnique({ users, user: tuser })) nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
+      if (!isNameUnique(tuser)) nu.validate.setErrors({ isValid: false, messages: ['User name is not unique.'] })
       userValidate.data = nu.getUserValidate()
-      if (userValidate.data.isValid) usersAdd({ users, user: nu })
+      if (userValidate.data.isValid) {
+        usersAdd(nu)
+      }
+      return users
     }
     function removeUser (tuser: User) {
-      usersRemove({ users, user: tuser })
+      return usersRemove(tuser)
     }
     function sortByName (reverse?: boolean) {
-      usersSortByName({ users, reverse })
+      return usersSortByName({ reverse })
     }
     function sortByEmail (reverse?: boolean) {
-      usersSortByEmail({ users, reverse })
+      return usersSortByEmail({ reverse })
     }
     function sortByAge (reverse?: boolean) {
-      usersSortByAge({ users, reverse })
+      return usersSortByAge({ reverse })
     }
     function userSearch (pattern?: string) {
-      searchResults.data = usersSearchByName({ users, pattern })
-      // alert(JSON.stringify(searchResults.data.length))
+      return usersSearchByName({ pattern })
     }
 
-    return { dummy, user, users, addUser, removeUser, userValidate, sortByName, sortByEmail, sortByAge, userToSearch, userSearch, searchResults }
+    return { dummy, user, users, addUser, removeUser, userValidate, sortByName, sortByEmail, sortByAge, userSearch }
   }
 }
 </script>
@@ -148,13 +146,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 // Table
-table tr {
-  text-align: left;
-}
+// table tr {
+//   text-align: left;
+// }
 
-table:not(.horizontal) {
-  max-height: 100%;
-}
+// table:not(.horizontal) {
+//   max-height: 100%;
+// }
 
 // Form
 input {
@@ -176,37 +174,37 @@ form span {
   white-space: nowrap;
 }
 
-// Sort
-.arrow {
-  width: 0;
-  height: 0;
-  border-left: .475rem solid transparent;
-  border-right: .475rem solid transparent;
-  border-bottom: .825rem solid #7d7d7d;
-  display: inline-block;
-}
+// // Sort
+// .arrow {
+//   width: 0;
+//   height: 0;
+//   border-left: .475rem solid transparent;
+//   border-right: .475rem solid transparent;
+//   border-bottom: .825rem solid #7d7d7d;
+//   display: inline-block;
+// }
 
-.down {
-  transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
-}
+// .down {
+//   transform: rotate(180deg);
+//   -webkit-transform: rotate(180deg);
+// }
 
-span.arrow {
-  cursor: pointer;
-}
+// span.arrow {
+//   cursor: pointer;
+// }
 
-span.arrow:hover {
-  border-bottom-color: #3b4146;
-}
+// span.arrow:hover {
+//   border-bottom-color: #3b4146;
+// }
 
-.sort-arrows {
-  display: inline;
-  padding: .125rem;
-}
+// .sort-arrows {
+//   display: inline;
+//   padding: .125rem;
+// }
 
-.sort-arrows span ~ span {
-  margin-left: .0125rem;
-}
+// .sort-arrows span ~ span {
+//   margin-left: .0125rem;
+// }
 
 // Sections
 div.card.fluid > p {
