@@ -38,54 +38,23 @@
       </div>
     </div>
   </div>
-  <UsersSearch
+  <div class="card fluid">
+    <p class="section">Search</p>
+    <UsersSearch
       v-bind:userSearch="userSearch"
-  />
+    />
+  </div>
   <div class="card fluid">
     <p class="section">Users Saved</p>
-      <div class="row" id="userInput">
-      <div class="col-lg-12 col-md-12 col-sm-12">
-          <UserTable
-            v-bind:users="users"
-            v-bind:sortByName="sortByName"
-            v-bind:sortByEmail="sortByEmail"
-            v-bind:sortByAge="sortByAge"
-            v-bind:removeUser="removeUser"
-          />
-    <!-- <table class="hoverable">
-      <thead>
-        <tr>
-          <th>Nr | Del</th>
-          <th>Name
-            <div class="sort-arrows">
-              <span class="arrow" @click="sortByName()"></span>
-              <span class="arrow down" @click="sortByName(true)"></span>
-            </div>
-          </th>
-          <th>Age
-            <div class="sort-arrows">
-              <span class="arrow" @click="sortByAge()"></span>
-              <span class="arrow down" @click="sortByAge(true)"></span>
-            </div>
-          </th>
-          <th>Email
-            <div class="sort-arrows">
-              <span class="arrow" @click="sortByEmail()"></span>
-              <span class="arrow down" @click="sortByEmail(true)"></span>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(kuser, i) in users" :key="kuser">
-          <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(kuser)">Del</label></td>
-          <td data-label="Name">{{ kuser.name }}</td>
-          <td data-label="Age">{{ kuser.age }}</td>
-          <td data-label="Email">{{ kuser.email }}</td>
-        </tr>
-      </tbody>
-    </table> -->
-    </div></div>
+      <div class="row"><div class="col-lg-12 col-md-12 col-sm-12">
+        <UserTable
+          v-bind:users="users"
+          v-bind:sortByName="sortByName"
+          v-bind:sortByEmail="sortByEmail"
+          v-bind:sortByAge="sortByAge"
+          v-bind:removeUser="removeUser"
+        />
+      </div></div>
   </div>
 </template>
 
@@ -109,7 +78,7 @@ export default {
   setup () {
     const user = new User({})
     const userValidate = reactive({ data: new ValidationErrors({}) })
-    const { users, usersAdd, usersRemove, isNameUnique, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail, setUsersArray } = usersFactory()
+    const { users, usersAdd, usersRemove, isNameUnique, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail } = usersFactory()
     function dummy () {
       return true
     }
@@ -145,83 +114,35 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-// Table
-// table tr {
-//   text-align: left;
-// }
-
-// table:not(.horizontal) {
-//   max-height: 100%;
-// }
-
 // Form
 input {
   border-width: .1em;
 }
-
 .invalid {
   border-color: red;
   background-color: #fff5f5;
 }
-
 .valid {
   border-color: grey;
   background-color: white;
 }
-
 form span {
   display: inline-block;
   white-space: nowrap;
 }
-
-// // Sort
-// .arrow {
-//   width: 0;
-//   height: 0;
-//   border-left: .475rem solid transparent;
-//   border-right: .475rem solid transparent;
-//   border-bottom: .825rem solid #7d7d7d;
-//   display: inline-block;
-// }
-
-// .down {
-//   transform: rotate(180deg);
-//   -webkit-transform: rotate(180deg);
-// }
-
-// span.arrow {
-//   cursor: pointer;
-// }
-
-// span.arrow:hover {
-//   border-bottom-color: #3b4146;
-// }
-
-// .sort-arrows {
-//   display: inline;
-//   padding: .125rem;
-// }
-
-// .sort-arrows span ~ span {
-//   margin-left: .0125rem;
-// }
-
 // Sections
 div.card.fluid > p {
   font-variant-caps: all-small-caps;
 }
-
 // Errors
 .collapse.error > :checked + label {
   border-bottom-color: var(--input-invalid-color);
   border-bottom-width: .225rem;
 }
-
 .collapse.error > label,
 .collapse.error > :checked + label + div {
   border-color: var(--input-invalid-color);
 }
-
 .collapse.error > label {
   color: var(--input-invalid-color);
   font-weight: bold;
