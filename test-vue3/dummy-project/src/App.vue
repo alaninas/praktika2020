@@ -1,9 +1,7 @@
 <template>
   <div id="nav">
-    <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> | -->
-    <router-link to="/users">Users</router-link> |
-    <router-link to="/counter">Counter</router-link>
+    <router-link to="/">Counter</router-link> |
+    <router-link to="/users">Users</router-link>
   </div>
   <router-view/>
 </template>
@@ -24,11 +22,9 @@
   margin-bottom: .625rem;
 
   a {
-    // font-weight: bold;
     font-variant-caps: all-small-caps;
     font-size: larger;
     color: #2c3e50;
-
     &.router-link-exact-active {
       color: #1976d2;
     }
