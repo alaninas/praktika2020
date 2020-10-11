@@ -18,29 +18,24 @@
       @click="addUser(user.data)"
     />
   </form>
-  <div class="collapse error" v-if="!isValid">
-    <input type="checkbox" id="collapse-section1" checked aria-hidden="true">
-    <label for="collapse-section1" aria-hidden="true">Please update input</label>
-    <div>
-      <ul>
-        <li v-for="error in errMessages" :key="error">{{ error }}</li>
-      </ul>
-    </div>
-  </div>
+  <UserError
+    v-bind:isValid="isValid"
+    v-bind:errMessages="errMessages"
+  />
 </template>
 
 <script lang="ts">
 import User from '@/modules/User'
+import UserError from '@/components/UserError.vue'
 import { reactive } from 'vue'
 
 export default {
   name: 'UserForm',
   el: '#userForm',
+  components: {
+    UserError
+  },
   props: {
-    propsUser: {
-      type: User,
-      required: true
-    },
     isValid: {
       type: Boolean,
       required: true
@@ -51,8 +46,9 @@ export default {
     },
     addUser: Function
   },
-  setup (props: Readonly<{propsUser: User} & {addUser?: Function | undefined}>) {
-    const user = reactive({ data: props.propsUser })
+  // props: Readonly<{propsUser: User} & {addUser?: Function | undefined}>
+  setup () {
+    const user = reactive({ data: new User({}) })
     function dummy () {
       return true
     }
@@ -61,7 +57,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 // Form
 input {
@@ -78,18 +73,5 @@ input {
 form span {
   display: inline-block;
   white-space: nowrap;
-}
-// Errors
-.collapse.error > :checked + label {
-  border-bottom-color: var(--input-invalid-color);
-  border-bottom-width: .225rem;
-}
-.collapse.error > label,
-.collapse.error > :checked + label + div {
-  border-color: var(--input-invalid-color);
-}
-.collapse.error > label {
-  color: var(--input-invalid-color);
-  font-weight: bold;
 }
 </style>
