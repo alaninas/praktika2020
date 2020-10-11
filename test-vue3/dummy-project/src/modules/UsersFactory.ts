@@ -8,12 +8,6 @@ export default function usersFactory () {
     new User({ name: 'AA', age: 44, email: 'AA@gmail.com' })
   ])
 
-  function setUsersArray (myUsers: User[] | []): void {
-    myUsers.forEach(el => {
-      users.value.push(el)
-    })
-  }
-
   function getUsersArray (): User[] {
     return users.value
   }
@@ -58,31 +52,5 @@ export default function usersFactory () {
     users.value.sort((a, b) => a.age && b.age && a.age < b.age ? aIsLower : aIsHigher)
     return users.value
   }
-  return { users, setUsersArray, getUsersArray, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
+  return { users, getUsersArray, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
 }
-
-// export function createUsersArrayRef (myUsers: User[] | []): User[] {
-//   const users: Ref<User[]> = ref([])
-//   users.value = myUsers
-//   return users.value
-// }
-
-// export function isNameUnique ({ users, user }: { users: User[]; user: User }): boolean {
-//   return user.name !== undefined && users.findIndex(el => el.name === user.name) < 0
-// }
-
-// export function usersAdd ({ users, user }: { users: User[]; user: User }): User[] {
-//   users.push(user)
-//   return users
-// }
-
-// export function usersRemove ({ users, user }: { users: User[]; user: User }): User[] {
-//   const index = users.findIndex(el => el.name === user.name)
-//   if (index > -1) users.splice(index, 1)
-//   return users
-// }
-
-// export function usersSearchByName ({ users, pattern = '' }: { users: User[]; pattern?: string }): User[] {
-//   const re = new RegExp(pattern, 'i')
-//   return pattern ? users.filter(el => el.name && re.test(el.name)) : []
-// }

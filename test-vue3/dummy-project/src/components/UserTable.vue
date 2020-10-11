@@ -43,18 +43,10 @@ export default {
     users: {
       type: Array
     },
-    sortByName: {
-      type: Function
-    },
-    sortByEmail: {
-      type: Function
-    },
-    sortByAge: {
-      type: Function
-    },
-    removeUser: {
-      type: Function
-    }
+    sortByName: Function,
+    sortByEmail: Function,
+    sortByAge: Function,
+    removeUser: Function
   },
   setup () { return { } }
 }

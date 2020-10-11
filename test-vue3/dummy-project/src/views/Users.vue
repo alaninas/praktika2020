@@ -73,7 +73,6 @@ export default {
     function userSearch (pattern?: string) {
       return usersSearchByName({ pattern })
     }
-
     return { user, users, addUser, removeUser, sortByName, sortByEmail, sortByAge, userSearch, userValidationErrors }
   }
 }
