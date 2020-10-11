@@ -1,37 +1,37 @@
 <template>
-    <table class="hoverable" id="userTable">
-      <thead>
-        <tr>
-          <th>Nr | Del</th>
-          <th>Name
-            <div class="sort-arrows">
-              <span class="arrow" @click="sortByName()"></span>
-              <span class="arrow down" @click="sortByName(true)"></span>
-            </div>
-          </th>
-          <th>Age
-            <div class="sort-arrows">
-              <span class="arrow" @click="sortByAge()"></span>
-              <span class="arrow down" @click="sortByAge(true)"></span>
-            </div>
-          </th>
-          <th>Email
-            <div class="sort-arrows">
-              <span class="arrow" @click="sortByEmail()"></span>
-              <span class="arrow down" @click="sortByEmail(true)"></span>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(kuser, i) in users" :key="kuser">
-          <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(kuser)">Del</label></td>
-          <td data-label="Name">{{ kuser.name }}</td>
-          <td data-label="Age">{{ kuser.age }}</td>
-          <td data-label="Email">{{ kuser.email }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="hoverable" id="userTable">
+    <thead>
+      <tr>
+        <th>Nr | Del</th>
+        <th>Name
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByName()"></span>
+            <span class="arrow down" @click="sortByName(true)"></span>
+          </div>
+        </th>
+        <th>Age
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByAge()"></span>
+            <span class="arrow down" @click="sortByAge(true)"></span>
+          </div>
+        </th>
+        <th>Email
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByEmail()"></span>
+            <span class="arrow down" @click="sortByEmail(true)"></span>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(kuser, i) in users" :key="kuser">
+        <td data-label="Nr | Del">{{i}} <label role="button" class="responsive-padding responsive-margin inverse" @click="removeUser(kuser)">Del</label></td>
+        <td data-label="Name">{{ kuser.name }}</td>
+        <td data-label="Age">{{ kuser.age }}</td>
+        <td data-label="Email">{{ kuser.email }}</td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script lang="ts">
