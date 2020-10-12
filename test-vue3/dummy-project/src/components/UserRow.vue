@@ -16,18 +16,11 @@
 
 <script lang="ts">
 import useUsers from '@/features/useUsers'
-import Users from '@/modules/Users'
 
 export default {
   name: 'UserRow',
-  props: {
-    pusers: {
-      type: Users,
-      required: true
-    }
-  },
-  setup (props: Readonly<{pusers: Users} & {}>) {
-    const { users, usersRemove } = useUsers(props.pusers)
+  setup () {
+    const { users, usersRemove } = useUsers()
     return { users, usersRemove }
   }
 }

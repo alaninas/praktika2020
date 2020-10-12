@@ -2,19 +2,17 @@
   <div id="myUsers" class="card fluid"><p class="section">Add User</p>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
-      <UserForm
-        v-bind:pusers="myUsersObject"
-      />
+      <UserForm />
       </div>
     </div>
   </div>
   <div class="card fluid"><p class="section">Search</p>
-    <UsersSearch v-bind:pusers="myUsersObject"/>
+    <UsersSearch />
   </div>
   <div class="card fluid"><p class="section">Users Saved</p>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-      <UserTable v-bind:pusers="myUsersObject"/>
+      <UserTable />
       </div>
     </div>
   </div>
@@ -24,7 +22,6 @@
 import UsersSearch from '@/components/UsersSearch.vue'
 import UserTable from '@/components/UserTable.vue'
 import UserForm from '@/components/UserForm.vue'
-import Users from '@/modules/Users'
 
 export default {
   el: '#myUsers',
@@ -35,8 +32,7 @@ export default {
     UserTable
   },
   setup () {
-    const myUsersObject = new Users({})
-    return { myUsersObject }
+    return { }
   }
 }
 </script>

@@ -30,7 +30,6 @@ import UserError from '@/components/UserError.vue'
 import { reactive } from 'vue'
 import ValidationErrors from '@/modules/ValidationErrors'
 import useUsers from '@/features/useUsers'
-import Users from '@/modules/Users'
 
 export default {
   name: 'UserForm',
@@ -38,17 +37,11 @@ export default {
   components: {
     UserError
   },
-  props: {
-    pusers: {
-      type: Users,
-      required: true
-    }
-  },
   // props: Readonly<{propsUser: User} & {addUser?: Function | undefined}>
-  setup (props: Readonly<{pusers: Users} & {}>) {
+  setup () {
     const user = reactive({ data: new User({}) })
     const userValidationErrors = reactive({ data: new ValidationErrors({}) })
-    const { usersAdd, isNameUnique } = useUsers(props.pusers)
+    const { usersAdd, isNameUnique } = useUsers()
 
     function dummy () {
       return true

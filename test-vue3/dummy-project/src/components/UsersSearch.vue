@@ -21,15 +21,9 @@ import User from '@/modules/User'
 
 export default {
   name: 'UsersSearch',
-  props: {
-    pusers: {
-      type: Users,
-      required: true
-    }
-  },
-  setup (props: Readonly<{pusers: Users} & {}>) {
+  setup () {
     const pattern = reactive({ data: '' })
-    const { usersSearchByName } = useUsers(props.pusers)
+    const { usersSearchByName } = useUsers()
     const userSearchResults: {data: User[] | []} = reactive({ data: [] })
 
     function userSearch (pattern?: string): User[] {

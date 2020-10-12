@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import UserRow from '@/components/UserRow.vue'
-import Users from '@/modules/Users'
 import useUsers from '@/features/useUsers'
 
 export default {
@@ -40,14 +39,8 @@ export default {
   components: {
     UserRow
   },
-  props: {
-    pusers: {
-      type: Users,
-      required: true
-    }
-  },
-  setup (props: Readonly<{pusers: Users} & {}>) {
-    const { usersSortByName, usersSortByAge, usersSortByEmail } = useUsers(props.pusers)
+  setup () {
+    const { usersSortByName, usersSortByAge, usersSortByEmail } = useUsers()
     return { usersSortByName, usersSortByEmail, usersSortByAge }
   }
 }
