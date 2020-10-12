@@ -8,13 +8,10 @@ export default class User implements UserInterface {
     validationErrors: ValidationErrors = new ValidationErrors({});
 
     constructor ({ name, age, email }: { name?: string; age?: number; email?: string }) {
-      this.name = name
-      this.age = age
-      this.email = email
-      this.validationErrors = this.validateData({ name, age, email })
+      this.setUser({ name, age, email })
     }
 
-    setUser ({ name, age, email }: { name: string; age?: number; email?: string }): void {
+    setUser ({ name, age, email }: { name?: string; age?: number; email?: string }): void {
       this.name = name
       this.age = age
       this.email = email

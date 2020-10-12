@@ -24,7 +24,7 @@
       </tr>
     </thead>
     <tbody>
-      <UserRow v-bind:pusers="pusers"/>
+      <UserRow />
     </tbody>
   </table>
 </template>
