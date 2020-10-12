@@ -1,9 +1,9 @@
 import User from '@/modules/User'
 import Users from '@/modules/Users'
 import { Ref } from 'vue'
-import { compareNumbers, compareStrings } from './CompareFunctions'
+import { compareNumbers, compareStrings } from '@/modules/CompareFunctions'
 
-export default function usersFactory (usersArray: Users) {
+export default function useUsers (usersArray: Users) {
   // const users: Ref<User[]> = ref([
   //   new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' }),
   //   new User({ name: 'ca', age: 33, email: 'a@gmail.com' }),
@@ -44,15 +44,15 @@ export default function usersFactory (usersArray: Users) {
   // }
   // displayType<number>(1, 'Steve')
 
-  function usersSortByName ({ reverse = false }: { reverse?: boolean }): User[] {
+  function usersSortByName (reverse: boolean): User[] {
     return users.value.sort((a, b) => compareStrings(a.name, b.name, reverse))
   }
 
-  function usersSortByEmail ({ reverse = false }: { reverse?: boolean }): User[] {
+  function usersSortByEmail (reverse: boolean): User[] {
     return users.value.sort((a, b) => compareStrings(a.email, b.email, reverse))
   }
 
-  function usersSortByAge ({ reverse = false }: { reverse?: boolean }): User[] {
+  function usersSortByAge (reverse: boolean): User[] {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
 

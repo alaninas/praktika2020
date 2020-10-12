@@ -29,7 +29,7 @@ import User from '@/modules/User'
 import UserError from '@/components/UserError.vue'
 import { reactive } from 'vue'
 import ValidationErrors from '@/modules/ValidationErrors'
-import usersFactory from '@/modules/UsersFactory'
+import useUsers from '@/features/useUsers'
 import Users from '@/modules/Users'
 
 export default {
@@ -48,7 +48,7 @@ export default {
   setup (props: Readonly<{pusers: Users} & {}>) {
     const user = reactive({ data: new User({}) })
     const userValidationErrors = reactive({ data: new ValidationErrors({}) })
-    const { usersAdd, isNameUnique } = usersFactory(props.pusers)
+    const { usersAdd, isNameUnique } = useUsers(props.pusers)
 
     function dummy () {
       return true

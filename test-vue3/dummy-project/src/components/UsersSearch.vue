@@ -6,16 +6,16 @@
     placeholder="user name to search"
     @input="userSearch(pattern.data)" @keyup.enter="userSearch(pattern.data)"
   />
-  <div class="section" v-if="searchUserArray.data.length">
+  <div class="section" v-if="userSearchResults.data.length">
     <ul>
-      <li v-for="user in searchUserArray.data" :key="user">{{ user.name }} -- {{ user.age }} -- {{ user.email }}</li>
+      <li v-for="user in userSearchResults.data" :key="user">{{ user.name }} -- {{ user.age }} -- {{ user.email }}</li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
 import { reactive, watchEffect } from 'vue'
-import usersFactory from '@/modules/UsersFactory'
+import useUsers from '@/features/useUsers'
 import Users from '@/modules/Users'
 import User from '@/modules/User'
 
@@ -29,18 +29,18 @@ export default {
   },
   setup (props: Readonly<{pusers: Users} & {}>) {
     const pattern = reactive({ data: '' })
-    const { usersSearchByName } = usersFactory(props.pusers)
-    const searchUserArray: {data: User[] | []} = reactive({ data: [] })
+    const { usersSearchByName } = useUsers(props.pusers)
+    const userSearchResults: {data: User[] | []} = reactive({ data: [] })
 
     function userSearch (pattern?: string): User[] {
-      searchUserArray.data = usersSearchByName({ pattern })
-      return searchUserArray.data
+      userSearchResults.data = usersSearchByName({ pattern })
+      return userSearchResults.data
     }
     watchEffect(() => {
       // console.log(users.value)
       userSearch(pattern.data)
     })
-    return { pattern, userSearch, searchUserArray }
+    return { pattern, userSearch, userSearchResults }
   }
 }
 </script>

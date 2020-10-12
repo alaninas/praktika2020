@@ -5,17 +5,20 @@
         <th>Nr | Del</th>
         <th>Name
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByName()"></span><span class="arrow down" @click="sortByName(true)"></span>
+            <span class="arrow" @click="usersSortByName(false)"></span>
+            <span class="arrow down" @click="usersSortByName(true)"></span>
           </div>
         </th>
         <th>Age
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByAge()"></span><span class="arrow down" @click="sortByAge(true)"></span>
+            <span class="arrow" @click="usersSortByAge(false)"></span>
+            <span class="arrow down" @click="usersSortByAge(true)"></span>
           </div>
         </th>
         <th>Email
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByEmail()"></span><span class="arrow down" @click="sortByEmail(true)"></span>
+            <span class="arrow" @click="usersSortByEmail(false)"></span>
+            <span class="arrow down" @click="usersSortByEmail(true)"></span>
           </div>
         </th>
       </tr>
@@ -29,7 +32,7 @@
 <script lang="ts">
 import UserRow from '@/components/UserRow.vue'
 import Users from '@/modules/Users'
-import usersFactory from '@/modules/UsersFactory'
+import useUsers from '@/features/useUsers'
 
 export default {
   name: 'UserTable',
@@ -44,17 +47,8 @@ export default {
     }
   },
   setup (props: Readonly<{pusers: Users} & {}>) {
-    const { usersSortByName, usersSortByAge, usersSortByEmail } = usersFactory(props.pusers)
-    function sortByName (reverse?: boolean) {
-      return usersSortByName({ reverse })
-    }
-    function sortByEmail (reverse?: boolean) {
-      return usersSortByEmail({ reverse })
-    }
-    function sortByAge (reverse?: boolean) {
-      return usersSortByAge({ reverse })
-    }
-    return { sortByName, sortByEmail, sortByAge }
+    const { usersSortByName, usersSortByAge, usersSortByEmail } = useUsers(props.pusers)
+    return { usersSortByName, usersSortByEmail, usersSortByAge }
   }
 }
 </script>

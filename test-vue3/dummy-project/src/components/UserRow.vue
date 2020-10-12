@@ -1,22 +1,21 @@
 <template>
-  <tr v-for="(kuser, i) in users" :key="kuser">
+  <tr v-for="(user, i) in users" :key="user">
     <td data-label="Nr | Del">{{i}}
       <label
         role="button"
         class="responsive-padding responsive-margin inverse"
-        @click="removeUser(kuser)">
+        @click="usersRemove(user)">
         Del
       </label>
     </td>
-    <td data-label="Name">{{ kuser.name }}</td>
-    <td data-label="Age">{{ kuser.age }}</td>
-    <td data-label="Email">{{ kuser.email }}</td>
+    <td data-label="Name">{{ user.name }}</td>
+    <td data-label="Age">{{ user.age }}</td>
+    <td data-label="Email">{{ user.email }}</td>
   </tr>
 </template>
 
 <script lang="ts">
-import User from '@/modules/User'
-import usersFactory from '@/modules/UsersFactory'
+import useUsers from '@/features/useUsers'
 import Users from '@/modules/Users'
 
 export default {
@@ -28,11 +27,8 @@ export default {
     }
   },
   setup (props: Readonly<{pusers: Users} & {}>) {
-    const { users, usersRemove } = usersFactory(props.pusers)
-    function removeUser (tuser: User) {
-      return usersRemove(tuser)
-    }
-    return { users, removeUser }
+    const { users, usersRemove } = useUsers(props.pusers)
+    return { users, usersRemove }
   }
 }
 </script>
