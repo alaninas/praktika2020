@@ -1,15 +1,22 @@
 import User from '@/modules/User'
-import { Ref, ref } from 'vue'
+import Users from '@/modules/Users'
+import { Ref } from 'vue'
+import { compareNumbers, compareStrings } from './CompareFunctions'
 
-export default function usersFactory () {
-  const users: Ref<User[]> = ref([
-    new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' }),
-    new User({ name: 'ca', age: 33, email: 'a@gmail.com' }),
-    new User({ name: 'AA', age: 44, email: 'AA@gmail.com' })
-  ])
+export default function usersFactory (usersArray: Users) {
+  // const users: Ref<User[]> = ref([
+  //   new User({ name: 'a', age: 22, email: 'hhgh@gmail.com' }),
+  //   new User({ name: 'ca', age: 33, email: 'a@gmail.com' }),
+  //   new User({ name: 'AA', age: 44, email: 'AA@gmail.com' })
+  // ])
+  const users = usersArray.getUsersArrayRef()
 
   function getUsersArray (): User[] {
     return users.value
+  }
+
+  function getUsersArrayRef (): Ref<User[]> {
+    return users
   }
 
   function isNameUnique (user: User): boolean {
@@ -32,25 +39,22 @@ export default function usersFactory () {
     return pattern ? users.value.filter(el => el.name && re.test(el.name)) : []
   }
 
+  // function displayType<T> (id: T, name: string): void {
+  //   console.log(typeof (id) + ', ' + typeof (name))
+  // }
+  // displayType<number>(1, 'Steve')
+
   function usersSortByName ({ reverse = false }: { reverse?: boolean }): User[] {
-    const aIsLower = reverse ? 1 : -1
-    const aIsHigher = reverse ? -1 : 1
-    users.value.sort((a, b) => a.name && b.name && a.name.toUpperCase() < b.name.toUpperCase() ? aIsLower : aIsHigher)
-    return users.value
+    return users.value.sort((a, b) => compareStrings(a.name, b.name, reverse))
   }
 
   function usersSortByEmail ({ reverse = false }: { reverse?: boolean }): User[] {
-    const aIsLower = reverse ? 1 : -1
-    const aIsHigher = reverse ? -1 : 1
-    users.value.sort((a, b) => a.email && b.email && a.email.toUpperCase() < b.email.toUpperCase() ? aIsLower : aIsHigher)
-    return users.value
+    return users.value.sort((a, b) => compareStrings(a.email, b.email, reverse))
   }
 
   function usersSortByAge ({ reverse = false }: { reverse?: boolean }): User[] {
-    const aIsLower = reverse ? 1 : -1
-    const aIsHigher = reverse ? -1 : 1
-    users.value.sort((a, b) => a.age && b.age && a.age < b.age ? aIsLower : aIsHigher)
-    return users.value
+    return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
-  return { users, getUsersArray, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
+
+  return { users, getUsersArray, getUsersArrayRef, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
 }

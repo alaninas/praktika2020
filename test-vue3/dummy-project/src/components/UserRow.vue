@@ -15,18 +15,25 @@
 </template>
 
 <script lang="ts">
+import User from '@/modules/User'
+import usersFactory from '@/modules/UsersFactory'
+import Users from '@/modules/Users'
+
 export default {
   name: 'UserRow',
   props: {
-    users: {
-      type: Array
-    },
-    removeUser: {
-      type: Function,
+    pusers: {
+      type: Users,
       required: true
     }
   },
-  setup () { return {} }
+  setup (props: Readonly<{pusers: Users} & {}>) {
+    const { users, usersRemove } = usersFactory(props.pusers)
+    function removeUser (tuser: User) {
+      return usersRemove(tuser)
+    }
+    return { users, removeUser }
+  }
 }
 </script>
 

@@ -19,8 +19,8 @@
     />
   </form>
   <UserError
-    v-bind:isValid="isValid"
-    v-bind:errMessages="errMessages"
+    v-bind:isValid="userValidationErrors.data.isValid"
+    v-bind:errMessages="userValidationErrors.data.messages"
   />
 </template>
 
@@ -28,6 +28,9 @@
 import User from '@/modules/User'
 import UserError from '@/components/UserError.vue'
 import { reactive } from 'vue'
+import ValidationErrors from '@/modules/ValidationErrors'
+import usersFactory from '@/modules/UsersFactory'
+import Users from '@/modules/Users'
 
 export default {
   name: 'UserForm',
@@ -36,23 +39,27 @@ export default {
     UserError
   },
   props: {
-    isValid: {
-      type: Boolean,
+    pusers: {
+      type: Users,
       required: true
-    },
-    errMessages: {
-      type: Array,
-      required: true
-    },
-    addUser: Function
+    }
   },
   // props: Readonly<{propsUser: User} & {addUser?: Function | undefined}>
-  setup () {
+  setup (props: Readonly<{pusers: Users} & {}>) {
     const user = reactive({ data: new User({}) })
+    const userValidationErrors = reactive({ data: new ValidationErrors({}) })
+    const { usersAdd, isNameUnique } = usersFactory(props.pusers)
+
     function dummy () {
       return true
     }
-    return { user, dummy }
+    function addUser (tuser: User) {
+      const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
+      if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
+      if (nu.getUserValidate().isValid) usersAdd(nu)
+      userValidationErrors.data = nu.getUserValidate()
+    }
+    return { user, addUser, userValidationErrors, dummy }
   }
 }
 </script>

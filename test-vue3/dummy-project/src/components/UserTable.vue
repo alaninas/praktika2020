@@ -5,35 +5,31 @@
         <th>Nr | Del</th>
         <th>Name
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByName()"></span>
-            <span class="arrow down" @click="sortByName(true)"></span>
+            <span class="arrow" @click="sortByName()"></span><span class="arrow down" @click="sortByName(true)"></span>
           </div>
         </th>
         <th>Age
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByAge()"></span>
-            <span class="arrow down" @click="sortByAge(true)"></span>
+            <span class="arrow" @click="sortByAge()"></span><span class="arrow down" @click="sortByAge(true)"></span>
           </div>
         </th>
         <th>Email
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByEmail()"></span>
-            <span class="arrow down" @click="sortByEmail(true)"></span>
+            <span class="arrow" @click="sortByEmail()"></span><span class="arrow down" @click="sortByEmail(true)"></span>
           </div>
         </th>
       </tr>
     </thead>
     <tbody>
-      <UserRow
-        v-bind:users="users"
-        v-bind:removeUser="removeUser"
-      />
+      <UserRow v-bind:pusers="pusers"/>
     </tbody>
   </table>
 </template>
 
 <script lang="ts">
 import UserRow from '@/components/UserRow.vue'
+import Users from '@/modules/Users'
+import usersFactory from '@/modules/UsersFactory'
 
 export default {
   name: 'UserTable',
@@ -42,26 +38,34 @@ export default {
     UserRow
   },
   props: {
-    users: Array,
-    sortByName: Function,
-    sortByEmail: Function,
-    sortByAge: Function,
-    removeUser: Function
+    pusers: {
+      type: Users,
+      required: true
+    }
   },
-  setup () { return { } }
+  setup (props: Readonly<{pusers: Users} & {}>) {
+    const { usersSortByName, usersSortByAge, usersSortByEmail } = usersFactory(props.pusers)
+    function sortByName (reverse?: boolean) {
+      return usersSortByName({ reverse })
+    }
+    function sortByEmail (reverse?: boolean) {
+      return usersSortByEmail({ reverse })
+    }
+    function sortByAge (reverse?: boolean) {
+      return usersSortByAge({ reverse })
+    }
+    return { sortByName, sortByEmail, sortByAge }
+  }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-// Table
 table tr {
   text-align: left;
 }
 table:not(.horizontal) {
   max-height: 100%;
 }
-// Sort
 .arrow {
   width: 0;
   height: 0;
