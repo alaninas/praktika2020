@@ -12,7 +12,7 @@
   <div class="card fluid"><p class="section">Users Saved</p>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-      <UserTable />
+      <UsersTable />
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import UsersSearch from '@/components/UsersSearch.vue'
-import UserTable from '@/components/UserTable.vue'
+import UsersTable from '@/components/UsersTable.vue'
 import UserForm from '@/components/UserForm.vue'
 
 export default {
@@ -29,7 +29,7 @@ export default {
   components: {
     UserForm,
     UsersSearch,
-    UserTable
+    UsersTable
   },
   setup () {
     return { }

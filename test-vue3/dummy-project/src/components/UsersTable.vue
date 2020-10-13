@@ -34,7 +34,7 @@ import UserRow from '@/components/UserRow.vue'
 import useUsers from '@/features/useUsers'
 
 export default {
-  name: 'UserTable',
+  name: 'UsersTable',
   el: '#userTable',
   components: {
     UserRow

@@ -32,9 +32,4 @@ export default class User implements UserInterface {
       if (age && (age < 18 || age > 99)) this.validationErrors.setErrors({ isValid: false, messages: ['User age is not in range 18 to 99.'] })
       return this.validationErrors
     }
-
-  // function displayType<T> (id: T, name: string): void {
-  //   console.log(typeof (id) + ', ' + typeof (name))
-  // }
-  // displayType<number>(1, 'Steve')
 }
