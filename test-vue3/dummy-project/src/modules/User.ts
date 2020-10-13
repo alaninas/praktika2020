@@ -3,8 +3,15 @@ import ValidationErrors from '@/modules/ValidationErrors'
 
 export default class User implements UserInterface {
     name?: string;
+    surname?: string;
     age?: number;
+    city?: string;
+    country?: string;
+    zipcode?: number;
     email?: string;
+    url?: string;
+    password?: string;
+    passwordConfirm?: string;
     validationErrors: ValidationErrors = new ValidationErrors({});
 
     constructor ({ name, age, email }: { name?: string; age?: number; email?: string }) {
@@ -24,6 +31,10 @@ export default class User implements UserInterface {
 
     getUserValidate (): ValidationErrors {
       return this.validationErrors
+    }
+
+    arrayToString<T> (items: T[]): string {
+      return items.join(', ')
     }
 
     validateData ({ name, age, email }: { name?: string; age?: number; email?: string }): ValidationErrors {

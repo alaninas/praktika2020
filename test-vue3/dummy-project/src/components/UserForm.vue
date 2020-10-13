@@ -46,6 +46,8 @@ export default {
     function dummy () {
       return true
     }
+    // check if password confirm is successful
+    // check if name is unique
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
       if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
