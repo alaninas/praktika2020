@@ -29,7 +29,7 @@
 <script lang="ts">
 import User from '@/modules/User'
 import UserError from '@/components/UserError.vue'
-import { reactive } from 'vue'
+import { reactive, watchEffect } from 'vue'
 import ValidationErrors from '@/modules/ValidationErrors'
 import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
@@ -42,11 +42,12 @@ export default {
     UserError
   },
   data: () => ({
-    errors: { name: 'Required', email: 'Required' }
+    errors: { }
   }),
   directives: {
     validate: validate
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setup (props: any, { emit }: any) {
     const user = reactive({ data: new User({}) })
     const userValidationErrors = reactive({ data: new ValidationErrors({}) })
@@ -59,6 +60,9 @@ export default {
       emit('validate')
       console.log('fired validate')
     }
+    watchEffect(() => {
+      validate()
+    })
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
       // if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
@@ -67,8 +71,8 @@ export default {
       // userValidationErrors.data = nu.getUserValidate()
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function test (errobj?: any) {
-      console.log(errobj)
+    function test (errobj: any) {
+      Object.values(errobj).length ? console.log(errobj) : console.log('No input provided yet :)')
       console.log('Number of fields with validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
     }

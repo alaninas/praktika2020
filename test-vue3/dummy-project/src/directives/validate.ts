@@ -1,14 +1,19 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function updateErrorObject ({ el, vm }: { el: any; vm: any }) {
+  vm.errors = Object.assign({}, vm.errors, {
+    [el.name]: el.validationMessage
+  })
+}
 
 export default {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mounted (el: any, binding: any) {
-    // console.log(vnode)
     const vm = binding.instance
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // Set messages in error object for required fields
+    if (el.validity.valueMissing) updateErrorObject({ el, vm })
+    // console.log(el.checkValidity())
+    // console.log(el.validationMessage)
     el.addEventListener('input', () => {
-      vm.errors = Object.assign({}, vm.errors, {
-        [el.name]: el.validationMessage
-      })
+      updateErrorObject({ el, vm })
     })
   }
 }
