@@ -2,17 +2,17 @@
   <form @submit.prevent="dummy" novalidate id="userForm">
     <span class="col-lg-3 col-md-7 col-sm-12">
       <label for="userName">Name</label>
-      <input type="text" name="name" v-model="user.data.name" required v-validate @input="validate"/>
+      <input type="text" name="name" v-model="user.data.name" required v-validate />
       <span class="error">{{ errors.name }}</span>
     </span>
     <span class="col-lg-3 col-md-5 col-sm-12">
       <label for="ageInput">Age</label>
-      <input type="number" name="age" v-model="user.data.age" min="18" max="100" v-validate @input="validate"/>
+      <input type="number" name="age" v-model="user.data.age" min="18" max="100" v-validate />
       <span class="error">{{ errors.age }}</span>
     </span>
     <span class="col-lg-3 col-md-8 col-sm-12">
       <label for="emailInput">Email</label>
-      <input type="email" name="email" v-model="user.data.email" required v-validate @input="validate"/>
+      <input type="email" name="email" v-model="user.data.email" required v-validate />
       <span class="error">{{ errors.email }}</span>
     </span>
     <input
@@ -29,7 +29,7 @@
 <script lang="ts">
 import User from '@/modules/User'
 import UserError from '@/components/UserError.vue'
-import { reactive, watchEffect } from 'vue'
+import { reactive } from 'vue'
 import ValidationErrors from '@/modules/ValidationErrors'
 import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
@@ -47,8 +47,7 @@ export default {
   directives: {
     validate: validate
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setup (props: any, { emit }: any) {
+  setup () {
     const user = reactive({ data: new User({}) })
     const userValidationErrors = reactive({ data: new ValidationErrors({}) })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,13 +55,6 @@ export default {
     function dummy () {
       return true
     }
-    function validate () {
-      emit('validate')
-      console.log('fired validate')
-    }
-    watchEffect(() => {
-      validate()
-    })
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
       // if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
