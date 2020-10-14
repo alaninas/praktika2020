@@ -17,7 +17,7 @@
     </span>
     <input
       type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
-      @click="onSubmit"
+      @click="test(errors)"
     />
   </form>
   <UserError
@@ -29,13 +29,13 @@
 <script lang="ts">
 import User from '@/modules/User'
 import UserError from '@/components/UserError.vue'
-import { defineComponent, reactive } from 'vue'
+import { reactive } from 'vue'
 import ValidationErrors from '@/modules/ValidationErrors'
 import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
 // @click="test(errors)"
 
-export default defineComponent({
+export default {
   name: 'UserForm',
   el: '#userForm',
   components: {
@@ -47,26 +47,17 @@ export default defineComponent({
   directives: {
     validate: validate
   },
-  methods: {
-    validate () {
-      this.$emit('validate')
-      console.log('fired validate')
-    },
-    onSubmit () {
-      this.validate()
-      if (Object.values(this.errors).filter(el => !!el).length === 0) {
-        console.log('Sending to server...')
-        this.addUser(this.user.data)
-      }
-    }
-  },
-  setup () {
-    // console.log(JSON.stringify(context))
+  setup (props: any, { emit }: any) {
     const user = reactive({ data: new User({}) })
     const userValidationErrors = reactive({ data: new ValidationErrors({}) })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { usersAdd, isNameUnique } = useUsers()
     function dummy () {
       return true
+    }
+    function validate () {
+      emit('validate')
+      console.log('fired validate')
     }
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
@@ -78,11 +69,12 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function test (errobj?: any) {
       console.log(errobj)
+      console.log('Number of fields with validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
     }
-    return { user, addUser, userValidationErrors, dummy, test }
+    return { user, addUser, userValidationErrors, dummy, test, validate }
   }
-})
+}
 </script>
 
 <style scoped lang="scss">
