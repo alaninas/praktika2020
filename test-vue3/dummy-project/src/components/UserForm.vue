@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts">
-import User from '@/modules/User'
-import UserError from '@/components/UserError.vue'
 import { reactive } from 'vue'
+import UserError from '@/components/UserError.vue'
+import User from '@/modules/User'
 import ValidationErrors from '@/modules/ValidationErrors'
 import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'

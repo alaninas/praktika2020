@@ -15,8 +15,8 @@
 
 <script lang="ts">
 import { reactive, watchEffect } from 'vue'
-import useUsers from '@/features/useUsers'
 import User from '@/modules/User'
+import useUsers from '@/features/useUsers'
 
 export default {
   name: 'UsersSearch',
