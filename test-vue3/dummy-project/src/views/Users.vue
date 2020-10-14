@@ -2,7 +2,8 @@
   <div id="myUsers" class="card fluid"><p class="section">Add User</p>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
-      <UserForm />
+      <UserForm
+      />
       </div>
     </div>
   </div>
@@ -37,7 +38,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 div.card.fluid > p {
   font-variant-caps: all-small-caps;

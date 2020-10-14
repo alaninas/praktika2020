@@ -28,10 +28,6 @@
   </div>
 </template>
 
-.active {
-  background: green;
-}
-
 <script lang="ts">
 import { defineComponent, reactive, computed } from 'vue'
 
