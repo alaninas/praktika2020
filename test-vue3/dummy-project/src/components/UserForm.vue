@@ -33,7 +33,9 @@ import User from '@/modules/User'
 import ValidationErrors from '@/modules/ValidationErrors'
 import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
-// @click="test(errors)"
+// https://medium.com/@dmitrymind/how-to-keep-array-data-inside-local-json-file-for-vue-app-46bb29d4ac53
+// https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-9.html
+import json from '@/assets/countries.json'
 
 export default {
   name: 'UserForm',
@@ -42,12 +44,15 @@ export default {
     UserError
   },
   data: () => ({
-    errors: { }
+    errors: {}
   }),
   directives: {
     validate: validate
   },
   setup () {
+    const countries = json
+    console.log(countries)
+    console.log(countries[1].name)
     const user = reactive({ data: new User({}) })
     const userValidationErrors = reactive({ data: new ValidationErrors({}) })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -55,6 +60,10 @@ export default {
     function dummy () {
       return true
     }
+    // perform inner validation on userNameUniqueness &&
+    // pswd1 === pswd2
+    // --> update errorObject
+    // ---> onSubmit will set the appropriate error messaging on invalid fields
     function addUser (tuser: User) {
       const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
       // if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
