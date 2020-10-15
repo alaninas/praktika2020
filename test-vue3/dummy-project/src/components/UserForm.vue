@@ -17,8 +17,8 @@
     </span>
     <div id="countries">
      <select v-model="selectedCountry">
-         <option disabled value="Please select one">Please select one</option>
-         <option v-for="country in countries" :key="country">{{ country.name }}</option>
+        <option disabled value="">Please select one</option>
+        <option v-for="country in countries" :key="country">{{ country.name }}</option>
      </select>
      <span>Selected: {{ selectedCountry }}</span>
     </div>
@@ -58,7 +58,7 @@ export default {
     validate: validate
   },
   setup () {
-    const selectedCountry = ref([])
+    const selectedCountry = ref(['No country selected'])
     const countries = json
     console.log(countries)
     console.log(countries[1].name)
