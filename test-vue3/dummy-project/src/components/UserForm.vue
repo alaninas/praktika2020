@@ -15,6 +15,13 @@
       <input type="email" name="email" v-model="user.data.email" required v-validate />
       <span class="error">{{ errors.email }}</span>
     </span>
+    <div id="countries">
+     <select v-model="selectedCountry">
+         <option disabled value="Please select one">Please select one</option>
+         <option v-for="country in countries" :key="country">{{ country.name }}</option>
+     </select>
+     <span>Selected: {{ selectedCountry }}</span>
+    </div>
     <input
       type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
       @click="test(errors)"
@@ -27,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import UserError from '@/components/UserError.vue'
 import User from '@/modules/User'
 import ValidationErrors from '@/modules/ValidationErrors'
@@ -35,6 +42,7 @@ import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
 // https://medium.com/@dmitrymind/how-to-keep-array-data-inside-local-json-file-for-vue-app-46bb29d4ac53
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-9.html
+// https://gist.github.com/keeguon/2310008
 import json from '@/assets/countries.json'
 
 export default {
@@ -50,6 +58,7 @@ export default {
     validate: validate
   },
   setup () {
+    const selectedCountry = ref([])
     const countries = json
     console.log(countries)
     console.log(countries[1].name)
@@ -77,7 +86,7 @@ export default {
       console.log('Number of fields with validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
     }
-    return { user, addUser, userValidationErrors, dummy, test, validate }
+    return { user, addUser, userValidationErrors, dummy, test, countries, selectedCountry }
   }
 }
 </script>
