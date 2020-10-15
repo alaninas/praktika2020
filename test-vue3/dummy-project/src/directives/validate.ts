@@ -14,8 +14,6 @@ export default {
     const vm = binding.instance
     // Set messages in error object for required fields
     if (el.validity.valueMissing) updateErrorObject({ el, vm })
-    // console.log(el.checkValidity())
-    // console.log(el.validationMessage)
     el.addEventListener('input', () => {
       updateErrorObject({ el, vm })
     })

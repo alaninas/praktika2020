@@ -29,10 +29,11 @@ export default {
       userSearchResults.data = usersSearchByName({ pattern })
       return userSearchResults.data
     }
+
     watchEffect(() => {
-      // console.log(users.value)
       userSearch(pattern.data)
     })
+
     return { pattern, userSearch, userSearchResults }
   }
 }
