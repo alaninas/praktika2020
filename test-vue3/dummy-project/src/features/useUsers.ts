@@ -11,6 +11,12 @@ export default function useUsers () {
     return user.name !== undefined && users.value.findIndex(el => el.name === user.name) < 0
   }
 
+  // perform inner validation on userNameUniqueness &&
+  // pswd1 === pswd2
+  // --> update errorObject
+  // ---> onSubmit will set the appropriate error messaging on invalid fields
+  // if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
+  // if (nu.getUserValidate().isValid) usersAdd(nu)
   function usersAdd (user: User): User[] {
     users.value.push(user)
     return users.value
