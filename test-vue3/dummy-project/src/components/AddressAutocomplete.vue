@@ -43,18 +43,17 @@ export default {
       openDropDown.data = search.data !== '' && matchesArray.length !== 0 && openDropDown.data === true
       return openDropDown.data
     }
+    function resetDropDown (dropdDownListAction: boolean) {
+      openDropDown.data = dropdDownListAction
+      currentIdx.data = 0
+    }
     function matchesClick (index: number) {
       search.data = matches.data[index]
-      openDropDown.data = false
+      resetDropDown(false)
     }
     function enter () {
-      console.log('in enter')
-      console.log(currentIdx.data)
-      console.log(matches.data)
-      search.data = matches.data[currentIdx.data] ? matches.data[currentIdx.data] : ''
-      openDropDown.data = false
-      currentIdx.data = 0
-      console.log(search.data)
+      search.data = matches.data[currentIdx.data] ? matches.data[currentIdx.data] : search.data
+      resetDropDown(false)
     }
     function up () {
       if (currentIdx.data > 0) currentIdx.data--
@@ -63,12 +62,8 @@ export default {
       if (currentIdx.data < matches.data.length - 1) currentIdx.data++
     }
     function inputChange () {
-      console.log('im in change()')
-      console.log(openDropDown.data)
-      console.log(currentIdx.data)
       if (openDropDown.data === false) {
-        openDropDown.data = true
-        currentIdx.data = 0
+        resetDropDown(true)
       }
     }
     watchEffect(() => {
