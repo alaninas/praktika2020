@@ -29,12 +29,14 @@
     v-bind:isValid="userValidationErrors.data.isValid"
     v-bind:errMessages="userValidationErrors.data.messages"
   />
+  <AddressAutocomplete />
 </div>
 </template>
 
 <script lang="ts">
 import { reactive, ref } from 'vue'
 import UserError from '@/components/UserError.vue'
+import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import User from '@/modules/User'
 import ValidationErrors from '@/modules/ValidationErrors'
 // import useUsers from '@/features/useUsers'
@@ -44,7 +46,8 @@ import countriesJson from '@/assets/countries.json'
 export default {
   name: 'UserForm',
   components: {
-    UserError
+    UserError,
+    AddressAutocomplete
   },
   directives: {
     validate: validate
