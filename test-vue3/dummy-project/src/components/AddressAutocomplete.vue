@@ -28,6 +28,13 @@ export default {
     const matches = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
 
+    // check if search === numbers --> then search in str NRs or Zipcodes
+    // if search starts with letters --> prefer places, cities, squares and so on (i.e. w/o house numbers)
+    // in either case : start searching at the start of the appropriate field
+    // once complex address string is filled in Input ('street nr, city, zipcode')
+    //   perform the appropriate search on data split by comma,
+    //   take ctionable search as: 'street nr ..someNewInput..'
+    //   (i.e. first field before comma)
     function findMatches (searchStr: string): string[] {
       matches.data = searchStr.length > 0 ? suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
       return matches.data
@@ -41,8 +48,13 @@ export default {
       openDropDown.data = false
     }
     function enter () {
+      console.log('in enter')
+      console.log(currentIdx.data)
+      console.log(matches.data)
       search.data = matches.data[currentIdx.data] ? matches.data[currentIdx.data] : ''
       openDropDown.data = false
+      currentIdx.data = 0
+      console.log(search.data)
     }
     function up () {
       if (currentIdx.data > 0) currentIdx.data--
@@ -51,6 +63,9 @@ export default {
       if (currentIdx.data < matches.data.length - 1) currentIdx.data++
     }
     function inputChange () {
+      console.log('im in change()')
+      console.log(openDropDown.data)
+      console.log(currentIdx.data)
       if (openDropDown.data === false) {
         openDropDown.data = true
         currentIdx.data = 0
