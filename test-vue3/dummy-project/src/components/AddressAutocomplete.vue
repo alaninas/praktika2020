@@ -29,14 +29,11 @@ export default {
     const openDropDown = reactive({ data: false })
 
     function findMatches () {
-      console.log('in matches')
       matches.data = suggestions.filter(str => str.substr(0, search.data.length).toUpperCase() === search.data.toUpperCase())
       return matches
     }
     function openSuggestion () {
-      console.log('im in openSuggestion')
       openDropDown.data = search.data !== '' && matches.data.length !== 0 && openDropDown.data === true
-      // console.log(openDropDown.data)
       return openDropDown
     }
     function enter () {
@@ -44,26 +41,21 @@ export default {
       openDropDown.data = false
     }
     function up () {
-      console.log('in up')
       if (currentIdx.data > 0) currentIdx.data--
     }
     function down () {
-      console.log('in down')
       if (currentIdx.data < matches.data.length - 1) currentIdx.data++
     }
     function isActive (index: number, active: number) {
-      console.log('im in active')
       return index === active
     }
     function change () {
-      console.log('im in change()')
       if (openDropDown.data === false) {
         openDropDown.data = true
         currentIdx.data = 0
       }
     }
     function matchesClick (index: number) {
-      console.log('im in click')
       search.data = matches.data[index]
       openDropDown.data = false
     }
@@ -83,11 +75,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-body {
-  font-family: Helvetica, sans-serif;
-}
 .autocomplete-active {
-  background-color: red !important;
+  background-color: red;
   color: #ffffff;
 }
 .open > .dropdown-menu {
@@ -98,12 +87,6 @@ li {
   width: 100%;
   margin: 0;
   text-align: left;
-}
-a {
-  text-decoration: none;
-}
-nav {
-  font-family: monospace;
 }
 ul {
   background: darkorange;
@@ -116,43 +99,14 @@ li {
   background: darkorange;
   display: block;
   float: left;
-  padding: 1rem;
+  padding: var(--universal-padding);
   position: relative;
   text-decoration: none;
-  transition-duration: 0.5s;
-}
-li a {
-  color: #fff;
+  transition-duration: 0.1s;
 }
 li:hover,
 li:focus-within {
   background: red;
   cursor: pointer;
-}
-li:focus-within a {
-  outline: none;
-}
-ul li ul {
-  background: orange;
-  visibility: hidden;
-  opacity: 0;
-  min-width: 5rem;
-  position: absolute;
-  transition: all 0.5s ease;
-  margin-top: 1rem;
-  left: 0;
-  display: none;
-}
-ul li:hover > ul,
-ul li:focus-within > ul,
-ul li ul:hover,
-ul li ul:focus {
-   visibility: visible;
-   opacity: 1;
-   display: block;
-}
-ul li ul li {
-  clear: both;
-  width: 100%;
 }
 </style>
