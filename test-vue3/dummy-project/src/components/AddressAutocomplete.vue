@@ -1,11 +1,11 @@
 <template>
 <div class="card fluid">
-<div class="" v-bind:class="{'open': openDropDown.data}">
+<div>
   <input class="form-control" type="text" v-model="search.data"
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
-    @input="change()"
+    @input="inputChange()"
   />
   <ul class="dropdown-menu" v-if="openDropDown.data">
     <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': isActive(i, currentIdx.data)}" @click="matchesClick(i)">
@@ -30,11 +30,9 @@ export default {
 
     function findMatches () {
       matches.data = suggestions.filter(str => str.substr(0, search.data.length).toUpperCase() === search.data.toUpperCase())
-      return matches
     }
-    function openSuggestion () {
+    function openMatches () {
       openDropDown.data = search.data !== '' && matches.data.length !== 0 && openDropDown.data === true
-      return openDropDown
     }
     function enter () {
       search.data = matches.data[currentIdx.data]
@@ -49,7 +47,7 @@ export default {
     function isActive (index: number, active: number) {
       return index === active
     }
-    function change () {
+    function inputChange () {
       if (openDropDown.data === false) {
         openDropDown.data = true
         currentIdx.data = 0
@@ -66,47 +64,43 @@ export default {
       return found.substr(stringToSearch.length)
     }
     watchEffect(() => {
-      openSuggestion()
+      openMatches()
       findMatches()
     })
-    return { enter, up, down, change, matchesClick, displaySearchSubstring, displayTailSubstring, search, matches, openDropDown, isActive, currentIdx }
+    return { enter, up, down, inputChange, matchesClick, displaySearchSubstring, displayTailSubstring, search, matches, openDropDown, isActive, currentIdx }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.autocomplete-active {
-  background-color: red;
-  color: #ffffff;
-}
-.open > .dropdown-menu {
-  display: block;
+.autocomplete-active,
+li:hover,
+li:focus-within {
+  background-color: var(--table-body-hover-back-color);
+  color: #f8f8f8;
 }
 .form-control,
-li {
+li,
+ul {
   width: 100%;
   margin: 0;
   text-align: left;
 }
+ul,
+li {
+  background: var(--table-body-back-color);
+}
 ul {
-  background: darkorange;
   list-style: none;
-  margin: 0;
   padding-left: 0;
 }
 li {
-  color: #fff;
-  background: darkorange;
   display: block;
-  float: left;
   padding: var(--universal-padding);
   position: relative;
-  text-decoration: none;
-  transition-duration: 0.1s;
 }
 li:hover,
 li:focus-within {
-  background: red;
   cursor: pointer;
 }
 </style>
