@@ -8,7 +8,7 @@
     @input="inputChange()"
   />
   <ul class="dropdown-menu" v-if="openDropDown.data">
-    <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
+    <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': isActive(i, currentIdx.data)}" @click="matchesClick(i)">
       <strong>{{ match.substr(0, search.data.length) }}</strong>{{ match.substr(search.data.length) }}
     </li>
   </ul>
@@ -28,18 +28,35 @@ export default {
     const matches = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
 
-    function findMatches () {
-      matches.data = suggestions.filter(str => str.substr(0, search.data.length).toUpperCase() === search.data.toUpperCase())
+    function findMatches (searchStr: string): string[] {
+      console.log('in matches')
+      console.log(currentIdx.data)
+      console.log(searchStr)
+      matches.data = suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase())
+      console.log(suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()))
+      console.log(matches.data)
+      return matches.data
     }
-    function openMatches () {
-      openDropDown.data = search.data !== '' && matches.data.length !== 0 && openDropDown.data === true
+    function openMatches (matchesArray: string[]): boolean {
+      console.log('im in openSuggestion')
+      console.log(currentIdx.data)
+      openDropDown.data = search.data !== '' && matchesArray.length !== 0 && openDropDown.data === true
+      console.log(matchesArray)
+      console.log(openDropDown.data)
+      return openDropDown.data
     }
     function matchesClick (index: number) {
       search.data = matches.data[index]
       openDropDown.data = false
     }
+    function isActive (index: number, active: number) {
+      console.log('im in active')
+      console.log(active)
+      console.log(currentIdx.data)
+      return index === active
+    }
     function enter () {
-      search.data = matches.data[currentIdx.data]
+      search.data = matches.data[currentIdx.data] ? matches.data[currentIdx.data] : ''
       openDropDown.data = false
     }
     function up () {
@@ -49,16 +66,18 @@ export default {
       if (currentIdx.data < matches.data.length - 1) currentIdx.data++
     }
     function inputChange () {
+      console.log('im in change()')
+      console.log(openDropDown.data)
+      console.log(currentIdx.data)
       if (openDropDown.data === false) {
         openDropDown.data = true
         currentIdx.data = 0
       }
     }
     watchEffect(() => {
-      openMatches()
-      findMatches()
+      openMatches(findMatches(search.data))
     })
-    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx }
+    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx, isActive }
   }
 }
 </script>
