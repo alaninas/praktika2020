@@ -1,7 +1,7 @@
 <template>
 <div class="card fluid">
 <div>
-  <input class="form-control" type="text" v-model="search.data"
+  <input class="form-control" type="text" v-model="search.data" placeholder="your address"
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
@@ -80,8 +80,8 @@ li:focus-within {
   color: #f8f8f8;
 }
 .form-control,
-li,
-ul {
+ul,
+li {
   width: 100%;
   margin: 0;
   text-align: left;
