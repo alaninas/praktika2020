@@ -8,8 +8,8 @@
     @input="inputChange()"
   />
   <ul class="dropdown-menu" v-if="openDropDown.data">
-    <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': isActive(i, currentIdx.data)}" @click="matchesClick(i)">
-      <strong>{{ displaySearchSubstring(match, search.data) }}</strong>{{ displayTailSubstring(match, search.data) }}
+    <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
+      <strong>{{ match.substr(0, search.data.length) }}</strong>{{ match.substr(search.data.length) }}
     </li>
   </ul>
 </div>
@@ -34,6 +34,10 @@ export default {
     function openMatches () {
       openDropDown.data = search.data !== '' && matches.data.length !== 0 && openDropDown.data === true
     }
+    function matchesClick (index: number) {
+      search.data = matches.data[index]
+      openDropDown.data = false
+    }
     function enter () {
       search.data = matches.data[currentIdx.data]
       openDropDown.data = false
@@ -44,30 +48,17 @@ export default {
     function down () {
       if (currentIdx.data < matches.data.length - 1) currentIdx.data++
     }
-    function isActive (index: number, active: number) {
-      return index === active
-    }
     function inputChange () {
       if (openDropDown.data === false) {
         openDropDown.data = true
         currentIdx.data = 0
       }
     }
-    function matchesClick (index: number) {
-      search.data = matches.data[index]
-      openDropDown.data = false
-    }
-    function displaySearchSubstring (found: string, stringToSearch: string) {
-      return found.substr(0, stringToSearch.length)
-    }
-    function displayTailSubstring (found: string, stringToSearch: string) {
-      return found.substr(stringToSearch.length)
-    }
     watchEffect(() => {
       openMatches()
       findMatches()
     })
-    return { enter, up, down, inputChange, matchesClick, displaySearchSubstring, displayTailSubstring, search, matches, openDropDown, isActive, currentIdx }
+    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx }
   }
 }
 </script>
