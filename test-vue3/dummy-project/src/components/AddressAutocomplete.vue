@@ -32,7 +32,7 @@ export default {
       console.log('in matches')
       console.log(currentIdx.data)
       console.log(searchStr)
-      matches.data = suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase())
+      matches.data = searchStr.length > 0 ? suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
       console.log(suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()))
       console.log(matches.data)
       return matches.data
