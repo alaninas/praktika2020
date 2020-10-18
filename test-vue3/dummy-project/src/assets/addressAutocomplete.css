@@ -1,0 +1,30 @@
+.autocomplete-active,
+li:hover,
+li:focus-within {
+  background-color: var(--table-body-hover-back-color);
+  color: #f8f8f8;
+}
+.form-control,
+ul,
+li {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+}
+ul,
+li {
+  background: var(--table-body-back-color);
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+li {
+  display: block;
+  padding: var(--universal-padding);
+  position: relative;
+}
+li:hover,
+li:focus-within {
+  cursor: pointer;
+}
