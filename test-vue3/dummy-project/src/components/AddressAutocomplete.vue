@@ -9,7 +9,7 @@
   />
   <ul class="dropdown-menu" v-if="openDropDown.data">
     <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
-      <strong>{{ match.substr(0, search.data.length) }}</strong>{{ match.substr(search.data.length) }}
+      {{ match }}
     </li>
   </ul>
 </div>
@@ -18,37 +18,21 @@
 
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
-import addressesJson from '@/assets/addresses.json'
+import useAddressAutocomplete from '@/features/useAddressAutocomplete'
 
 export default {
   name: 'AddressAutocomplete',
   setup () {
     const currentIdx = reactive({ data: 0 })
-    const suggestions = ['Bangalore', 'Chennai', 'Cochin', 'Delhi', 'Kolkata', 'Mumbai']
-    const addresses = addressesJson
     const search = reactive({ data: '' })
     const matches = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
+    const { parseSearchString, searchAddresses } = useAddressAutocomplete()
 
-    // check if search === numbers --> then search in str NRs or Zipcodes
-    // if search starts with letters --> prefer places, cities, squares and so on (i.e. w/o house numbers)
-    // in either case : start searching at the start of the appropriate field
-    // once complex address string is filled in Input ('street nr, city, zipcode')
-    //   perform the appropriate search on data split by comma,
-    //   take ctionable search as: 'street nr ..someNewInput..'
-    //   (i.e. first field before comma)
     function findMatches (searchStr: string): string[] {
-      if (/^\d+/.test(searchStr)) {
-        console.log('search starts with numbers')
-        const test = searchStr.length > 0 ? addresses.filter(str => str.zipcode.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
-        console.log(test)
-      }
-      if (/^[A-Za-z]+/.test(searchStr)) {
-        console.log('search starts with letters')
-        const test = searchStr.length > 0 ? addresses.filter(str => str.country.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
-        console.log(test)
-      }
-      matches.data = searchStr.length > 0 ? suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
+      const { matchString, parsedAddress } = parseSearchString(searchStr)
+      const matchedAddresses = searchAddresses(parsedAddress, matchString)
+      matches.data = matchedAddresses.map<string>(el => Object.values(el).join(', '))
       return matches.data
     }
     function openMatches (matchesArray: string[]): boolean {
@@ -86,35 +70,5 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.autocomplete-active,
-li:hover,
-li:focus-within {
-  background-color: var(--table-body-hover-back-color);
-  color: #f8f8f8;
-}
-.form-control,
-ul,
-li {
-  width: 100%;
-  margin: 0;
-  text-align: left;
-}
-ul,
-li {
-  background: var(--table-body-back-color);
-}
-ul {
-  list-style: none;
-  padding-left: 0;
-}
-li {
-  display: block;
-  padding: var(--universal-padding);
-  position: relative;
-}
-li:hover,
-li:focus-within {
-  cursor: pointer;
-}
+<style scoped src="../assets/addressAutocomplete.css">
 </style>
