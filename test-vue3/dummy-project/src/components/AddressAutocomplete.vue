@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
-import useAddressAutocomplete from '@/features/useAddressAutocomplete'
+import useAddresses from '@/features/useAddresses'
 
 export default {
   name: 'AddressAutocomplete',
@@ -27,7 +27,7 @@ export default {
     const search = reactive({ data: '' })
     const matches = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
-    const { parseSearchString, searchAddresses } = useAddressAutocomplete()
+    const { parseSearchString, searchAddresses } = useAddresses()
 
     function findMatches (searchStr: string): string[] {
       const { matchString, parsedAddress } = parseSearchString(searchStr)

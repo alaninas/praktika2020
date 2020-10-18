@@ -2,7 +2,7 @@ import addressesJson from '@/assets/addresses.json'
 import AddressInterface from '@/modules/IAddress'
 import { zipcodeFirst, housenumberFirst, streetFirst } from '@/modules/regex'
 
-export default function useUsers () {
+export default function useAddresses () {
   const addresses: AddressInterface[] = addressesJson
 
   function substituteStringSeparators (searchStr: string): string {
@@ -16,13 +16,13 @@ export default function useUsers () {
     if (zipcodeFirst.test(searchStr)) {
       patternMatch = searchStr.match(zipcodeFirst)
       if (patternMatch) {
-        parsedAddress = { street: patternMatch[2] ? patternMatch[2].trim() : '', number: patternMatch[5] ? patternMatch[5].trim() : '', zipcode: patternMatch[1].trim(), city: '' }
+        parsedAddress = { zipcode: patternMatch[1].trim(), street: patternMatch[2] ? patternMatch[2].trim() : '', number: patternMatch[5] ? patternMatch[5].trim() : '', city: '' }
       }
     }
     if (housenumberFirst.test(searchStr)) {
       patternMatch = searchStr.match(housenumberFirst)
       if (patternMatch) {
-        parsedAddress = { street: patternMatch[2] ? patternMatch[2].trim() : '', number: patternMatch[1].trim(), zipcode: '', city: '' }
+        parsedAddress = { number: patternMatch[1].trim(), street: patternMatch[2] ? patternMatch[2].trim() : '', zipcode: '', city: '' }
       }
     }
     if (streetFirst.test(searchStr)) {
