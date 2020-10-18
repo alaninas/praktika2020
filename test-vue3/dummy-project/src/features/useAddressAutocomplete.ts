@@ -1,6 +1,6 @@
 import addressesJson from '@/assets/addresses.json'
 import AddressInterface from '@/modules/IAddress'
-import { zipcodeFirst, housenumberFirst, streetFirst } from '@/modules/Regex'
+import { zipcodeFirst, housenumberFirst, streetFirst } from '@/modules/regex'
 
 export default function useUsers () {
   const addresses: AddressInterface[] = addressesJson
@@ -51,16 +51,13 @@ export default function useUsers () {
 
   function matchAddressFields (savedAddress: AddressInterface, parsedAddress: AddressInterface): boolean {
     const { street, number, zipcode } = parsedAddress
-    const zipcodeL = zipcode.length
-    const streetL = street.length
-    const numberL = number.length
     const matchedStreet = matchStreet(savedAddress, street)
     const matchedNumber = matchNumber(savedAddress, number)
     const matchedZipcode = matchZipcode(savedAddress, zipcode)
-    const res = (streetL > 0 && numberL > 0) ? ((matchedStreet && matchedNumber && matchedZipcode) || (matchedStreet && matchedNumber))
+    const res = (street.length > 0 && number.length > 0) ? ((matchedStreet && matchedNumber && matchedZipcode) || (matchedStreet && matchedNumber))
       : (
-        streetL > 0 ? ((matchedStreet && matchedZipcode) || (matchedStreet && !zipcodeL))
-          : (numberL > 0 ? ((matchedNumber && matchedZipcode) || (matchedNumber && !zipcodeL)) : matchedZipcode)
+        street.length > 0 ? ((matchedStreet && matchedZipcode) || (matchedStreet && !zipcode.length))
+          : (number.length > 0 ? ((matchedNumber && matchedZipcode) || (matchedNumber && !zipcode.length)) : matchedZipcode)
       )
     return res
   }

@@ -1,6 +1,6 @@
 import User from '@/modules/User'
 import Users from '@/modules/Users'
-import { compareNumbers, compareStrings } from '@/modules/CompareFunctions'
+import { compareNumbers, compareStrings } from '@/modules/compareFunctions'
 
 export default function useUsers () {
   const myUsersObject = new Users({})
