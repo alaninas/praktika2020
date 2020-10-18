@@ -18,12 +18,14 @@
 
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
+import addressesJson from '@/assets/addresses.json'
 
 export default {
   name: 'AddressAutocomplete',
   setup () {
     const currentIdx = reactive({ data: 0 })
     const suggestions = ['Bangalore', 'Chennai', 'Cochin', 'Delhi', 'Kolkata', 'Mumbai']
+    const addresses = addressesJson
     const search = reactive({ data: '' })
     const matches = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
@@ -36,6 +38,16 @@ export default {
     //   take ctionable search as: 'street nr ..someNewInput..'
     //   (i.e. first field before comma)
     function findMatches (searchStr: string): string[] {
+      if (/^\d+/.test(searchStr)) {
+        console.log('search starts with numbers')
+        const test = searchStr.length > 0 ? addresses.filter(str => str.zipcode.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
+        console.log(test)
+      }
+      if (/^[A-Za-z]+/.test(searchStr)) {
+        console.log('search starts with letters')
+        const test = searchStr.length > 0 ? addresses.filter(str => str.country.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
+        console.log(test)
+      }
       matches.data = searchStr.length > 0 ? suggestions.filter(str => str.substr(0, searchStr.length).toUpperCase() === searchStr.toUpperCase()) : []
       return matches.data
     }

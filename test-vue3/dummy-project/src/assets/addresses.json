@@ -1,0 +1,15 @@
+[ 
+  {"country": "Afghanistan", "zipcode": "08106"}, 
+  {"country": "Åland Islands", "zipcode": "00109"}, 
+  {"country": "Albania", "zipcode": "09208"}, 
+  {"country": "Saint Pierre and Miquelon", "zipcode": "88204"}, 
+  {"country": "Saint Vincent and the Grenadines", "zipcode": "98201"}, 
+  {"country": "Tuvalu", "zipcode": "99910"}, 
+  {"country": "Uganda", "zipcode": "66610"}, 
+  {"country": "Ukraine", "zipcode": "30565"}, 
+  {"country": "United Arab Emirates", "zipcode": "40120"}, 
+  {"country": "United Kingdom", "zipcode": "42500"}, 
+  {"country": "United States", "zipcode": "70546"}, 
+  {"country": "United States Minor Outlying Islands", "zipcode": "95123"}, 
+  {"country": "Uruguay", "zipcode": "09105"}
+]
