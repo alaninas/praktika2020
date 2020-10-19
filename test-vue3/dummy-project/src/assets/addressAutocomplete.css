@@ -39,3 +39,7 @@ li:focus-within {
 .matches label:focus {
   pointer-events: none;
 }
+.matches,
+.matches input {
+  color: rgb(106, 106, 106);
+}
