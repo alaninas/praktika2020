@@ -47,4 +47,5 @@ export default {
 </script>
 
 <style scoped src="../assets/userTable.css">
+/* assets: jsons, csss */
 </style>

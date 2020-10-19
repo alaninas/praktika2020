@@ -8,7 +8,8 @@ const uErrors = ref({ name: '' })
 
 export default function useUsers () {
   function isNameUnique (user: User): boolean {
-    return user.name !== undefined && user.name.length > 0 && users.value.findIndex(el => el.name === user.name) < 0
+    if (user.name === undefined || user.name.length === 0) return true
+    return user.name.length > 0 && users.value.findIndex(el => el.name === user.name) < 0
   }
 
   function arePassworsEqual (user: User): boolean {
