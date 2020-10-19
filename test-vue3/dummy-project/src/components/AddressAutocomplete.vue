@@ -1,6 +1,5 @@
 <template>
 <div class="card fluid">
-<div>
   <input class="form-control" type="text" v-model="search.data" placeholder="your address"
     @keydown.enter="enter()"
     @keydown.down="down()"
@@ -12,13 +11,28 @@
       {{ match }}
     </li>
   </ul>
-</div>
+  <div class="row" v-else-if="matchedAddresses[0]">
+    <!-- <div> {{ matchedAddresses[0] }} </div> -->
+    <span class="col-lg-3 col-md-6 col-sm-12">
+      <label for="streetInp">Street</label><input type="text" id="streetInp" name="street" :value="matchedAddresses[0].street" />
+    </span>
+    <span class="col-lg-3 col-md-6 col-sm-12">
+      <label for="numberInp">Number</label><input type="text" id="numberInp" name="number" :value="matchedAddresses[0].number" />
+    </span>
+    <span class="col-lg-3 col-md-6 col-sm-12">
+      <label for="cityInp">City</label><input type="text" id="cityInp" name="city" :value="matchedAddresses[0].city" />
+    </span>
+    <span class="col-lg-3 col-md-6 col-sm-12">
+      <label for="zipcodeInp">Zipcode</label><input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[0].zipcode" />
+    </span>
+  </div>
 </div>
 </template>
 
 <script lang="ts">
-import { watchEffect, reactive } from 'vue'
+import { watchEffect, reactive, computed, ComputedRef } from 'vue'
 import useAddresses from '@/features/useAddresses'
+import AddressInterface from '@/modules/IAddress'
 
 export default {
   name: 'AddressAutocomplete',
@@ -27,12 +41,15 @@ export default {
     const search = reactive({ data: '' })
     const matches = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
-    const { parseSearchString, searchAddresses } = useAddresses()
+    const { performStringSearch } = useAddresses()
+    const matchedAddresses = computed(() => performStringSearch(search.data))
 
-    function findMatches (searchStr: string): string[] {
-      const { matchString, parsedAddress } = parseSearchString(searchStr)
-      const matchedAddresses = searchAddresses(parsedAddress, matchString)
-      matches.data = matchedAddresses.map<string>(el => Object.values(el).join(', '))
+    function findMatches (addr: ComputedRef<AddressInterface[]>): string[] {
+      // const { matchString, parsedAddress } = parseSearchString(searchStr)
+      // matchedAddresses.value = searchAddresses(parsedAddress, matchString)
+      // console.log(Object.values(addr.value).toString())
+      // console.log(`in findMatches: ${search.data}`)
+      matches.data = addr.value.map<string>(el => Object.values(el).join(', '))
       return matches.data
     }
     function openMatches (matchesArray: string[]): boolean {
@@ -46,10 +63,14 @@ export default {
     function matchesClick (index: number) {
       search.data = matches.data[index]
       resetDropDown(false)
+      // console.log(Object.values(matchedAddresses.value).toString())
+      // console.log(search.data)
     }
     function enter () {
       search.data = matches.data[currentIdx.data] ? matches.data[currentIdx.data] : search.data
       resetDropDown(false)
+      // console.log(Object.values(matchedAddresses.value).toString())
+      // console.log(search.data)
     }
     function up () {
       if (currentIdx.data > 0) currentIdx.data--
@@ -63,9 +84,11 @@ export default {
       }
     }
     watchEffect(() => {
-      openMatches(findMatches(search.data))
+      openMatches(findMatches(computed(() => performStringSearch(search.data))))
+      // console.log(Object.values(computed(() => performStringSearch(search.data)).value).toString())
+      // console.log(search.data)
     })
-    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx }
+    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx, matchedAddresses }
   }
 }
 </script>

@@ -11,6 +11,7 @@ export default function useAddresses () {
 
   function parseSearchString (searchStr: string) {
     searchStr = substituteStringSeparators(searchStr)
+    // console.log(`==> search ${searchStr}`)
     let patternMatch: RegExpMatchArray | null = null
     let parsedAddress: AddressInterface = { street: '', number: '', zipcode: '', city: '' }
     if (zipcodeFirst.test(searchStr)) {
@@ -67,5 +68,10 @@ export default function useAddresses () {
     return matchedAddresses
   }
 
-  return { addresses, parseSearchString, searchAddresses }
+  function performStringSearch (searchStr: string): AddressInterface[] {
+    const { matchString, parsedAddress } = parseSearchString(searchStr)
+    return searchAddresses(parsedAddress, matchString)
+  }
+
+  return { addresses, parseSearchString, searchAddresses, performStringSearch }
 }
