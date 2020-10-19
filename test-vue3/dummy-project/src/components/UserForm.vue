@@ -2,15 +2,15 @@
 <div>
   <form @submit.prevent="dummy" novalidate id="userForm">
     <span class="col-lg-3 col-md-7 col-sm-12">
-      <label for="userName">Name</label><input type="text" name="name" v-model="user.data.name" required v-validate />
+      <label for="userName">Name</label><input type="text" id="userName" name="name" v-model="user.data.name" required v-validate />
       <span class="error">{{ errors.name }}</span>
     </span>
     <span class="col-lg-3 col-md-5 col-sm-12">
-      <label for="ageInput">Age</label><input type="number" name="age" v-model="user.data.age" min="18" max="100" v-validate />
+      <label for="ageInput">Age</label><input type="number" id="ageInput" name="age" v-model="user.data.age" min="18" max="100" v-validate />
       <span class="error">{{ errors.age }}</span>
     </span>
     <span class="col-lg-3 col-md-8 col-sm-12">
-      <label for="emailInput">Email</label><input type="email" name="email" v-model="user.data.email" required v-validate />
+      <label for="emailInput">Email</label><input type="email" id="emailInput" name="email" v-model="user.data.email" required v-validate />
       <span class="error">{{ errors.email }}</span>
     </span>
     <div id="countries">
