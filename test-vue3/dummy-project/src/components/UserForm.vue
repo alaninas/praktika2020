@@ -14,11 +14,11 @@
       <span class="error">{{ errors.email }}</span>
     </span>
     <span id="countries" class="col-lg-3 col-md-7 col-sm-12">
-      <select v-model="selectedCountry">
+      <select v-model="selectedCountry" name="country" required v-validate >
          <option disabled value="">Please select one</option>
          <option v-for="country in countries" :key="country">{{ country.name }}</option>
       </select>
-      <span>{{ selectedCountry }}</span>
+      <span class="error">{{ errors.country }}</span>
     </span>
     <AddressAutocomplete />
     <input
@@ -42,6 +42,7 @@ import ValidationErrors from '@/modules/ValidationErrors'
 // import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
 import countriesJson from '@/assets/countries.json'
+import useUsers from '@/features/useUsers'
 
 export default {
   name: 'UserForm',
@@ -53,7 +54,8 @@ export default {
     validate: validate
   },
   setup () {
-    const errors = ref([])
+    const { getErrors } = useUsers()
+    const errors = getErrors()
     const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
     const user = reactive({ data: new User({}) })
@@ -62,11 +64,14 @@ export default {
     function dummy () {
       return true
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function test (errobj: any) {
+    function test (errobj: never[]) {
+      // const newEr = setErrors(errobj)
       Object.values(errobj).length ? console.log(errobj) : console.log('No input provided yet :)')
       console.log('Number of fields with validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
+      // Object.values(newEr).length ? console.log(newEr) : console.log('No input provided yet :)')
+      // console.log('Number of fields with validation errors:')
+      // console.log(Object.values(newEr).filter(el => !!el).length)
       // const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
       // usersAdd(nu)
     }
@@ -84,6 +89,6 @@ form span {
 span.error {
   display: block;
   color: red;
-  margin-top: 5px;
+  margin-top: 0;
 }
 </style>
