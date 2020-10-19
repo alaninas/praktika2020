@@ -4,10 +4,13 @@ li:focus-within {
   background-color: var(--table-body-hover-back-color);
   color: #f8f8f8;
 }
-.form-control,
+.form-control {
+  width: 100%;
+  margin: 0;
+}
 ul,
 li {
-  width: 100%;
+  width: auto;
   margin: 0;
   text-align: left;
 }
@@ -27,4 +30,12 @@ li {
 li:hover,
 li:focus-within {
   cursor: pointer;
+}
+.matches input,
+.matches input:hover,
+.matches input:focus,
+.matches label,
+.matches label:hover,
+.matches label:focus {
+  pointer-events: none;
 }
