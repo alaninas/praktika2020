@@ -36,8 +36,8 @@
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
 import useAddresses from '@/features/useAddresses'
 import AddressInterface from '@/modules/IAddress'
+import { getErrors } from '@/modules/errors'
 import validate from '@/directives/validate'
-import useUsers from '@/features/useUsers'
 
 export default {
   name: 'AddressAutocomplete',
@@ -45,7 +45,6 @@ export default {
     validate: validate
   },
   setup () {
-    const { getErrors } = useUsers()
     const errors = getErrors()
     const currentIdx = reactive({ data: 0 })
     const search = reactive({ data: '' })
@@ -87,7 +86,6 @@ export default {
     }
     watchEffect(() => {
       openMatches(findMatches(computed(() => performStringSearch(search.data))))
-      // setErrors(errors.value)
     })
     return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx, matchedAddresses, errors }
   }

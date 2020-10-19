@@ -1,24 +1,8 @@
 import User from '@/modules/User'
-import Users from '@/modules/Users'
+import { users } from '@/modules/users'
 import { compareNumbers, compareStrings } from '@/modules/compareFunctions'
-import { Ref, ref } from 'vue'
-
-let errors = ref([])
 
 export default function useUsers () {
-  const myUsersObject = new Users({})
-  const users = myUsersObject.getUsersArrayRef()
-
-  function getErrors (): Ref<never[]> {
-    return errors
-  }
-
-  function setErrors (obj: never[]): never[] {
-    errors = Object.assign(errors, obj)
-    console.log(errors)
-    return errors.value
-  }
-
   function isNameUnique (user: User): boolean {
     return user.name !== undefined && users.value.findIndex(el => el.name === user.name) < 0
   }
@@ -57,5 +41,5 @@ export default function useUsers () {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
 
-  return { users, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail, getErrors, setErrors }
+  return { users, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
 }

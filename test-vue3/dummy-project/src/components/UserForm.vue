@@ -39,10 +39,9 @@ import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import User from '@/modules/User'
 import ValidationErrors from '@/modules/ValidationErrors'
-// import useUsers from '@/features/useUsers'
+import { getErrors } from '@/modules/errors'
 import validate from '@/directives/validate'
 import countriesJson from '@/assets/countries.json'
-import useUsers from '@/features/useUsers'
 
 export default {
   name: 'UserForm',
@@ -54,7 +53,6 @@ export default {
     validate: validate
   },
   setup () {
-    const { getErrors } = useUsers()
     const errors = getErrors()
     const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
@@ -65,13 +63,9 @@ export default {
       return true
     }
     function test (errobj: never[]) {
-      // const newEr = setErrors(errobj)
       Object.values(errobj).length ? console.log(errobj) : console.log('No input provided yet :)')
       console.log('Number of fields with validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
-      // Object.values(newEr).length ? console.log(newEr) : console.log('No input provided yet :)')
-      // console.log('Number of fields with validation errors:')
-      // console.log(Object.values(newEr).filter(el => !!el).length)
       // const nu = new User({ name: tuser.name, age: tuser.age, email: tuser.email })
       // usersAdd(nu)
     }
