@@ -1,20 +1,24 @@
 import User from '@/modules/User'
 import { users } from '@/modules/users'
+// import { errors, getErrors } from '@/modules/errors'
 import { compareNumbers, compareStrings } from '@/modules/compareFunctions'
+import { ref } from 'vue'
+
+const uErrors = ref({ name: '' })
 
 export default function useUsers () {
   function isNameUnique (user: User): boolean {
-    return user.name !== undefined && users.value.findIndex(el => el.name === user.name) < 0
+    return user.name !== undefined && user.name.length > 0 && users.value.findIndex(el => el.name === user.name) < 0
   }
 
-  // perform inner validation on userNameUniqueness &&
-  // pswd1 === pswd2
-  // --> update errorObject
-  // ---> onSubmit will set the appropriate error messaging on invalid fields
-  // if (!isNameUnique(nu)) nu.getUserValidate().setErrors({ isValid: false, messages: ['User name is not unique.'] })
-  // if (nu.getUserValidate().isValid) usersAdd(nu)
-  function usersAdd (user: User): User[] {
-    users.value.push(user)
+  function arePassworsEqual (user: User): boolean {
+    // if (user.password === undefined && user.passwordConfirm === undefined) return true
+    return user.password === user.passwordConfirm
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function usersAdd (user: User) {
+    // users.value.push(user)
     return users.value
   }
 
@@ -41,5 +45,5 @@ export default function useUsers () {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
 
-  return { users, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
+  return { users, uErrors, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail, arePassworsEqual }
 }
