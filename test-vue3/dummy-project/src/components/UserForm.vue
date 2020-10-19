@@ -9,17 +9,18 @@
       <label for="ageInput">Age</label><input type="number" id="ageInput" name="age" v-model="user.data.age" min="18" max="100" v-validate />
       <span class="error">{{ errors.age }}</span>
     </span>
-    <span class="col-lg-3 col-md-8 col-sm-12">
+    <span class="col-lg-3 col-md-5 col-sm-12">
       <label for="emailInput">Email</label><input type="email" id="emailInput" name="email" v-model="user.data.email" required v-validate />
       <span class="error">{{ errors.email }}</span>
     </span>
-    <div id="countries">
-     <select v-model="selectedCountry">
-        <option disabled value="">Please select one</option>
-        <option v-for="country in countries" :key="country">{{ country.name }}</option>
-     </select>
-     <span>Selected: {{ selectedCountry }}</span>
-    </div>
+    <span id="countries" class="col-lg-3 col-md-7 col-sm-12">
+      <select v-model="selectedCountry">
+         <option disabled value="">Please select one</option>
+         <option v-for="country in countries" :key="country">{{ country.name }}</option>
+      </select>
+      <span>{{ selectedCountry }}</span>
+    </span>
+    <AddressAutocomplete />
     <input
       type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
       @click="test(errors)"
@@ -29,7 +30,6 @@
     v-bind:isValid="userValidationErrors.data.isValid"
     v-bind:errMessages="userValidationErrors.data.messages"
   />
-  <AddressAutocomplete />
 </div>
 </template>
 
@@ -75,7 +75,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 form span {
   display: inline-block;
   white-space: nowrap;

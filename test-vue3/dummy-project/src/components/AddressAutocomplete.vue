@@ -1,5 +1,6 @@
 <template>
-<div class="card fluid">
+<div class="row">
+  <div class="col-lg-4 col-md-5 col-sm-12">
   <input class="form-control" type="text" v-model="search.data" placeholder="your address"
     @keydown.enter="enter()"
     @keydown.down="down()"
@@ -11,18 +12,19 @@
       {{ match }}
     </li>
   </ul>
-  <div class="row" v-else-if="matchedAddresses[0]">
+  </div>
+  <div class="matches col-lg-8 col-md-7 col-sm-12" v-if="matchedAddresses[0] && !openDropDown.data">
     <!-- <div> {{ matchedAddresses[0] }} </div> -->
-    <span class="col-lg-3 col-md-6 col-sm-12">
+    <span class="col-lg-6 col-md-12 col-sm-12">
       <label for="streetInp">Street</label><input type="text" id="streetInp" name="street" :value="matchedAddresses[0].street" />
     </span>
-    <span class="col-lg-3 col-md-6 col-sm-12">
+    <span class="col-lg-6 col-md-12 col-sm-12">
       <label for="numberInp">Number</label><input type="text" id="numberInp" name="number" :value="matchedAddresses[0].number" />
     </span>
-    <span class="col-lg-3 col-md-6 col-sm-12">
+    <span class="col-lg-6 col-md-12 col-sm-12">
       <label for="cityInp">City</label><input type="text" id="cityInp" name="city" :value="matchedAddresses[0].city" />
     </span>
-    <span class="col-lg-3 col-md-6 col-sm-12">
+    <span class="col-lg-6 col-md-12 col-sm-12">
       <label for="zipcodeInp">Zipcode</label><input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[0].zipcode" />
     </span>
   </div>
