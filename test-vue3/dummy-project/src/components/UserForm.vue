@@ -103,46 +103,5 @@ export default {
 }
 </script>
 
-<style lang="scss">
-// Required fields
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus:invalid,
-textarea:invalid,
-textarea:focus:invalid,
-select:invalid,
-select:focus:invalid,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]).invalid,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid.invalid,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus:invalid.invalid,
-select:invalid.invalid,
-select:focus:invalid.invalid {
-  background-color: #ffeeee4f;
-  border-color: var(--input-invalid-color);
-}
-input:not([type="button"]):not([type="submit"]):not([type="reset"]).invalid,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid.invalid,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus:invalid.invalid,
-select:invalid.invalid,
-select:focus:invalid.invalid {
-  border-width: .165rem;
-}
-// Labels and text align
-form div.row > div {
-  text-align: left;
-}
-form div.row > div > label {
-  display: block;
-  padding-left: 0;
-}
-// TODO: remove
-// form span {
-//   display: inline-block;
-//   white-space: nowrap;
-// }
-// Error display
-span.error {
-  display: block;
-  color: var(--input-invalid-color);
-  margin-top: 0;
-}
+<style src="../assets/csss/userForm.css">
 </style>
