@@ -2,6 +2,7 @@
 <div>
   <form @submit.prevent="dummy" novalidate id="userForm">
     <!-- remove spans -- use divs && col classes -->
+    <!-- TODO: spans -> divs: rows & cols -->
     <span class="col-lg-3 col-md-7 col-sm-12">
       <label for="userName">Name</label><input type="text" id="userName" name="name" v-model="user.data.name" required v-validate />
       <span class="error">{{ errors.name }}</span>
@@ -56,7 +57,7 @@ import ValidationErrors from '@/modules/ValidationErrors'
 import { getErrors } from '@/modules/errors'
 import useUsers from '@/features/useUsers'
 import validate from '@/directives/validate'
-import countriesJson from '@/assets/countries.json'
+import countriesJson from '@/assets/jsons/countries.json'
 
 export default {
   name: 'UserForm',
@@ -99,6 +100,7 @@ export default {
 </script>
 
 <style lang="scss">
+// TODO: red asterix <- for required fields
 form span {
   display: inline-block;
   white-space: nowrap;

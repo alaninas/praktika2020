@@ -16,6 +16,7 @@
   </div>
   <div class="matches col-lg-8 col-md-7 col-sm-12" v-if="matchedAddresses[0] && !openDropDown.data">
     <!-- <div> {{ matchedAddresses[0] }} </div> -->
+    <!-- TODO: spans -> divs: rows & cols -->
     <span class="col-lg-6 col-md-12 col-sm-12">
       <label for="streetInp">Street</label><input type="text" id="streetInp" name="street" :value="matchedAddresses[0].street" />
     </span>
@@ -92,5 +93,5 @@ export default {
 }
 </script>
 
-<style scoped src="../assets/addressAutocomplete.css">
+<style scoped src="../assets/csss/addressAutocomplete.css">
 </style>

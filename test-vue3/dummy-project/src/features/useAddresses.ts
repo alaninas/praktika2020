@@ -1,8 +1,9 @@
-import addressesJson from '@/assets/addresses.json'
+import addressesJson from '@/assets/jsons/addresses.json'
 import AddressInterface from '@/modules/IAddress'
 import { zipcodeFirst, housenumberFirst, streetFirst } from '@/modules/regex'
 
 export default function useAddresses () {
+  // TODO: fill up adresses.json with real data, instead of dummy slots, add atleast 20 addresses
   const addresses: AddressInterface[] = addressesJson
 
   function substituteStringSeparators (searchStr: string): string {
