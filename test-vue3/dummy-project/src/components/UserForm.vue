@@ -52,11 +52,11 @@
 import { reactive, ref, watchEffect } from 'vue'
 import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
-import User from '@/modules/User'
-import ValidationErrors from '@/modules/ValidationErrors'
-import { getErrors } from '@/modules/errors'
-import useUsers from '@/features/useUsers'
-import validate from '@/directives/validate'
+import User from '@/modules/types/User'
+import ValidationErrors from '@/modules//types/ValidationErrors'
+import { getErrors } from '@/modules/utilities/errors'
+import useUsers from '@/modules/features/useUsers'
+import validate from '@/modules/directives/validate'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {

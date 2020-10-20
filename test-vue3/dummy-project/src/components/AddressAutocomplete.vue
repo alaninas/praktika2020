@@ -35,10 +35,10 @@
 
 <script lang="ts">
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
-import useAddresses from '@/features/useAddresses'
-import AddressInterface from '@/modules/IAddress'
-import { getErrors } from '@/modules/errors'
-import validate from '@/directives/validate'
+import useAddresses from '@/modules/features/useAddresses'
+import AddressInterface from '@/modules/types/IAddress'
+import { getErrors } from '@/modules/utilities/errors'
+import validate from '@/modules/directives/validate'
 
 export default {
   name: 'AddressAutocomplete',

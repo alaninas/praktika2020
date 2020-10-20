@@ -1,6 +1,6 @@
 import addressesJson from '@/assets/jsons/addresses.json'
-import AddressInterface from '@/modules/IAddress'
-import { zipcodeFirst, housenumberFirst, streetFirst } from '@/modules/regex'
+import AddressInterface from '@/modules/types/IAddress'
+import { zipcodeFirst, housenumberFirst, streetFirst } from '@/modules/utilities/regex'
 
 export default function useAddresses () {
   // TODO: fill up adresses.json with real data, instead of dummy slots, add atleast 20 addresses

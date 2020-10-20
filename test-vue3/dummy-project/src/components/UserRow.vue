@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import useUsers from '@/features/useUsers'
+import useUsers from '@/modules/features/useUsers'
 
 export default {
   name: 'UserRow',

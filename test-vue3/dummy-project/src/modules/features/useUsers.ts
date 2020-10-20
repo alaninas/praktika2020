@@ -1,7 +1,7 @@
-import User from '@/modules/User'
-import { users } from '@/modules/users'
+import User from '@/modules/types/User'
+import { users } from '@/modules/types/users'
 // import { errors, getErrors } from '@/modules/errors'
-import { compareNumbers, compareStrings } from '@/modules/compareFunctions'
+import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
 import { ref } from 'vue'
 
 const uErrors = ref({ name: '' })

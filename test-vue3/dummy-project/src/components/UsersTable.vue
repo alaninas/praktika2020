@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import UserRow from '@/components/UserRow.vue'
-import useUsers from '@/features/useUsers'
+import useUsers from '@/modules/features/useUsers'
 
 export default {
   name: 'UsersTable',

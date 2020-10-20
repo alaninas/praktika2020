@@ -1,4 +1,4 @@
-import User from '@/modules/User'
+import User from '@/modules/types/User'
 import { Ref, ref } from 'vue'
 
 export const users: Ref<User[]> = ref([

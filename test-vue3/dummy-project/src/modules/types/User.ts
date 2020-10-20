@@ -1,5 +1,5 @@
-import UserInterface from '@/modules/IUser'
-import ValidationErrors from '@/modules/ValidationErrors'
+import UserInterface from '@/modules/types/IUser'
+import ValidationErrors from '@/modules/types/ValidationErrors'
 
 export default class User implements UserInterface {
     name?: string;
