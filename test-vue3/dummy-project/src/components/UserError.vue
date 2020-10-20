@@ -42,4 +42,9 @@ export default {
   color: var(--input-invalid-color);
   font-weight: bold;
 }
+// span.error {
+//   display: block;
+//   color: var(--input-invalid-color);
+//   margin-top: 0;
+// }
 </style>
