@@ -2,11 +2,14 @@ export default interface UserInterface {
     name?: string;
     surname?: string;
     age?: number;
-    city?: string;
     country?: string;
-    zipcode?: number;
-    email?: string;
     url?: string;
+    userName?: string;
+    email?: string;
     password?: string;
     passwordConfirm?: string;
+    housenumber?: number;
+    street?: string;
+    city?: string;
+    zipcode?: number;
 }

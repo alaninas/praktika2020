@@ -7,6 +7,4 @@ export const users: Ref<UserInterface[]> = ref([
   { name: 'AA', age: 44, email: 'AA@gmail.com' } as UserInterface
 ])
 
-// export function getUsersArrayRef (): Ref<User[]> {
-//   return users
-// }
+export const user: Ref<UserInterface> = ref({} as UserInterface)
