@@ -39,8 +39,7 @@ form div.row + div.row {
   border-top: solid lightgray .125rem;
 }
 /* Error messages */
-span.error {
-  display: block;
+div.error {
   color: var(--input-invalid-color);
   margin-top: 0;
 }

@@ -9,7 +9,7 @@
     @input="inputChange()"
     @click="enter()"
   />
-  <span class="error"> {{ validationErrors.address }} </span>
+  <div class="error">{{ validationErrors.address }}</div>
   <ul class="dropdown-menu" v-if="openDropDown.data">
     <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
       {{ match }}
