@@ -7,6 +7,8 @@ li:focus-within {
 .address-input {
   width: 100%;
   margin: 0;
+  margin-top: calc(0.5 * var(--universal-margin));
+  margin-bottom: calc(0.5 * var(--universal-margin));
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -45,8 +47,9 @@ li:focus-within {
 .autofilled-address input {
   color: rgb(106, 106, 106);
 }
-.autofilled-address div.row,
-.autofilled-address div.row > div > label,
+.autofilled-address div.row {
+  padding-left: calc(2 * var(--universal-padding));
+}
 .autofilled-address div.row > div > input {
   padding-left: var(--universal-padding);
 }
