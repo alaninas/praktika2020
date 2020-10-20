@@ -6,6 +6,7 @@
     @keydown.down="down()"
     @keydown.up="up()"
     @input="inputChange()"
+    @click="enter()"
   />
   <span class="error"> {{ validationErrors.address }} </span>
   <ul class="dropdown-menu" v-if="openDropDown.data">
@@ -14,20 +15,23 @@
     </li>
   </ul>
   </div>
-  <div class="matches col-lg-8 col-md-7 col-sm-12" v-if="matchedAddresses[0] && !openDropDown.data">
-    <!-- <div> {{ matchedAddresses[0] }} </div> -->
+  <div class="matches col-lg-8 col-md-7 col-sm-12">
     <!-- TODO: spans -> divs: rows & cols -->
     <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="streetInp">Street</label><input type="text" id="streetInp" name="street" :value="matchedAddresses[0].street" />
+      <label for="streetInp">Street</label>
+      <input type="text" id="streetInp" name="street" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].street : ''" />
     </span>
     <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="numberInp">Number</label><input type="text" id="numberInp" name="number" :value="matchedAddresses[0].number" />
+      <label for="numberInp">Number</label>
+      <input type="text" id="numberInp" name="number" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].number : ''" />
     </span>
     <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="cityInp">City</label><input type="text" id="cityInp" name="city" :value="matchedAddresses[0].city" />
+      <label for="cityInp">City</label>
+      <input type="text" id="cityInp" name="city" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].city : ''" />
     </span>
     <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="zipcodeInp">Zipcode</label><input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[0].zipcode" />
+      <label for="zipcodeInp">Zipcode</label>
+      <input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].zipcode : ''" />
     </span>
   </div>
 </div>
