@@ -19,20 +19,20 @@
     <!-- TODO: spans -> divs: rows & cols -->
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="streetInp">Street</label>
-        <input type="text" id="streetInp" name="street" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].street : ''" />
+        <label for="streetInput">Street</label>
+        <input type="text" id="streetInput" name="street" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].street : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="numberInp">Number</label>
-        <input type="text" id="numberInp" name="number" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].number : ''" />
+        <label for="numberInput">Number</label>
+        <input type="text" id="numberInput" name="number" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].number : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="cityInp">City</label>
-        <input type="text" id="cityInp" name="city" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].city : ''" />
+        <label for="cityInput">City</label>
+        <input type="text" id="cityInput" name="city" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].city : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="zipcodeInp">Zipcode</label>
-        <input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].zipcode : ''" />
+        <label for="zipcodeInput">Zipcode</label>
+        <input type="text" id="zipcodeInput" name="zipcode" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].zipcode : ''" />
       </div>
     </div>
   </div>
