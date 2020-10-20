@@ -1,6 +1,6 @@
 <template>
 <div class="row">
-  <div class="col-lg-4 col-md-5 col-sm-12">
+  <div class="col-lg-3 col-md-4 col-sm-12">
   <input class="form-control" type="text" v-model="search.data" placeholder="your address" name="address" required v-validate
     @keydown.enter="enter()"
     @keydown.down="down()"
@@ -15,24 +15,26 @@
     </li>
   </ul>
   </div>
-  <div class="matches col-lg-8 col-md-7 col-sm-12">
+  <div class="matches col-lg-9 col-md-8 col-sm-12">
     <!-- TODO: spans -> divs: rows & cols -->
-    <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="streetInp">Street</label>
-      <input type="text" id="streetInp" name="street" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].street : ''" />
-    </span>
-    <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="numberInp">Number</label>
-      <input type="text" id="numberInp" name="number" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].number : ''" />
-    </span>
-    <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="cityInp">City</label>
-      <input type="text" id="cityInp" name="city" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].city : ''" />
-    </span>
-    <span class="col-lg-6 col-md-12 col-sm-12">
-      <label for="zipcodeInp">Zipcode</label>
-      <input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].zipcode : ''" />
-    </span>
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="streetInp">Street</label>
+        <input type="text" id="streetInp" name="street" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].street : ''" />
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="numberInp">Number</label>
+        <input type="text" id="numberInp" name="number" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].number : ''" />
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="cityInp">City</label>
+        <input type="text" id="cityInp" name="city" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].city : ''" />
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="zipcodeInp">Zipcode</label>
+        <input type="text" id="zipcodeInp" name="zipcode" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].zipcode : ''" />
+      </div>
+    </div>
   </div>
 </div>
 </template>
