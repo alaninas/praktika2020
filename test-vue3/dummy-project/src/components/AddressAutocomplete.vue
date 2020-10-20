@@ -1,7 +1,8 @@
 <template>
 <div class="row">
   <div class="col-lg-3 col-md-4 col-sm-12">
-  <input class="form-control" type="text" v-model="search.data" placeholder="your address" name="address" required v-validate
+  <label for="addressInput">Address</label>
+  <input class="form-control" type="text" id="addressInput" v-model="search.data" placeholder="your address" name="address" required v-validate
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"

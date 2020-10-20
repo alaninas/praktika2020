@@ -104,7 +104,7 @@ export default {
 </script>
 
 <style lang="scss">
-// TODO: red asterix <- for required fields
+// Required fields
 input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid,
 input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus:invalid,
 textarea:invalid,
@@ -126,12 +126,20 @@ select:invalid.invalid,
 select:focus:invalid.invalid {
   border-width: .165rem;
 }
+// Labels and text align
+form div.row > div {
+  text-align: left;
+}
+form div.row > div > label {
+  display: block;
+  padding-left: 0;
+}
 // TODO: remove
 // form span {
 //   display: inline-block;
 //   white-space: nowrap;
 // }
-// Val
+// Error display
 span.error {
   display: block;
   color: var(--input-invalid-color);
