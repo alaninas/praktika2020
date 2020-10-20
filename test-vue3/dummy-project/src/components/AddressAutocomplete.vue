@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col-lg-3 col-md-4 col-sm-12">
   <label for="addressInput">Address</label>
-  <input class="address-input" type="text" id="addressInput" v-model="search.data" placeholder="your address" name="address" required v-validate
+  <input class="address-input" type="text" id="addressInput" v-model="searchString.data" placeholder="your address" name="address" required v-validate
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
@@ -41,10 +41,11 @@
 
 <script lang="ts">
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
-import useAddresses from '@/modules/features/useAddresses'
 import AddressInterface from '@/modules/types/IAddress'
-import useErrors from '@/modules/features/useErrors'
+import { validationErrors } from '@/modules/types/errors'
 import validate from '@/modules/directives/validate'
+import performStringSearch from '@/modules/features/useAddresses'
+import { setUserAddress } from '@/modules/features/useUser'
 
 export default {
   name: 'AddressAutocomplete',
@@ -52,20 +53,18 @@ export default {
     validate: validate
   },
   setup () {
-    const { validationErrors } = useErrors()
     const currentIdx = reactive({ data: 0 })
-    const search = reactive({ data: '' })
+    const searchString = reactive({ data: '' })
     const matchedAddressesToString = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
-    const { performStringSearch } = useAddresses()
-    const matchedAddresses = computed(() => performStringSearch(search.data))
+    const matchedAddresses = computed(() => performStringSearch(searchString.data))
 
     function findMatches (addr: ComputedRef<AddressInterface[]>): string[] {
       matchedAddressesToString.data = addr.value.map<string>(el => Object.values(el).join(', '))
       return matchedAddressesToString.data
     }
     function openMatches (matchedAddressesToStringArray: string[]): boolean {
-      openDropDown.data = search.data !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
+      openDropDown.data = searchString.data !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
       return openDropDown.data
     }
     function resetDropDown (dropdDownListAction: boolean) {
@@ -73,11 +72,15 @@ export default {
       currentIdx.data = 0
     }
     function matchesClick (index: number) {
-      search.data = matchedAddressesToString.data[index]
+      setUserAddress(matchedAddresses.value[currentIdx.data])
+      searchString.data = matchedAddressesToString.data[index]
       resetDropDown(false)
     }
     function enter () {
-      search.data = matchedAddressesToString.data[currentIdx.data] ? matchedAddressesToString.data[currentIdx.data] : search.data
+      if (matchedAddressesToString.data[currentIdx.data]) {
+        setUserAddress(matchedAddresses.value[currentIdx.data])
+        searchString.data = matchedAddressesToString.data[currentIdx.data]
+      }
       resetDropDown(false)
     }
     function up () {
@@ -92,9 +95,9 @@ export default {
       }
     }
     watchEffect(() => {
-      openMatches(findMatches(computed(() => performStringSearch(search.data))))
+      openMatches(findMatches(computed(() => performStringSearch(searchString.data))))
     })
-    return { enter, up, down, inputChange, matchesClick, search, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors }
+    return { enter, up, down, inputChange, matchesClick, searchString, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors }
   }
 }
 </script>

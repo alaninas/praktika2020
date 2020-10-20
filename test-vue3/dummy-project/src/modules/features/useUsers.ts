@@ -2,13 +2,13 @@ import UserInterface from '@/modules/types/IUser'
 import { users } from '@/modules/types/users'
 import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
 
-export default function useUsers () {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function usersAdd (user: UserInterface) {
-    // users.value.push(user)
-    return users.value
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function usersAdd (user: UserInterface) {
+  // users.value.push(user)
+  return users.value
+}
 
+export default function useUsers () {
   function usersRemove (user: UserInterface): UserInterface[] {
     const index = users.value.findIndex(el => el.name === user.name)
     if (index > -1) users.value.splice(index, 1)
@@ -31,6 +31,5 @@ export default function useUsers () {
   function usersSortByAge (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
-
   return { users, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
 }
