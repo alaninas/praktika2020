@@ -3,38 +3,43 @@
   <form @submit.prevent="dummy" novalidate id="userForm">
     <!-- remove spans -- use divs && col classes -->
     <!-- TODO: spans -> divs: rows & cols -->
-    <span class="col-lg-3 col-md-7 col-sm-12">
-      <label for="userName">Name</label>
-      <input type="text" id="userName" name="name" v-model="user.data.name" :class="userErrors.name ? 'invalid' : ''" required v-validate />
-      <span class="error">{{ validationErrors.name }} {{ userErrors.name }}</span>
-    </span>
-    <span class="col-lg-3 col-md-5 col-sm-12">
-      <label for="ageInput">Age</label><input type="number" id="ageInput" name="age" v-model="user.data.age" min="18" max="100" v-validate />
-      <span class="error">{{ validationErrors.age }}</span>
-    </span>
-    <span class="col-lg-3 col-md-7 col-sm-12">
-      <label for="userPassword">Pswd1</label>
-      <input type="password" id="userPassword" name="password" v-model="user.data.password" :class="userErrors.password ? 'invalid' : ''" required v-validate />
-      <span class="error">{{ validationErrors.password }} {{ userErrors.password }}</span>
-      <!-- error component: takes errors, as one object?array -- displays them -->
-    </span>
-    <span class="col-lg-3 col-md-5 col-sm-12">
-      <label for="userPasswordConfirm">Pswd2</label>
-      <input type="password" id="userPasswordConfirm" name="passwordConfirm" v-model="user.data.passwordConfirm" :class="userErrors.password ? 'invalid' : ''" required v-validate />
-      <span class="error">{{ validationErrors.passwordConfirm }} {{ userErrors.password }}</span>
-    </span>
-    <span class="col-lg-3 col-md-5 col-sm-12">
-      <label for="emailInput">Email</label>
-      <input type="email" id="emailInput" name="email" v-model="user.data.email" required v-validate />
-      <span class="error">{{ validationErrors.email }}</span>
-    </span>
-    <span id="countries" class="col-lg-3 col-md-7 col-sm-12">
-      <select v-model="selectedCountry" name="country" required v-validate >
-         <option disabled value="">Please select a country</option>
-         <option v-for="country in countries" :key="country">{{ country.name }}</option>
-      </select>
-      <span class="error">{{ validationErrors.country }}</span>
-    </span>
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="userName">Name</label>
+        <input type="text" id="userName" name="name" v-model="user.data.name" :class="userErrors.name ? 'invalid' : ''" required v-validate />
+        <span class="error">{{ validationErrors.name }} {{ userErrors.name }}</span>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="ageInput">Age</label><input type="number" id="ageInput" name="age" v-model="user.data.age" min="18" max="100" v-validate />
+        <span class="error">{{ validationErrors.age }}</span>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="userPassword">Pswd1</label>
+        <input type="password" id="userPassword" name="password" v-model="user.data.password" :class="userErrors.password ? 'invalid' : ''" required v-validate />
+        <span class="error">{{ validationErrors.password }} {{ userErrors.password }}</span>
+        <!-- error component: takes errors, as one object?array -- displays them -->
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <label for="userPasswordConfirm">Pswd2</label>
+        <input type="password" id="userPasswordConfirm" name="passwordConfirm" v-model="user.data.passwordConfirm" :class="userErrors.password ? 'invalid' : ''" required v-validate />
+        <span class="error">{{ validationErrors.passwordConfirm }} {{ userErrors.password }}</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" name="email" v-model="user.data.email" required v-validate />
+        <span class="error">{{ validationErrors.email }}</span>
+      </div>
+      <div id="countries" class="col-lg-6 col-md-6 col-sm-12">
+        <label for="countryInput">Country</label>
+        <select id="countryInput" v-model="selectedCountry" name="country" required v-validate >
+           <option disabled value="">Please select a country</option>
+           <option v-for="country in countries" :key="country">{{ country.name }}</option>
+        </select>
+        <span class="error">{{ validationErrors.country }}</span>
+      </div>
+    </div>
     <AddressAutocomplete />
     <input
       type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
@@ -121,16 +126,11 @@ select:invalid.invalid,
 select:focus:invalid.invalid {
   border-width: .165rem;
 }
-// input:required:invalid,
-// input.invalid {
-//   background-color: #d32f2f0d;
-//   border-color: var(--input-invalid-color);
-// }
 // TODO: remove
-form span {
-  display: inline-block;
-  white-space: nowrap;
-}
+// form span {
+//   display: inline-block;
+//   white-space: nowrap;
+// }
 // Val
 span.error {
   display: block;
