@@ -37,7 +37,7 @@
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
 import useAddresses from '@/modules/features/useAddresses'
 import AddressInterface from '@/modules/types/IAddress'
-import getErrors from '@/modules/features/useErrors'
+import useErrors from '@/modules/features/useErrors'
 import validate from '@/modules/directives/validate'
 
 export default {
@@ -46,7 +46,7 @@ export default {
     validate: validate
   },
   setup () {
-    const { validationErrors } = getErrors()
+    const { validationErrors } = useErrors()
     const currentIdx = reactive({ data: 0 })
     const search = reactive({ data: '' })
     const matches = reactive({ data: [''] })

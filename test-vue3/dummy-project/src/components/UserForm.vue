@@ -37,7 +37,7 @@
     <AddressAutocomplete />
     <input
       type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
-      @click="test(validationErrors, userErrors, user.data)"
+      @click="test(validationErrors, user.data)"
     />
   </form>
   <!-- <UserError
@@ -52,7 +52,7 @@ import { reactive, ref, watchEffect } from 'vue'
 // import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import UserInterface from '@/modules/types/IUser'
-import getErrors from '@/modules/features/useErrors'
+import useErrors from '@/modules/features/useErrors'
 import useUsers from '@/modules/features/useUsers'
 import validate from '@/modules/directives/validate'
 import countriesJson from '@/assets/jsons/countries.json'
@@ -67,19 +67,19 @@ export default {
     validate: validate
   },
   setup () {
-    const { validationErrors, userErrors } = getErrors()
-    const { usersAdd, isNameUnique, arePassworsEqual } = useUsers()
+    const { validationErrors, userErrors, assignUserErrors } = useErrors()
+    const { usersAdd } = useUsers()
     const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
     const user = reactive({ data: {} as UserInterface })
     function dummy () {
       return true
     }
-    // TODO: no need to send error object as parameters: the updated values are already accessible
-    function test (errobj: never[], uerrobj: never[], nuser: UserInterface) {
-      Object.values(errobj).length ? console.log(errobj) : console.log('No input provided yet :)')
+    function test (valErrs: never[], nuser: UserInterface) {
+      validationErrors.value = valErrs
+      console.log(validationErrors.value)
       console.log('++> Number of fields with Form validation errors:')
-      console.log(Object.values(errobj).filter(el => !!el).length)
+      console.log(Object.values(validationErrors.value).filter(el => !!el).length)
       console.log(userErrors.value)
       console.log('--> Number of fields with User logic errors:')
       console.log(Object.values(userErrors.value).filter(el => !!el).length)
@@ -87,11 +87,16 @@ export default {
       return usersAdd(nu)
     }
     watchEffect(() => {
-      // ??? duplicate assignment to the same object
-      userErrors.value = Object.assign({}, userErrors.value, { name: (isNameUnique(user.data) ? '' : 'User name is not unique.') })
-      userErrors.value = Object.assign({}, userErrors.value, { password: (arePassworsEqual(user.data) ? '' : 'Passwords do not match.') })
+      userErrors.value = assignUserErrors(user.data)
+      console.log(`Updated user logic errors: ${userErrors.value}`)
+      console.log('!!> Number of fields with User logic errors:')
+      console.log(Object.values(userErrors.value).filter(el => !!el).length)
+      // userErrors.value = Object.assign({}, userErrors.value, {
+      //   name: (isNameUnique(user.data) ? '' : 'User name is not unique.'),
+      //   password: (arePassworsEqual(user.data) ? '' : 'Passwords do not match.')
+      // })
     })
-    return { user, dummy, test, countries, selectedCountry, validationErrors, userErrors, isNameUnique }
+    return { user, dummy, test, countries, selectedCountry, validationErrors, userErrors }
   }
 }
 </script>
