@@ -3,15 +3,6 @@ import { users } from '@/modules/types/users'
 import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
 
 export default function useUsers () {
-  // function isNameUnique (user: UserInterface): boolean {
-  //   if (user.name === undefined || user.name.length === 0) return true
-  //   return user.name.length > 0 && users.value.findIndex(el => el.name === user.name) < 0
-  // }
-
-  // function arePassworsEqual (user: UserInterface): boolean {
-  //   return user.password === user.passwordConfirm
-  // }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function usersAdd (user: UserInterface) {
     // users.value.push(user)

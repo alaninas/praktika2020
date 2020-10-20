@@ -91,10 +91,6 @@ export default {
       console.log(`Updated user logic errors: ${userErrors.value}`)
       console.log('!!> Number of fields with User logic errors:')
       console.log(Object.values(userErrors.value).filter(el => !!el).length)
-      // userErrors.value = Object.assign({}, userErrors.value, {
-      //   name: (isNameUnique(user.data) ? '' : 'User name is not unique.'),
-      //   password: (arePassworsEqual(user.data) ? '' : 'Passwords do not match.')
-      // })
     })
     return { user, dummy, test, countries, selectedCountry, validationErrors, userErrors }
   }
