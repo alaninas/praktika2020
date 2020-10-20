@@ -37,7 +37,7 @@
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
 import useAddresses from '@/modules/features/useAddresses'
 import AddressInterface from '@/modules/types/IAddress'
-import { getErrors } from '@/modules/utilities/errors'
+import getErrors from '@/modules/utilities/errors'
 import validate from '@/modules/directives/validate'
 
 export default {

@@ -1,13 +1,9 @@
-import { Ref, ref } from 'vue'
+import { ref } from 'vue'
 
-export let errors = ref([])
+const errors = ref([])
 
-export function getErrors (): Ref<never[]> {
-  return errors
-}
+const uErrors = ref({ name: '' })
 
-export function setErrors (obj: never[]): never[] {
-  errors = Object.assign(errors, obj)
-  console.log(errors)
-  return errors.value
+export default function getErrors () {
+  return { errors, uErrors }
 }

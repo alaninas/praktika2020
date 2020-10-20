@@ -52,7 +52,7 @@ import { reactive, ref, watchEffect } from 'vue'
 // import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import UserInterface from '@/modules/types/IUser'
-import { getErrors } from '@/modules/utilities/errors'
+import getErrors from '@/modules/utilities/errors'
 import useUsers from '@/modules/features/useUsers'
 import validate from '@/modules/directives/validate'
 import countriesJson from '@/assets/jsons/countries.json'
@@ -67,8 +67,8 @@ export default {
     validate: validate
   },
   setup () {
-    const errors = getErrors()
-    const { usersAdd, uErrors, isNameUnique, arePassworsEqual } = useUsers()
+    const { errors, uErrors } = getErrors()
+    const { usersAdd, isNameUnique, arePassworsEqual } = useUsers()
     const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
     const user = reactive({ data: {} as UserInterface })

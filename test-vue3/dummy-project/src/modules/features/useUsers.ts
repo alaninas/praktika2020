@@ -1,10 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import { users } from '@/modules/types/users'
-// import { errors, getErrors } from '@/modules/errors'
 import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
-import { ref } from 'vue'
-
-const uErrors = ref({ name: '' })
 
 export default function useUsers () {
   function isNameUnique (user: UserInterface): boolean {
@@ -45,5 +41,5 @@ export default function useUsers () {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
 
-  return { users, uErrors, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail, arePassworsEqual }
+  return { users, isNameUnique, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail, arePassworsEqual }
 }
