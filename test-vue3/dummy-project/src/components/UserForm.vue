@@ -5,39 +5,39 @@
     <!-- TODO: spans -> divs: rows & cols -->
     <span class="col-lg-3 col-md-7 col-sm-12">
       <label for="userName">Name</label><input type="text" id="userName" name="name" v-model="user.data.name" required v-validate />
-      <span class="error">{{ errors.name }}</span>
-      <span class="error">{{ uErrors.name }}</span>
+      <span class="error">{{ validationErrors.name }}</span>
+      <span class="error">{{ userErrors.name }}</span>
     </span>
     <span class="col-lg-3 col-md-5 col-sm-12">
       <label for="ageInput">Age</label><input type="number" id="ageInput" name="age" v-model="user.data.age" min="18" max="100" v-validate />
-      <span class="error">{{ errors.age }}</span>
+      <span class="error">{{ validationErrors.age }}</span>
     </span>
     <span class="col-lg-3 col-md-7 col-sm-12">
       <label for="userPassword">Pswd1</label><input type="password" id="userPassword" name="password" v-model="user.data.password" required v-validate />
-      <span class="error">{{ errors.password }} {{ uErrors.password }}</span>
+      <span class="error">{{ validationErrors.password }} {{ userErrors.password }}</span>
       <!-- error component: takes errors, as one object?array -- displays them -->
-      <!-- <span class="error">{{ uErrors.password }}</span> -->
+      <!-- <span class="error">{{ userErrors.password }}</span> -->
     </span>
     <span class="col-lg-3 col-md-5 col-sm-12">
       <label for="userPasswordConfirm">Pswd2</label><input type="password" id="userPasswordConfirm" name="passwordConfirm" v-model="user.data.passwordConfirm" required v-validate />
-      <span class="error">{{ errors.passwordConfirm }}</span>
-      <span class="error">{{ uErrors.password }}</span>
+      <span class="error">{{ validationErrors.passwordConfirm }}</span>
+      <span class="error">{{ userErrors.password }}</span>
     </span>
     <span class="col-lg-3 col-md-5 col-sm-12">
       <label for="emailInput">Email</label><input type="email" id="emailInput" name="email" v-model="user.data.email" required v-validate />
-      <span class="error">{{ errors.email }}</span>
+      <span class="error">{{ validationErrors.email }}</span>
     </span>
     <span id="countries" class="col-lg-3 col-md-7 col-sm-12">
       <select v-model="selectedCountry" name="country" required v-validate >
          <option disabled value="">Please select a country</option>
          <option v-for="country in countries" :key="country">{{ country.name }}</option>
       </select>
-      <span class="error">{{ errors.country }}</span>
+      <span class="error">{{ validationErrors.country }}</span>
     </span>
     <AddressAutocomplete />
     <input
       type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
-      @click="test(errors, uErrors, user.data)"
+      @click="test(validationErrors, userErrors, user.data)"
     />
   </form>
   <!-- <UserError
@@ -52,7 +52,7 @@ import { reactive, ref, watchEffect } from 'vue'
 // import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import UserInterface from '@/modules/types/IUser'
-import getErrors from '@/modules/utilities/errors'
+import getErrors from '@/modules/features/useErrors'
 import useUsers from '@/modules/features/useUsers'
 import validate from '@/modules/directives/validate'
 import countriesJson from '@/assets/jsons/countries.json'
@@ -67,7 +67,7 @@ export default {
     validate: validate
   },
   setup () {
-    const { errors, uErrors } = getErrors()
+    const { validationErrors, userErrors } = getErrors()
     const { usersAdd, isNameUnique, arePassworsEqual } = useUsers()
     const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
@@ -75,22 +75,23 @@ export default {
     function dummy () {
       return true
     }
+    // TODO: no need to send error object as parameters: the updated values are already accessible
     function test (errobj: never[], uerrobj: never[], nuser: UserInterface) {
       Object.values(errobj).length ? console.log(errobj) : console.log('No input provided yet :)')
       console.log('++> Number of fields with Form validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
-      console.log(uErrors.value)
-      console.log('--> Number of fields with User logic validation errors:')
-      console.log(Object.values(uErrors.value).filter(el => !!el).length)
+      console.log(userErrors.value)
+      console.log('--> Number of fields with User logic errors:')
+      console.log(Object.values(userErrors.value).filter(el => !!el).length)
       const nu = { name: nuser.name, age: nuser.age, email: nuser.email } as UserInterface
       return usersAdd(nu)
     }
     watchEffect(() => {
       // ??? duplicate assignment to the same object
-      uErrors.value = Object.assign({}, uErrors.value, { name: (isNameUnique(user.data) ? '' : 'User name is not unique.') })
-      uErrors.value = Object.assign({}, uErrors.value, { password: (arePassworsEqual(user.data) ? '' : 'Passwords do not match.') })
+      userErrors.value = Object.assign({}, userErrors.value, { name: (isNameUnique(user.data) ? '' : 'User name is not unique.') })
+      userErrors.value = Object.assign({}, userErrors.value, { password: (arePassworsEqual(user.data) ? '' : 'Passwords do not match.') })
     })
-    return { user, dummy, test, countries, selectedCountry, errors, uErrors, isNameUnique }
+    return { user, dummy, test, countries, selectedCountry, validationErrors, userErrors, isNameUnique }
   }
 }
 </script>

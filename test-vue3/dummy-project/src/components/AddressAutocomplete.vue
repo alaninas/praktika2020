@@ -7,7 +7,7 @@
     @keydown.up="up()"
     @input="inputChange()"
   />
-  <span class="error"> {{ errors.address }} </span>
+  <span class="error"> {{ validationErrors.address }} </span>
   <ul class="dropdown-menu" v-if="openDropDown.data">
     <li v-for="(match, i) in matches.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
       {{ match }}
@@ -37,7 +37,7 @@
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
 import useAddresses from '@/modules/features/useAddresses'
 import AddressInterface from '@/modules/types/IAddress'
-import getErrors from '@/modules/utilities/errors'
+import getErrors from '@/modules/features/useErrors'
 import validate from '@/modules/directives/validate'
 
 export default {
@@ -46,7 +46,7 @@ export default {
     validate: validate
   },
   setup () {
-    const errors = getErrors()
+    const { validationErrors } = getErrors()
     const currentIdx = reactive({ data: 0 })
     const search = reactive({ data: '' })
     const matches = reactive({ data: [''] })
@@ -88,7 +88,7 @@ export default {
     watchEffect(() => {
       openMatches(findMatches(computed(() => performStringSearch(search.data))))
     })
-    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx, matchedAddresses, errors }
+    return { enter, up, down, inputChange, matchesClick, search, matches, openDropDown, currentIdx, matchedAddresses, validationErrors }
   }
 }
 </script>

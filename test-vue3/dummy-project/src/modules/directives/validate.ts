@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function updateErrorObject ({ el, vm }: { el: any; vm: any }) {
-  vm.errors = Object.assign({}, vm.errors, {
+  vm.validationErrors = Object.assign({}, vm.validationErrors, {
     [el.name]: el.validationMessage
   })
 }
