@@ -4,9 +4,11 @@ li:focus-within {
   background-color: var(--table-body-hover-back-color);
   color: #f8f8f8;
 }
-.form-control {
+.address-input {
   width: 100%;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 ul,
 li {
@@ -42,4 +44,9 @@ li:focus-within {
 .matches,
 .matches input {
   color: rgb(106, 106, 106);
+}
+.matches div.row,
+.matches div.row > div > label,
+.matches div.row > div > input {
+  padding-left: var(--universal-padding);
 }
