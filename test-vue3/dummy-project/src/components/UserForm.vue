@@ -40,20 +40,18 @@
       @click="test(errors, uErrors, user.data)"
     />
   </form>
-  <!-- TODO: remove. Duplicate logic use 'errors' instead. -->
-  <UserError
+  <!-- <UserError
     v-bind:isValid="userValidationErrors.data.isValid"
     v-bind:errMessages="userValidationErrors.data.messages"
-  />
+  /> -->
 </div>
 </template>
 
 <script lang="ts">
 import { reactive, ref, watchEffect } from 'vue'
-import UserError from '@/components/UserError.vue'
+// import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
-import User from '@/modules/types/User'
-import ValidationErrors from '@/modules//types/ValidationErrors'
+import UserInterface from '@/modules/types/IUser'
 import { getErrors } from '@/modules/utilities/errors'
 import useUsers from '@/modules/features/useUsers'
 import validate from '@/modules/directives/validate'
@@ -62,7 +60,7 @@ import countriesJson from '@/assets/jsons/countries.json'
 export default {
   name: 'UserForm',
   components: {
-    UserError,
+    // UserError,
     AddressAutocomplete
   },
   directives: {
@@ -73,20 +71,18 @@ export default {
     const { usersAdd, uErrors, isNameUnique, arePassworsEqual } = useUsers()
     const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
-    const user = reactive({ data: new User({}) })
-    // TODO: remove. Duplicate logic use 'errors' instead.
-    const userValidationErrors = reactive({ data: new ValidationErrors({}) })
+    const user = reactive({ data: {} as UserInterface })
     function dummy () {
       return true
     }
-    function test (errobj: never[], uerrobj: never[], nuser: User) {
+    function test (errobj: never[], uerrobj: never[], nuser: UserInterface) {
       Object.values(errobj).length ? console.log(errobj) : console.log('No input provided yet :)')
       console.log('++> Number of fields with Form validation errors:')
       console.log(Object.values(errobj).filter(el => !!el).length)
       console.log(uErrors.value)
-      console.log('--> Number of fields with User validation errors:')
+      console.log('--> Number of fields with User logic validation errors:')
       console.log(Object.values(uErrors.value).filter(el => !!el).length)
-      const nu = new User({ name: nuser.name, age: nuser.age, email: nuser.email })
+      const nu = { name: nuser.name, age: nuser.age, email: nuser.email } as UserInterface
       return usersAdd(nu)
     }
     watchEffect(() => {
@@ -94,7 +90,7 @@ export default {
       uErrors.value = Object.assign({}, uErrors.value, { name: (isNameUnique(user.data) ? '' : 'User name is not unique.') })
       uErrors.value = Object.assign({}, uErrors.value, { password: (arePassworsEqual(user.data) ? '' : 'Passwords do not match.') })
     })
-    return { user, userValidationErrors, dummy, test, countries, selectedCountry, errors, uErrors, isNameUnique }
+    return { user, dummy, test, countries, selectedCountry, errors, uErrors, isNameUnique }
   }
 }
 </script>

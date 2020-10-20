@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { reactive, watchEffect } from 'vue'
-import User from '@/modules/types/User'
+import UserInterface from '@/modules/types/IUser'
 import useUsers from '@/modules/features/useUsers'
 
 export default {
@@ -23,9 +23,9 @@ export default {
   setup () {
     const pattern = reactive({ data: '' })
     const { usersSearchByName } = useUsers()
-    const userSearchResults: {data: User[] | []} = reactive({ data: [] })
+    const userSearchResults: {data: UserInterface[] | []} = reactive({ data: [] })
 
-    function userSearch (pattern?: string): User[] {
+    function userSearch (pattern?: string): UserInterface[] {
       userSearchResults.data = usersSearchByName({ pattern })
       return userSearchResults.data
     }

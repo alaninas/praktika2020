@@ -12,7 +12,6 @@ export default function useAddresses () {
 
   function parseSearchString (searchStr: string) {
     searchStr = substituteStringSeparators(searchStr)
-    // console.log(`==> search ${searchStr}`)
     let patternMatch: RegExpMatchArray | null = null
     let parsedAddress: AddressInterface = { street: '', number: '', zipcode: '', city: '' }
     if (zipcodeFirst.test(searchStr)) {
