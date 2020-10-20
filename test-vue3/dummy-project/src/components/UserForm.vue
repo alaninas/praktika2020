@@ -31,7 +31,7 @@
       </div>
       <div id="countries" class="col-lg-6 col-md-6 col-sm-12">
         <label for="countryInput">Country</label>
-        <select id="countryInput" v-model="selectedCountry" name="country" required v-validate >
+        <select id="countryInput" v-model="user.data.country" name="country" required v-validate >
            <option disabled value="">Please select a country</option>
            <option v-for="country in countries" :key="country">{{ country.name }}</option>
         </select>
@@ -40,7 +40,7 @@
     </div>
     <AddressAutocomplete />
     <input
-      type="submit" value="Submit" class="button primary responsive-padding responsive-margin col-lg col-md-4 col-sm-12"
+      type="submit" value="Submit" class="button primary responsive-padding responsive-margin"
       @click="test(validationErrors, user.data)"
     />
   </form>
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref, watchEffect } from 'vue'
+import { reactive, watchEffect } from 'vue'
 // import UserError from '@/components/UserError.vue'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import UserInterface from '@/modules/types/IUser'
@@ -73,7 +73,6 @@ export default {
   setup () {
     const { validationErrors, userErrors, assignUserErrors } = useErrors()
     const { usersAdd } = useUsers()
-    const selectedCountry = ref(['No country selected'])
     const countries = countriesJson
     const user = reactive({ data: {} as UserInterface })
     function dummy () {
@@ -81,22 +80,24 @@ export default {
     }
     function test (valErrs: never[], nuser: UserInterface) {
       validationErrors.value = valErrs
-      console.log(validationErrors.value)
-      console.log('++> Number of fields with Form validation errors:')
-      console.log(Object.values(validationErrors.value).filter(el => !!el).length)
-      console.log(userErrors.value)
-      console.log('--> Number of fields with User logic errors:')
-      console.log(Object.values(userErrors.value).filter(el => !!el).length)
+      // console.log(validationErrors.value)
+      // console.log('++> Number of fields with Form validation errors:')
+      // console.log(Object.values(validationErrors.value).filter(el => !!el).length)
+      // console.log(userErrors.value)
+      // console.log('--> Number of fields with User logic errors:')
+      // console.log(Object.values(userErrors.value).filter(el => !!el).length)
+      console.log('>>> User information:')
+      console.log(user.data)
       const nu = { name: nuser.name, age: nuser.age, email: nuser.email } as UserInterface
       return usersAdd(nu)
     }
     watchEffect(() => {
       userErrors.value = assignUserErrors(user.data)
-      console.log(userErrors.value)
-      console.log('!!> Number of fields with User logic errors:')
-      console.log(Object.values(userErrors.value).filter(el => !!el).length)
+      // console.log(userErrors.value)
+      // console.log('!!> Number of fields with User logic errors:')
+      // console.log(Object.values(userErrors.value).filter(el => !!el).length)
     })
-    return { user, dummy, test, countries, selectedCountry, validationErrors, userErrors }
+    return { user, dummy, test, countries, validationErrors, userErrors }
   }
 }
 </script>

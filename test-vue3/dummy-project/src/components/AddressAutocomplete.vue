@@ -17,7 +17,6 @@
   </ul>
   </div>
   <div class="matches col-lg-9 col-md-8 col-sm-12">
-    <!-- TODO: spans -> divs: rows & cols -->
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="streetInput">Street</label>
