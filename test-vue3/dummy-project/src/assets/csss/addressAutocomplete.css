@@ -33,20 +33,20 @@ li:hover,
 li:focus-within {
   cursor: pointer;
 }
-.matches input,
-.matches input:hover,
-.matches input:focus,
-.matches label,
-.matches label:hover,
-.matches label:focus {
+.autofilled-address input,
+.autofilled-address input:hover,
+.autofilled-address input:focus,
+.autofilled-address label,
+.autofilled-address label:hover,
+.autofilled-address label:focus {
   pointer-events: none;
 }
-.matches,
-.matches input {
+.autofilled-address,
+.autofilled-address input {
   color: rgb(106, 106, 106);
 }
-.matches div.row,
-.matches div.row > div > label,
-.matches div.row > div > input {
+.autofilled-address div.row,
+.autofilled-address div.row > div > label,
+.autofilled-address div.row > div > input {
   padding-left: var(--universal-padding);
 }
