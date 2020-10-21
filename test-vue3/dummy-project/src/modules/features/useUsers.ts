@@ -3,9 +3,9 @@ import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunct
 import { ref, Ref } from 'vue'
 
 export const users: Ref<UserInterface[]> = ref([
-  { userName: 'a', age: 22, email: 'hhgh@gmail.com' } as UserInterface,
-  { userName: 'ca', age: 33, email: 'a@gmail.com' } as UserInterface,
-  { userName: 'AA', age: 44, email: 'AA@gmail.com' } as UserInterface
+  { userName: 'a', age: 22, email: 'hg@gmail.com', addressString: 'Vivulskio g., 123, Vilnius, 70546', country: 'Lietuva' } as UserInterface,
+  { userName: 'ca', age: 33, email: 'aacc@gmail.com', addressString: 'Algirdo g., 33, Vilnius, 00546', country: 'Lietuva' } as UserInterface,
+  { userName: 'AA', age: 44, email: 'AA@gmail.com', addressString: 'Vieversiu g., 123, Vilnius, 10546', country: 'Lietuva' } as UserInterface
 ])
 
 export default function useUsers () {
@@ -15,21 +15,29 @@ export default function useUsers () {
     return users.value
   }
 
-  function usersSearchByName ({ pattern = '' }: { pattern?: string }): UserInterface[] {
+  function searchByName ({ pattern = '' }: { pattern?: string }): UserInterface[] {
     const re = new RegExp(pattern, 'i')
     return pattern ? users.value.filter(el => el.userName && re.test(el.userName)) : []
   }
 
-  function usersSortByName (reverse: boolean): UserInterface[] {
+  function sortByUserName (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareStrings(a.userName, b.userName, reverse))
   }
 
-  function usersSortByEmail (reverse: boolean): UserInterface[] {
+  function sortByEmail (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareStrings(a.email, b.email, reverse))
   }
 
-  function usersSortByAge (reverse: boolean): UserInterface[] {
+  function sortByCountry (reverse: boolean): UserInterface[] {
+    return users.value.sort((a, b) => compareStrings(a.country, b.country, reverse))
+  }
+
+  function sortByAddressString (reverse: boolean): UserInterface[] {
+    return users.value.sort((a, b) => compareStrings(a.addressString, b.addressString, reverse))
+  }
+
+  function sortByAge (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
-  return { users, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
+  return { users, usersRemove, searchByName, sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry }
 }

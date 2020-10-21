@@ -5,20 +5,32 @@
         <th>Nr | Del</th>
         <th>User name
           <div class="sort-arrows">
-            <span class="arrow" @click="usersSortByName(false)"></span>
-            <span class="arrow down" @click="usersSortByName(true)"></span>
+            <span class="arrow" @click="sortByUserName(false)"></span>
+            <span class="arrow down" @click="sortByUserName(true)"></span>
           </div>
         </th>
         <th>Age
           <div class="sort-arrows">
-            <span class="arrow" @click="usersSortByAge(false)"></span>
-            <span class="arrow down" @click="usersSortByAge(true)"></span>
+            <span class="arrow" @click="sortByAge(false)"></span>
+            <span class="arrow down" @click="sortByAge(true)"></span>
           </div>
         </th>
         <th>Email
           <div class="sort-arrows">
-            <span class="arrow" @click="usersSortByEmail(false)"></span>
-            <span class="arrow down" @click="usersSortByEmail(true)"></span>
+            <span class="arrow" @click="sortByEmail(false)"></span>
+            <span class="arrow down" @click="sortByEmail(true)"></span>
+          </div>
+        </th>
+        <th>Country
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByCountry(false)"></span>
+            <span class="arrow down" @click="sortByCountry(true)"></span>
+          </div>
+        </th>
+        <th>Address
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByAddressString(false)"></span>
+            <span class="arrow down" @click="sortByAddressString(true)"></span>
           </div>
         </th>
       </tr>
@@ -40,8 +52,8 @@ export default {
     UserRow
   },
   setup () {
-    const { usersSortByName, usersSortByAge, usersSortByEmail } = useUsers()
-    return { usersSortByName, usersSortByEmail, usersSortByAge }
+    const { sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry } = useUsers()
+    return { sortByUserName, sortByEmail, sortByAge, sortByAddressString, sortByCountry }
   }
 }
 </script>

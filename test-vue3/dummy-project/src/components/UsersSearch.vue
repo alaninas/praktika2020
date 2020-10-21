@@ -22,11 +22,11 @@ export default {
   name: 'UsersSearch',
   setup () {
     const pattern = reactive({ data: '' })
-    const { usersSearchByName } = useUsers()
+    const { searchByName } = useUsers()
     const userSearchResults: {data: UserInterface[] | []} = reactive({ data: [] })
 
     function userSearch (pattern?: string): UserInterface[] {
-      userSearchResults.data = usersSearchByName({ pattern })
+      userSearchResults.data = searchByName({ pattern })
       return userSearchResults.data
     }
 

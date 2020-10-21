@@ -11,6 +11,8 @@
     <td data-label="User name">{{ user.userName }}</td>
     <td data-label="Age">{{ user.age }}</td>
     <td data-label="Email">{{ user.email }}</td>
+    <td data-label="Country">{{ user.country }}</td>
+    <td data-label="Address">{{ user.addressString }}</td>
   </tr>
 </template>
 
