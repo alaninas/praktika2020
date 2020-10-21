@@ -1,6 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
-import { users } from '@/modules/types/users'
-import { userErrors } from '@/modules/types/errors'
+import { users } from '@/modules/features/useUsers'
+import { ref } from 'vue'
 
 function isNameUnique (user: UserInterface): boolean {
   if (user.name === undefined || user.name.length === 0) return true
@@ -9,6 +9,15 @@ function isNameUnique (user: UserInterface): boolean {
 
 function arePassworsEqual (user: UserInterface): boolean {
   return user.password === user.passwordConfirm
+}
+
+export const validationErrors = ref({})
+
+export const userErrors = ref({ name: '', password: '' })
+
+export function resetErrors () {
+  validationErrors.value = {}
+  userErrors.value = { name: '', password: '' }
 }
 
 export function assignUserErrors (user: UserInterface) {

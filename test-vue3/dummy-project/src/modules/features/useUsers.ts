@@ -1,12 +1,12 @@
 import UserInterface from '@/modules/types/IUser'
-import { users } from '@/modules/types/users'
 import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
+import { ref, Ref } from 'vue'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function usersAdd (user: UserInterface) {
-  // users.value.push(user)
-  return users.value
-}
+export const users: Ref<UserInterface[]> = ref([
+  { name: 'a', age: 22, email: 'hhgh@gmail.com' } as UserInterface,
+  { name: 'ca', age: 33, email: 'a@gmail.com' } as UserInterface,
+  { name: 'AA', age: 44, email: 'AA@gmail.com' } as UserInterface
+])
 
 export default function useUsers () {
   function usersRemove (user: UserInterface): UserInterface[] {
@@ -31,5 +31,5 @@ export default function useUsers () {
   function usersSortByAge (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
-  return { users, usersAdd, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
+  return { users, usersRemove, usersSearchByName, usersSortByName, usersSortByAge, usersSortByEmail }
 }
