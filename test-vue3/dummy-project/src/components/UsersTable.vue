@@ -58,5 +58,5 @@ export default {
 }
 </script>
 
-<style scoped src="../assets/csss/usersTable.css">
+<style scoped src="@/assets/csss/usersTable.css">
 </style>

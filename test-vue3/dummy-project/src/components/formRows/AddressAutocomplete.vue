@@ -103,5 +103,5 @@ export default {
 }
 </script>
 
-<style scoped src="../assets/csss/addressAutocomplete.css">
+<style scoped src="@/assets/csss/addressAutocomplete.css">
 </style>

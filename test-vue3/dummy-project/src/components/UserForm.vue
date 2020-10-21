@@ -48,7 +48,7 @@
 <script lang="ts">
 import { watchEffect } from 'vue'
 import validate from '@/modules/directives/validate'
-import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
+import AddressAutocomplete from '@/components/formRows/AddressAutocomplete.vue'
 import UserInterface from '@/modules/types/IUser'
 import { user } from '@/modules/features/useUser'
 import { users } from '@/modules/features/useUsers'
@@ -85,5 +85,5 @@ export default {
 }
 </script>
 
-<style src="../assets/csss/userForm.css">
+<style src="@/assets/csss/userForm.css">
 </style>
