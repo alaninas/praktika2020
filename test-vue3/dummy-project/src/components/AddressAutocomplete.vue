@@ -2,15 +2,18 @@
 <div class="row">
   <div class="col-lg-3 col-md-4 col-sm-12">
   <label for="addressInput">Address</label>
-  <input class="address-input" type="text" id="addressInput" v-model="user.addressString" placeholder="your address" name="address" required v-validate
-    @keydown.enter="enter()"
+  <input
+    class="address-input" type="text" id="addressInput" v-model="user.addressString" placeholder="your address"
+    name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
+    @keydown.enter="enter(validationErrors)"
     @keydown.down="down()"
     @keydown.up="up()"
-    @input="inputChange()"
+    @input="inputChange(validationErrors)"
+    @click="enter(validationErrors)"
   />
-  <div class="error">{{ validationErrors.address }}</div>
-  <ul class="dropdown-menu" v-if="openDropDown.data">
-    <li v-for="(match, i) in matchedAddressesToString.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
+  <div v-show="!openDropDown.data" class="error">{{ validationErrors.address }}</div>
+  <ul class="dropdown-menu" v-show="openDropDown.data">
+    <li v-for="(match, i) in matchedAddressesToString.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i, validationErrors)">
       {{ match }}
     </li>
   </ul>
@@ -42,7 +45,7 @@
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
 import validate from '@/modules/directives/validate'
 import AddressInterface from '@/modules/types/IAddress'
-import { validationErrors } from '@/modules/features/useErrors'
+import { validationErrors, clearAddressValidationError } from '@/modules/features/useErrors'
 import performStringSearch from '@/modules/features/useAddresses'
 import { user, setUserAddress } from '@/modules/features/useUser'
 
@@ -69,13 +72,17 @@ export default {
       openDropDown.data = dropdDownListAction
       currentIdx.data = 0
     }
-    function matchesClick (index: number) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function matchesClick (index: number, valErr: any) {
       setUserAddress(matchedAddresses.value[index])
       resetDropDown(false)
+      clearAddressValidationError(valErr)
     }
-    function enter () {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function enter (valErr: any) {
       if (matchedAddressesToString.data[currentIdx.data]) setUserAddress(matchedAddresses.value[currentIdx.data])
       resetDropDown(false)
+      clearAddressValidationError(valErr)
     }
     function up () {
       if (currentIdx.data > 0) currentIdx.data--
@@ -83,8 +90,10 @@ export default {
     function down () {
       if (currentIdx.data < matchedAddressesToString.data.length - 1) currentIdx.data++
     }
-    function inputChange () {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function inputChange (valErr: any) {
       if (openDropDown.data === false) resetDropDown(true)
+      clearAddressValidationError(valErr)
     }
     watchEffect(() => {
       openMatches(findMatches(computed(() => performStringSearch(user.value.addressString))))
