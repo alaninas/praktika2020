@@ -67,7 +67,8 @@ function searchAddresses (parsedAddress: AddressInterface, matchString: string |
   return matchedAddresses
 }
 
-function performStringSearch (searchStr: string): AddressInterface[] {
+function performStringSearch (searchStr: string | undefined): AddressInterface[] {
+  if (!searchStr) return []
   const { matchString, parsedAddress } = parseSearchString(searchStr)
   return searchAddresses(parsedAddress, matchString)
 }

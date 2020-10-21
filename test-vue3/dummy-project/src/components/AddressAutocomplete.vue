@@ -2,12 +2,11 @@
 <div class="row">
   <div class="col-lg-3 col-md-4 col-sm-12">
   <label for="addressInput">Address</label>
-  <input class="address-input" type="text" id="addressInput" v-model="searchString.data" placeholder="your address" name="address" required v-validate
+  <input class="address-input" type="text" id="addressInput" v-model="user.addressString" placeholder="your address" name="address" required v-validate
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
     @input="inputChange()"
-    @click="enter()"
   />
   <div class="error">{{ validationErrors.address }}</div>
   <ul class="dropdown-menu" v-if="openDropDown.data">
@@ -20,19 +19,19 @@
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="streetInput">Street</label>
-        <input type="text" id="streetInput" name="street" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].street : ''" />
+        <input type="text" id="streetInput" name="street" :value="user.street ? user.street : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="numberInput">Number</label>
-        <input type="text" id="numberInput" name="number" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].number : ''" />
+        <input type="text" id="numberInput" name="number" :value="user.housenumber ? user.housenumber : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="cityInput">City</label>
-        <input type="text" id="cityInput" name="city" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].city : ''" />
+        <input type="text" id="cityInput" name="city" :value="user.city ? user.city : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="zipcodeInput">Zipcode</label>
-        <input type="text" id="zipcodeInput" name="zipcode" :value="matchedAddresses[currentIdx.data] ? matchedAddresses[currentIdx.data].zipcode : ''" />
+        <input type="text" id="zipcodeInput" name="zipcode" :value="user.zipcode ? user.zipcode : ''" />
       </div>
     </div>
   </div>
@@ -41,11 +40,11 @@
 
 <script lang="ts">
 import { watchEffect, reactive, computed, ComputedRef } from 'vue'
-import AddressInterface from '@/modules/types/IAddress'
-import { validationErrors } from '@/modules/types/errors'
 import validate from '@/modules/directives/validate'
+import AddressInterface from '@/modules/types/IAddress'
+import { validationErrors } from '@/modules/features/useErrors'
 import performStringSearch from '@/modules/features/useAddresses'
-import { setUserAddress } from '@/modules/features/useUser'
+import { user, setUserAddress } from '@/modules/features/useUser'
 
 export default {
   name: 'AddressAutocomplete',
@@ -54,17 +53,16 @@ export default {
   },
   setup () {
     const currentIdx = reactive({ data: 0 })
-    const searchString = reactive({ data: '' })
     const matchedAddressesToString = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
-    const matchedAddresses = computed(() => performStringSearch(searchString.data))
+    const matchedAddresses = computed(() => performStringSearch(user.value.addressString))
 
     function findMatches (addr: ComputedRef<AddressInterface[]>): string[] {
       matchedAddressesToString.data = addr.value.map<string>(el => Object.values(el).join(', '))
       return matchedAddressesToString.data
     }
     function openMatches (matchedAddressesToStringArray: string[]): boolean {
-      openDropDown.data = searchString.data !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
+      openDropDown.data = user.value.addressString !== undefined && user.value.addressString !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
       return openDropDown.data
     }
     function resetDropDown (dropdDownListAction: boolean) {
@@ -72,14 +70,12 @@ export default {
       currentIdx.data = 0
     }
     function matchesClick (index: number) {
-      setUserAddress(matchedAddresses.value[currentIdx.data])
-      searchString.data = matchedAddressesToString.data[index]
+      setUserAddress(matchedAddresses.value[index])
       resetDropDown(false)
     }
     function enter () {
       if (matchedAddressesToString.data[currentIdx.data]) {
         setUserAddress(matchedAddresses.value[currentIdx.data])
-        searchString.data = matchedAddressesToString.data[currentIdx.data]
       }
       resetDropDown(false)
     }
@@ -95,9 +91,9 @@ export default {
       }
     }
     watchEffect(() => {
-      openMatches(findMatches(computed(() => performStringSearch(searchString.data))))
+      openMatches(findMatches(computed(() => performStringSearch(user.value.addressString))))
     })
-    return { enter, up, down, inputChange, matchesClick, searchString, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors }
+    return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors, user }
   }
 }
 </script>

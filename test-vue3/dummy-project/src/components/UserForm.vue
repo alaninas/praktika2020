@@ -1,6 +1,6 @@
 <template>
 <div>
-  <form @submit.prevent="dummy" novalidate id="userForm">
+  <form @submit.prevent="onSubmit(validationErrors)" novalidate id="userForm">
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="userName">Name</label>
@@ -15,7 +15,6 @@
         <label for="userPassword">Pswd1</label>
         <input type="password" id="userPassword" name="password" v-model="user.password" :class="userErrors.password ? 'invalid' : ''" required v-validate />
         <div class="error">{{ validationErrors.password }} {{ userErrors.password }}</div>
-        <!-- error component: takes errors, as one object?array -- displays them -->
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="userPasswordConfirm">Pswd2</label>
@@ -39,32 +38,24 @@
       </div>
     </div>
     <AddressAutocomplete />
-    <input
-      type="submit" value="Submit" class="button primary responsive-padding responsive-margin"
-      @click="test(validationErrors, user)"
-    />
+    <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
   </form>
-  <!-- <UserError
-    v-bind:isValid="userValidationErrors.data.isValid"
-    v-bind:errMessages="userValidationErrors.data.messages"
-  /> -->
 </div>
 </template>
 
 <script lang="ts">
 import { watchEffect } from 'vue'
+import validate from '@/modules/directives/validate'
 import AddressAutocomplete from '@/components/AddressAutocomplete.vue'
 import UserInterface from '@/modules/types/IUser'
-import { user, users } from '@/modules/types/users'
-import { validationErrors, userErrors } from '@/modules/types/errors'
-import validate from '@/modules/directives/validate'
-import { assignUserErrors } from '@/modules/features/useUserErrors'
+import { user } from '@/modules/features/useUser'
+import { users } from '@/modules/features/useUsers'
+import { validationErrors, userErrors, resetErrors, assignUserErrors } from '@/modules/features/useErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {
   name: 'UserForm',
   components: {
-    // UserError,
     AddressAutocomplete
   },
   directives: {
@@ -72,29 +63,22 @@ export default {
   },
   setup () {
     const countries = countriesJson
-    function dummy () {
-      return true
-    }
-    function test (valErrs: never[], nuser: UserInterface) {
+
+    function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
-      // console.log(validationErrors.value)
-      console.log('++> Number of fields with Form validation errors:')
-      console.log(Object.values(validationErrors.value).filter(el => !!el).length)
-      // console.log(userErrors.value)
-      console.log('--> Number of fields with User logic errors:')
-      console.log(Object.values(userErrors.value).filter(el => !!el).length)
-      console.log('>>> User information:')
-      console.log(user.value)
-      const nu = { name: nuser.name, age: nuser.age, email: nuser.email } as UserInterface
-      // users.value.push(user)
+      const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
+      const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
+      if (!validationErrorsCount && !userErrorsCount) {
+        users.value.push(user.value)
+        user.value = {} as UserInterface
+        resetErrors()
+      }
     }
+
     watchEffect(() => {
       userErrors.value = assignUserErrors(user.value)
-      // console.log(userErrors.value)
-      // console.log('!!> Number of fields with User logic errors:')
-      // console.log(Object.values(userErrors.value).filter(el => !!el).length)
     })
-    return { user, dummy, test, countries, validationErrors, userErrors }
+    return { user, onSubmit, countries, validationErrors, userErrors }
   }
 }
 </script>

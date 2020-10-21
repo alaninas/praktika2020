@@ -1,6 +1,8 @@
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
-import { user } from '@/modules/types/users'
+import { ref, Ref } from 'vue'
+
+export const user: Ref<UserInterface> = ref({} as UserInterface)
 
 export function setUserPersonalData (inputUser: UserInterface): UserInterface {
   user.value = inputUser
@@ -12,5 +14,6 @@ export function setUserAddress (inputAddress: AddressInterface): UserInterface {
   user.value.street = inputAddress.street
   user.value.housenumber = parseInt(inputAddress.number)
   user.value.zipcode = parseInt(inputAddress.zipcode)
+  user.value.addressString = inputAddress.city
   return user.value
 }
