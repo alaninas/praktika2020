@@ -8,7 +8,7 @@
         Del
       </label>
     </td>
-    <td data-label="Name">{{ user.name }}</td>
+    <td data-label="User name">{{ user.userName }}</td>
     <td data-label="Age">{{ user.age }}</td>
     <td data-label="Email">{{ user.email }}</td>
   </tr>

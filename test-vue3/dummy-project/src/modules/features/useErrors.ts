@@ -20,7 +20,7 @@ export function clearAddressValidationError (valErr: any) {
 
 export function assignUserErrors (user: UserInterface) {
   userErrors.value = Object.assign({}, userErrors.value, {
-    name: (isNameUnique(user) ? '' : 'User name is not unique.'),
+    userName: (isNameUnique(user) ? '' : 'User name is not unique.'),
     password: (arePassworsEqual(user) ? '' : 'Passwords do not match.')
   })
   return userErrors.value

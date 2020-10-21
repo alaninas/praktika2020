@@ -3,14 +3,14 @@
   <form @submit.prevent="onSubmit(validationErrors)" novalidate id="userForm">
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="userName">Name</label>
-        <input type="text" id="userName" name="name" v-model="user.name" :class="userErrors.name ? 'invalid' : ''" required v-validate />
-        <div class="error">{{ validationErrors.name }} {{ userErrors.name }}</div>
+        <label for="userName">User name</label>
+        <input type="text" id="userName" name="userName" v-model="user.userName" :class="userErrors.name ? 'invalid' : ''" required v-validate />
+        <div class="error">{{ validationErrors.userName }} {{ userErrors.userName }}</div>
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="ageInput">Age</label>
-        <input type="number" id="ageInput" name="age" v-model="user.age" min="18" max="100" v-validate />
-        <div class="error">{{ validationErrors.age }}</div>
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" name="email" v-model="user.email" required v-validate />
+        <div class="error">{{ validationErrors.email }}</div>
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="userPassword">Pswd1</label>
@@ -25,9 +25,9 @@
     </div>
     <div class="row">
       <div class="col-lg-6 col-md-6 col-sm-12">
-        <label for="emailInput">Email</label>
-        <input type="email" id="emailInput" name="email" v-model="user.email" required v-validate />
-        <div class="error">{{ validationErrors.email }}</div>
+        <label for="ageInput">Age</label>
+        <input type="number" id="ageInput" name="age" v-model="user.age" min="18" max="100" v-validate />
+        <div class="error">{{ validationErrors.age }}</div>
       </div>
       <div id="countries" class="col-lg-6 col-md-6 col-sm-12">
         <label for="countryInput">Country</label>

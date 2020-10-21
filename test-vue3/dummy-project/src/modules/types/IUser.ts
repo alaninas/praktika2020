@@ -1,6 +1,6 @@
 export default interface UserInterface {
-    name?: string;
-    surname?: string;
+    firstName?: string;
+    lastName?: string;
     age?: number;
     country?: string;
     url?: string;

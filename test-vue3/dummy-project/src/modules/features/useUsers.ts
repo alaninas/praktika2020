@@ -3,25 +3,25 @@ import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunct
 import { ref, Ref } from 'vue'
 
 export const users: Ref<UserInterface[]> = ref([
-  { name: 'a', age: 22, email: 'hhgh@gmail.com' } as UserInterface,
-  { name: 'ca', age: 33, email: 'a@gmail.com' } as UserInterface,
-  { name: 'AA', age: 44, email: 'AA@gmail.com' } as UserInterface
+  { userName: 'a', age: 22, email: 'hhgh@gmail.com' } as UserInterface,
+  { userName: 'ca', age: 33, email: 'a@gmail.com' } as UserInterface,
+  { userName: 'AA', age: 44, email: 'AA@gmail.com' } as UserInterface
 ])
 
 export default function useUsers () {
   function usersRemove (user: UserInterface): UserInterface[] {
-    const index = users.value.findIndex(el => el.name === user.name)
+    const index = users.value.findIndex(el => el.userName === user.userName)
     if (index > -1) users.value.splice(index, 1)
     return users.value
   }
 
   function usersSearchByName ({ pattern = '' }: { pattern?: string }): UserInterface[] {
     const re = new RegExp(pattern, 'i')
-    return pattern ? users.value.filter(el => el.name && re.test(el.name)) : []
+    return pattern ? users.value.filter(el => el.userName && re.test(el.userName)) : []
   }
 
   function usersSortByName (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareStrings(a.name, b.name, reverse))
+    return users.value.sort((a, b) => compareStrings(a.userName, b.userName, reverse))
   }
 
   function usersSortByEmail (reverse: boolean): UserInterface[] {
