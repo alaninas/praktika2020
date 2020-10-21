@@ -14,6 +14,6 @@ export function setUserAddress (inputAddress: AddressInterface): UserInterface {
   user.value.street = inputAddress.street
   user.value.housenumber = parseInt(inputAddress.number)
   user.value.zipcode = parseInt(inputAddress.zipcode)
-  user.value.addressString = inputAddress.city
+  user.value.addressString = Object.values(inputAddress).join(', ')
   return user.value
 }
