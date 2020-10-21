@@ -74,9 +74,7 @@ export default {
       resetDropDown(false)
     }
     function enter () {
-      if (matchedAddressesToString.data[currentIdx.data]) {
-        setUserAddress(matchedAddresses.value[currentIdx.data])
-      }
+      if (matchedAddressesToString.data[currentIdx.data]) setUserAddress(matchedAddresses.value[currentIdx.data])
       resetDropDown(false)
     }
     function up () {
@@ -86,9 +84,7 @@ export default {
       if (currentIdx.data < matchedAddressesToString.data.length - 1) currentIdx.data++
     }
     function inputChange () {
-      if (openDropDown.data === false) {
-        resetDropDown(true)
-      }
+      if (openDropDown.data === false) resetDropDown(true)
     }
     watchEffect(() => {
       openMatches(findMatches(computed(() => performStringSearch(user.value.addressString))))

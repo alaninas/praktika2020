@@ -8,7 +8,8 @@
         <div class="error">{{ validationErrors.name }} {{ userErrors.name }}</div>
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="ageInput">Age</label><input type="number" id="ageInput" name="age" v-model="user.age" min="18" max="100" v-validate />
+        <label for="ageInput">Age</label>
+        <input type="number" id="ageInput" name="age" v-model="user.age" min="18" max="100" v-validate />
         <div class="error">{{ validationErrors.age }}</div>
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
@@ -31,8 +32,8 @@
       <div id="countries" class="col-lg-6 col-md-6 col-sm-12">
         <label for="countryInput">Country</label>
         <select id="countryInput" v-model="user.country" name="country" required v-validate >
-           <option disabled value="">Please select a country</option>
-           <option v-for="country in countries" :key="country">{{ country.name }}</option>
+          <option disabled value="">Please select a country</option>
+          <option v-for="country in countries" :key="country">{{ country.name }}</option>
         </select>
         <div class="error">{{ validationErrors.country }}</div>
       </div>
