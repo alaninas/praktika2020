@@ -8,7 +8,7 @@
   />
   <div class="section" v-if="userSearchResults.data.length">
     <ul>
-      <li v-for="(user, i) in userSearchResults.data" :key="user">{{ user.name }} -- {{ user.age }} -- {{ user.email }} -- {{i}}</li>
+      <li v-for="(user, i) in userSearchResults.data" :key="user">{{ user.userName }} -- {{ user.age }} -- {{ user.email }} -- {{ user.country }} -- {{ user.addressString }}{{i}}</li>
     </ul>
   </div>
 </template>

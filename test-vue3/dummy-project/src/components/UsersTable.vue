@@ -3,7 +3,7 @@
     <thead>
       <tr>
         <th>Nr | Del</th>
-        <th>User name
+        <th>UserId
           <div class="sort-arrows">
             <span class="arrow" @click="sortByUserName(false)"></span>
             <span class="arrow down" @click="sortByUserName(true)"></span>
