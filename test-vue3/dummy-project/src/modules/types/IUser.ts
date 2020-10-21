@@ -13,4 +13,5 @@ export default interface UserInterface {
     city?: string;
     zipcode?: number;
     addressString?: string;
+    fullnameString?: string;
 }

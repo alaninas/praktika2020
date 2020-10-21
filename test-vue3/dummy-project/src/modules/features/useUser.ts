@@ -9,6 +9,11 @@ export function setUserPersonalData (inputUser: UserInterface): UserInterface {
   return user.value
 }
 
+export function setFullnameSring (inputUser: UserInterface): UserInterface {
+  user.value.fullnameString = [inputUser.firstName, inputUser.lastName].join(', ')
+  return user.value
+}
+
 export function setUserAddress (inputAddress: AddressInterface): UserInterface {
   user.value.city = inputAddress.city
   user.value.street = inputAddress.street
