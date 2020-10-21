@@ -1,15 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
-import { users } from '@/modules/features/useUsers'
 import { ref } from 'vue'
-
-function isNameUnique (user: UserInterface): boolean {
-  if (user.name === undefined || user.name.length === 0) return true
-  return user.name.length > 0 && users.value.findIndex(el => el.name === user.name) < 0
-}
-
-function arePassworsEqual (user: UserInterface): boolean {
-  return user.password === user.passwordConfirm
-}
+import { arePassworsEqual, isNameUnique } from '@/modules/utilities/userFieldLogic'
 
 export const validationErrors = ref({})
 
@@ -18,6 +9,13 @@ export const userErrors = ref({ name: '', password: '' })
 export function resetErrors () {
   validationErrors.value = {}
   userErrors.value = { name: '', password: '' }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function clearAddressValidationError (valErr: any) {
+  validationErrors.value = Object.assign({}, valErr, {
+    address: ''
+  })
 }
 
 export function assignUserErrors (user: UserInterface) {
