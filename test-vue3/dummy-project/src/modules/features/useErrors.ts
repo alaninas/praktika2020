@@ -4,11 +4,11 @@ import { arePassworsEqual, isNameUnique } from '@/modules/utilities/userFieldLog
 
 export const validationErrors = ref({})
 
-export const userErrors = ref({ name: '', password: '' })
+export const userErrors = ref({ userName: '', password: '' })
 
 export function resetErrors () {
   validationErrors.value = {}
-  userErrors.value = { name: '', password: '' }
+  userErrors.value = { userName: '', password: '' }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
