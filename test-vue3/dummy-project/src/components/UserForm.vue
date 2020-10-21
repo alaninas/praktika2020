@@ -1,10 +1,11 @@
 <template>
 <div>
-  <form @submit.prevent="onSubmit(validationErrors)" novalidate id="userForm">
+  <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
+  <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="userName">User name</label>
-        <input type="text" id="userName" name="userName" v-model="user.userName" :class="userErrors.name ? 'invalid' : ''" required v-validate />
+        <input type="text" id="userName" name="userName" v-model="user.userName" :class="userErrors.userName ? 'invalid' : ''" required v-validate />
         <div class="error">{{ validationErrors.userName }} {{ userErrors.userName }}</div>
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
