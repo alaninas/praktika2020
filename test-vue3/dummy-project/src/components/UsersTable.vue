@@ -9,6 +9,12 @@
             <span class="arrow down" @click="sortByUserName(true)"></span>
           </div>
         </th>
+        <th>Full name
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByFullName(false)"></span>
+            <span class="arrow down" @click="sortByFullName(true)"></span>
+          </div>
+        </th>
         <th>Age
           <div class="sort-arrows">
             <span class="arrow" @click="sortByAge(false)"></span>
@@ -52,8 +58,8 @@ export default {
     UserRow
   },
   setup () {
-    const { sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry } = useUsers()
-    return { sortByUserName, sortByEmail, sortByAge, sortByAddressString, sortByCountry }
+    const { sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName } = useUsers()
+    return { sortByUserName, sortByEmail, sortByAge, sortByAddressString, sortByCountry, sortByFullName }
   }
 }
 </script>

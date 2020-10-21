@@ -3,9 +3,9 @@ import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunct
 import { ref, Ref } from 'vue'
 
 export const users: Ref<UserInterface[]> = ref([
-  { userName: 'a', age: 22, email: 'hg@gmail.com', addressString: 'Vivulskio g., 123, Vilnius, 70546', country: 'Lietuva' } as UserInterface,
-  { userName: 'ca', age: 33, email: 'aacc@gmail.com', addressString: 'Algirdo g., 33, Vilnius, 00546', country: 'Lietuva' } as UserInterface,
-  { userName: 'AA', age: 44, email: 'AA@gmail.com', addressString: 'Vieversiu g., 123, Vilnius, 10546', country: 'Lietuva' } as UserInterface
+  { userName: 'a', age: 22, email: 'hg@gmail.com', addressString: 'Vivulskio g., 123, Vilnius, 70546', country: 'Lietuva', fullnameString: 'First, Last' } as UserInterface,
+  { userName: 'ca', age: 33, email: 'aacc@gmail.com', addressString: 'Algirdo g., 33, Vilnius, 00546', country: 'Lietuva', fullnameString: 'Last, First' } as UserInterface,
+  { userName: 'AA', age: 44, email: 'AA@gmail.com', addressString: 'Vieversiu g., 123, Vilnius, 10546', country: 'Lietuva', fullnameString: 'First, Last' } as UserInterface
 ])
 
 export default function useUsers () {
@@ -24,6 +24,10 @@ export default function useUsers () {
     return users.value.sort((a, b) => compareStrings(a.userName, b.userName, reverse))
   }
 
+  function sortByFullName (reverse: boolean): UserInterface[] {
+    return users.value.sort((a, b) => compareStrings(a.fullnameString, b.fullnameString, reverse))
+  }
+
   function sortByEmail (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareStrings(a.email, b.email, reverse))
   }
@@ -39,5 +43,5 @@ export default function useUsers () {
   function sortByAge (reverse: boolean): UserInterface[] {
     return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
-  return { users, usersRemove, searchByName, sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry }
+  return { users, usersRemove, searchByName, sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName }
 }
