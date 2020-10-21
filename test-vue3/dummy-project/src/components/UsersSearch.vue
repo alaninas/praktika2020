@@ -41,4 +41,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+input[type="text"] {
+  margin: 0;
+}
 </style>
