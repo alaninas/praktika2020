@@ -1,0 +1,55 @@
+.autocomplete-active,
+li:hover,
+li:focus-within {
+  background-color: var(--table-body-hover-back-color);
+  color: #f8f8f8;
+}
+.address-input {
+  width: 100%;
+  margin: 0;
+  margin-top: calc(0.5 * var(--universal-margin));
+  /* margin-bottom: calc(0.5 * var(--universal-margin)); */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ul,
+li {
+  width: auto;
+  margin: 0;
+  text-align: left;
+}
+ul,
+li {
+  background: var(--table-body-back-color);
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+li {
+  display: block;
+  padding: var(--universal-padding);
+  position: relative;
+}
+li:hover,
+li:focus-within {
+  cursor: pointer;
+}
+.autofilled-address input,
+.autofilled-address input:hover,
+.autofilled-address input:focus,
+.autofilled-address label,
+.autofilled-address label:hover,
+.autofilled-address label:focus {
+  pointer-events: none;
+}
+.autofilled-address,
+.autofilled-address input {
+  color: rgb(106, 106, 106);
+}
+.autofilled-address div.row {
+  padding-left: calc(2 * var(--universal-padding));
+}
+.autofilled-address div.row > div > input {
+  padding-left: var(--universal-padding);
+}

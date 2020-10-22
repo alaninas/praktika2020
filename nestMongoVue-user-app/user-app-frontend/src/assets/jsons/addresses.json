@@ -1,0 +1,16 @@
+[ 
+  {"street": "Vivulskio g.", "number": "103", "city": "Vilnius", "zipcode": "00106"}, 
+  {"street": "Vivulskio g.", "number": "223", "city": "Vilnius", "zipcode": "00109"}, 
+  {"street": "Vieversiu g.", "number": "123", "city": "Vilnius", "zipcode": "49208"}, 
+  {"street": "Vivulskio g.", "number": "103", "city": "Ukmerge", "zipcode": "98204"}, 
+  {"street": "Vivulskio g.", "number": "203", "city": "Ukmerge", "zipcode": "98201"}, 
+  {"street": "Verkiu g.", "number": "103", "city": "Vilnius", "zipcode": "66619"}, 
+  {"street": "Verkiu g.", "number": "123", "city": "Vilnius", "zipcode": "66610"}, 
+  {"street": "Verkiu g.", "number": "43", "city": "Vilnius", "zipcode": "30565"}, 
+  {"street": "Verkiu g.", "number": "423", "city": "Vilnius", "zipcode": "40120"}, 
+  {"street": "Vivulskio g.", "number": "423", "city": "Vilnius", "zipcode": "42500"}, 
+  {"street": "Vivulskio g.", "number": "123", "city": "Vilnius", "zipcode": "70546"}, 
+  {"street": "Vivulskio g.", "number": "223", "city": "Kaunas", "zipcode": "12300"}, 
+  {"street": "Vivulskio g.", "number": "123", "city": "Kaunas", "zipcode": "12300"}, 
+  {"street": "Vivulskio g.", "number": "423", "city": "Kaunas", "zipcode": "12301"}
+]
