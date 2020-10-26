@@ -1,9 +1,9 @@
 import addressesJson from '@/assets/jsons/addresses.json'
 import AddressInterface from '@/modules/types/IAddress'
-import { matchAddressFields } from '@/modules/utilities/matchAddressFields'
+import { matchAddressFields } from '@/modules/utilities/matchAddress'
 import { parseSearchString } from '@/modules/utilities/parseAddressString'
 import { computed, Ref, watchEffect } from 'vue'
-import UserInterface from '../types/IUser'
+import UserInterface from '@/modules/types/IUser'
 
 // TODO: fill up adresses.json with real data, instead of dummy slots, add atleast 20 addresses
 

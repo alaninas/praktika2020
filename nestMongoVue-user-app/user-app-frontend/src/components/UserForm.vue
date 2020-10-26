@@ -17,7 +17,7 @@ import SigninInfo from '@/components/formRows/SigninInfo.vue'
 import PersonalData from '@/components/formRows/PersonalData.vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
-import { validationErrors, resetErrors, assignUserErrors } from '@/modules/features/useErrors'
+import { validationErrors, resetErrors } from '@/modules/features/useErrors'
 
 export default {
   name: 'UserForm',
