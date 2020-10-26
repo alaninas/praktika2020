@@ -60,26 +60,7 @@ export default {
   },
   async setup () {
     const { usersBE } = await useUsers()
-    const { sortByUserId, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName, sortByPswd, sortByName } = await useUsersFunc()
-    // console.log(usersBE)
-    // await getBEusers()
-    // function usersRemove () {
-    // const c = sortByUserId(true)
-    // console.log('!!!!! sorted')
-    // console.log(c)
-    // const d = sortByPswd(true)
-    // console.log('>>pswd sorted')
-    // console.log(d)
-    // const a = sortByAge(false)
-    // console.log('age sorted')
-    // console.log(a)
-    // const e = sortByName(false)
-    // console.log('--name sorted')
-    // console.log(e)
-    // const dd = sortByAddressString(true)
-    // console.log('--address sorted')
-    // console.log(dd)
-    // }
+    const { sortByUserId, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName, sortByPswd } = await useUsersFunc()
     return { usersBE, sortByUserId, sortByEmail, sortByAge, sortByAddressString, sortByCountry, sortByFullName, sortByPswd }
   }
 }
