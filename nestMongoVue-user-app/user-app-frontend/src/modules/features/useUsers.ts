@@ -1,47 +1,62 @@
 import UserInterface from '@/modules/types/IUser'
 import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
 import { ref, Ref } from 'vue'
+import { server } from '@/backend-server'
+import axios, { AxiosResponse } from 'axios'
 
-export const users: Ref<UserInterface[]> = ref([
-  { userName: 'a', age: 22, email: 'hg@gmail.com', addressString: 'Vivulskio g., 123, Vilnius, 70546', country: 'Lietuva', fullnameString: 'First, Last' } as UserInterface,
-  { userName: 'ca', age: 33, email: 'aacc@gmail.com', addressString: 'Algirdo g., 33, Vilnius, 00546', country: 'Lietuva', fullnameString: 'Last, First' } as UserInterface,
-  { userName: 'AA', age: 44, email: 'AA@gmail.com', addressString: 'Vieversiu g., 123, Vilnius, 10546', country: 'Lietuva', fullnameString: 'First, Last' } as UserInterface
-])
+// let usersBE: UserInterface[]
+async function getBEusers (): Promise<Ref<AxiosResponse<UserInterface[]>>> {
+  const c: Ref<AxiosResponse<UserInterface[]>> = ref(await axios.get(`${server.baseURL}/users`))
+  // const d = c.value.data
+  return c
+}
 
-export default function useUsers () {
-  function usersRemove (user: UserInterface): UserInterface[] {
-    const index = users.value.findIndex(el => el.userName === user.userName)
-    if (index > -1) users.value.splice(index, 1)
-    return users.value
-  }
+export default async function useUsers () {
+  const usersBE = await getBEusers()
+  // usersBE.value.data.sort((a, b) => compareStrings(a.password, b.password, false))
+  // await usersBE.value.data.sort((a, b) => compareNumbers(a.age, b.age, false))
+  // const usersBE = usersB.sort((a, b) => compareStrings(a._id, b._id, false))
+  return { usersBE }
+}
 
-  function searchByName ({ pattern = '' }: { pattern?: string }): UserInterface[] {
+export async function useUsersFunc () {
+  const users = await getBEusers()
+
+  function searchByEmail ({ pattern = '' }: { pattern?: string }): UserInterface[] {
     const re = new RegExp(pattern, 'i')
-    return pattern ? users.value.filter(el => el.userName && re.test(el.userName)) : []
+    return pattern ? users.value.data.filter(el => el.email && re.test(el.email)) : []
   }
 
-  function sortByUserName (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareStrings(a.userName, b.userName, reverse))
+  function sortByUserId (reverse: boolean): UserInterface[] {
+    return users.value.data.sort((a, b) => compareStrings(a._id, b._id, reverse))
   }
 
   function sortByFullName (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareStrings(a.fullnameString, b.fullnameString, reverse))
+    return users.value.data.sort((a, b) => compareStrings(a.fullName, b.fullName, reverse))
   }
 
   function sortByEmail (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareStrings(a.email, b.email, reverse))
+    return users.value.data.sort((a, b) => compareStrings(a.email, b.email, reverse))
   }
 
   function sortByCountry (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareStrings(a.country, b.country, reverse))
+    return users.value.data.sort((a, b) => compareStrings(a.country, b.country, reverse))
   }
 
   function sortByAddressString (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareStrings(a.addressString, b.addressString, reverse))
+    return users.value.data.sort((a, b) => compareStrings(a.address, b.address, reverse))
+  }
+
+  function sortByPswd (reverse: boolean): UserInterface[] {
+    return users.value.data.sort((a, b) => compareStrings(a.password, b.password, reverse))
+  }
+
+  function sortByName (reverse: boolean): UserInterface[] {
+    return users.value.data.sort((a, b) => compareStrings(a.name, b.name, reverse))
   }
 
   function sortByAge (reverse: boolean): UserInterface[] {
-    return users.value.sort((a, b) => compareNumbers(a.age, b.age, reverse))
+    return users.value.data.sort((a, b) => compareNumbers(a.age, b.age, reverse))
   }
-  return { users, usersRemove, searchByName, sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName }
+  return { users, searchByEmail, sortByPswd, sortByName, sortByUserId, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName }
 }

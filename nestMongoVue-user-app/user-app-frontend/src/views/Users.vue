@@ -2,18 +2,23 @@
   <div id="myUsers" class="card fluid"><p class="section">Add User</p>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
-      <UserForm
-      />
+        <Suspense>
+          <UserForm />
+        </Suspense>
       </div>
     </div>
   </div>
   <div class="card fluid"><p class="section">Search</p>
-    <UsersSearch />
+    <Suspense>
+      <UsersSearch />
+    </Suspense>
   </div>
   <div class="card fluid"><p class="section">Users Saved</p>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
-      <UsersTable />
+      <Suspense>
+        <UsersTable />
+      </Suspense>
       </div>
     </div>
   </div>
@@ -33,6 +38,7 @@ export default {
     UsersTable
   },
   setup () {
+    // const user = getUser()
     return { }
   }
 }

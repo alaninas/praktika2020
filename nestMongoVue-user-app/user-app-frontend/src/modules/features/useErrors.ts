@@ -18,10 +18,13 @@ export function clearAddressValidationError (valErr: any) {
   })
 }
 
-export function assignUserErrors (user: UserInterface) {
+export async function assignUserErrors (user: UserInterface) {
+  const nameMessage = await isNameUnique(user) ? '' : 'User name is not unique.'
+  const pswdMessagge = await arePassworsEqual(user) ? '' : 'Passwords do not match.'
   userErrors.value = Object.assign({}, userErrors.value, {
-    userName: (isNameUnique(user) ? '' : 'User name is not unique.'),
-    password: (arePassworsEqual(user) ? '' : 'Passwords do not match.')
+    name: nameMessage,
+    password: pswdMessagge,
+    passwordConfirm: pswdMessagge
   })
   return userErrors.value
 }

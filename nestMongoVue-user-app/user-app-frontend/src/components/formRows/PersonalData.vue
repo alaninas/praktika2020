@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import validate from '@/modules/directives/validate'
-import { setFullnameSring, user } from '@/modules/features/useUser'
+import { setFullnameSring, getUser } from '@/modules/features/useUser'
 import { validationErrors } from '@/modules/features/useErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 import { watchEffect } from 'vue'
@@ -39,9 +39,10 @@ export default {
     validate: validate
   },
   setup () {
+    const user = getUser()
     const countries = countriesJson
     watchEffect(() => {
-      user.value = setFullnameSring(user.value)
+      setFullnameSring(user.value)
     })
     return { user, validationErrors, countries }
   }

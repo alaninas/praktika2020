@@ -18,30 +18,32 @@
 <script lang="ts">
 import { reactive, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
-import useUsers from '@/modules/features/useUsers'
+import { useUsersFunc } from '@/modules/features/useUsers'
 
 export default {
   name: 'UsersSearch',
-  setup () {
+  async setup () {
     const pattern = reactive({ data: '' })
-    const { searchByName } = useUsers()
+    // const { usersBE } = await useUsers()
+    const { searchByEmail } = await useUsersFunc()
     const userSearchResults: {data: UserInterface[] | []} = reactive({ data: [] })
 
     function userSearch (pattern?: string): UserInterface[] {
-      userSearchResults.data = searchByName({ pattern })
+      userSearchResults.data = searchByEmail({ pattern })
       return userSearchResults.data
     }
 
-    watchEffect(() => {
+    const stopHandle = watchEffect(() => {
       userSearch(pattern.data)
     })
+
+    stopHandle()
 
     return { pattern, userSearch, userSearchResults }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 input[type="text"] {
   margin: 0;

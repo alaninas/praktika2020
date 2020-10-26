@@ -2,8 +2,8 @@
   <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-12">
       <label for="userName">User name</label>
-      <input type="text" id="userName" name="userName" v-model="user.userName" :class="userErrors.userName ? 'invalid' : ''" required v-validate />
-      <div class="error">{{ validationErrors.userName }} {{ userErrors.userName }}</div>
+      <input type="text" id="userName" name="name" v-model="user.name" :class="userErrors.name ? 'invalid' : ''" required v-validate />
+      <div class="error">{{ validationErrors.name }} {{ userErrors.name }}</div>
     </div>
     <div class="col-lg-3 col-md-6 col-sm-12">
       <label for="emailInput">Email</label>
@@ -17,15 +17,15 @@
     </div>
     <div class="col-lg-3 col-md-6 col-sm-12">
       <label for="userPasswordConfirm">Pswd2</label>
-      <input type="password" id="userPasswordConfirm" name="passwordConfirm" v-model="user.passwordConfirm" :class="userErrors.password ? 'invalid' : ''" required v-validate />
-      <div class="error">{{ validationErrors.passwordConfirm }} {{ userErrors.password }}</div>
+      <input type="password" id="userPasswordConfirm" name="passwordConfirm" v-model="user.passwordConfirm" :class="userErrors.passwordConfirm ? 'invalid' : ''" required v-validate />
+      <div class="error">{{ validationErrors.passwordConfirm }} {{ userErrors.passwordConfirm }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import validate from '@/modules/directives/validate'
-import { user } from '@/modules/features/useUser'
+import { getUser } from '@/modules/features/useUser'
 import { validationErrors, userErrors } from '@/modules/features/useErrors'
 
 export default {
@@ -34,6 +34,7 @@ export default {
     validate: validate
   },
   setup () {
+    const user = getUser()
     return { user, validationErrors, userErrors }
   }
 }

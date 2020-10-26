@@ -2,17 +2,16 @@
   <table class="hoverable" id="userTable">
     <thead>
       <tr>
-        <th>Nr | Del</th>
         <th>UserId
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByUserName(false)"></span>
-            <span class="arrow down" @click="sortByUserName(true)"></span>
-          </div>
+            <span class="arrow" @click="sortByUserId(false)"></span>
+            <span class="arrow down" @click="sortByUserId(true)"></span>
+          </div> | Del
         </th>
-        <th>Full name
+        <th>Password
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByFullName(false)"></span>
-            <span class="arrow down" @click="sortByFullName(true)"></span>
+            <span class="arrow" @click="sortByPswd(false)"></span>
+            <span class="arrow down" @click="sortByPswd(true)"></span>
           </div>
         </th>
         <th>Age
@@ -27,10 +26,10 @@
             <span class="arrow down" @click="sortByEmail(true)"></span>
           </div>
         </th>
-        <th>Country
+        <th>Name
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByCountry(false)"></span>
-            <span class="arrow down" @click="sortByCountry(true)"></span>
+            <span class="arrow" @click="sortByName(false)"></span>
+            <span class="arrow down" @click="sortByName(true)"></span>
           </div>
         </th>
         <th>Address
@@ -42,14 +41,16 @@
       </tr>
     </thead>
     <tbody>
-      <UserRow />
+      <Suspense>
+        <UserRow />
+      </Suspense>
     </tbody>
   </table>
 </template>
 
 <script lang="ts">
 import UserRow from '@/components/UserRow.vue'
-import useUsers from '@/modules/features/useUsers'
+import useUsers, { useUsersFunc } from '@/modules/features/useUsers'
 
 export default {
   name: 'UsersTable',
@@ -57,9 +58,29 @@ export default {
   components: {
     UserRow
   },
-  setup () {
-    const { sortByUserName, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName } = useUsers()
-    return { sortByUserName, sortByEmail, sortByAge, sortByAddressString, sortByCountry, sortByFullName }
+  async setup () {
+    const { usersBE } = await useUsers()
+    const { sortByUserId, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName, sortByPswd, sortByName } = await useUsersFunc()
+    // console.log(usersBE)
+    // await getBEusers()
+    // function usersRemove () {
+    // const c = sortByUserId(true)
+    // console.log('!!!!! sorted')
+    // console.log(c)
+    // const d = sortByPswd(true)
+    // console.log('>>pswd sorted')
+    // console.log(d)
+    // const a = sortByAge(false)
+    // console.log('age sorted')
+    // console.log(a)
+    // const e = sortByName(false)
+    // console.log('--name sorted')
+    // console.log(e)
+    // const dd = sortByAddressString(true)
+    // console.log('--address sorted')
+    // console.log(dd)
+    // }
+    return { usersBE, sortByUserId, sortByEmail, sortByAge, sortByAddressString, sortByCountry, sortByFullName, sortByPswd }
   }
 }
 </script>

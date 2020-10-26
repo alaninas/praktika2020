@@ -1,19 +1,18 @@
 <template>
-  <tr v-for="(user, i) in users" :key="user">
-    <td data-label="Nr | Del">{{i}}
+  <tr v-for="user in usersBE.data" :key="user">
+    <td data-label="Id | Del" :title="user._id">{{ user._id.substr(20) }}
       <label
         role="button"
         class="responsive-padding responsive-margin inverse"
-        @click="usersRemove(user)">
+        @click="usersRemove()">
         Del
       </label>
     </td>
-    <td data-label="User Id">{{ user.userName }}</td>
-    <td data-label="Full Name">{{ user.fullnameString }}</td>
+    <td data-label="Full Name">{{ user.password }}</td>
     <td data-label="Age">{{ user.age }}</td>
     <td data-label="Email">{{ user.email }}</td>
-    <td data-label="Country">{{ user.country }}</td>
-    <td data-label="Address">{{ user.addressString }}</td>
+    <td data-label="Country">{{ user.name }}</td>
+    <td data-label="Address">{{ user.address }}</td>
   </tr>
 </template>
 
@@ -22,14 +21,16 @@ import useUsers from '@/modules/features/useUsers'
 
 export default {
   name: 'UserRow',
-  setup () {
-    const { users, usersRemove } = useUsers()
-    return { users, usersRemove }
+  async setup () {
+    const { usersBE } = await useUsers()
+    function usersRemove () {
+      return true
+    }
+    return { usersRemove, usersBE }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 table tr {
   text-align: left;

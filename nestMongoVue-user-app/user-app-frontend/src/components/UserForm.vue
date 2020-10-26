@@ -17,8 +17,7 @@ import AddressAutocomplete from '@/components/formRows/AddressAutocomplete.vue'
 import SigninInfo from '@/components/formRows/SigninInfo.vue'
 import PersonalData from '@/components/formRows/PersonalData.vue'
 import UserInterface from '@/modules/types/IUser'
-import { user } from '@/modules/features/useUser'
-import { users } from '@/modules/features/useUsers'
+import { getUser, setUser } from '@/modules/features/useUser'
 import { validationErrors, userErrors, resetErrors, assignUserErrors } from '@/modules/features/useErrors'
 
 export default {
@@ -31,20 +30,24 @@ export default {
   directives: {
     validate: validate
   },
-  setup () {
+  async setup () {
+    const user = getUser()
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
-        users.value.push(user.value)
+        // users.value.push(user.value)
+        console.log('Sending user data to server')
         user.value = {} as UserInterface
         resetErrors()
       }
     }
-
-    watchEffect(() => {
-      userErrors.value = assignUserErrors(user.value)
+    watchEffect(async () => {
+      setUser(user.value)
+      console.log('New user data:')
+      console.log(user.value)
+      userErrors.value = await assignUserErrors(user.value)
     })
     return { user, onSubmit, validationErrors, userErrors }
   }
