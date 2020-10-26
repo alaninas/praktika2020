@@ -3,7 +3,7 @@
   <div class="col-lg-3 col-md-4 col-sm-12">
   <label for="addressInput">Address</label>
   <input
-    class="address-input" type="text" id="addressInput" v-model="user.addressString" placeholder="your address"
+    class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address"
     name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
     @keydown.enter="enter(validationErrors)"
     @keydown.down="down()"
@@ -13,7 +13,7 @@
   />
   <div v-show="!openDropDown.data" class="error">{{ validationErrors.address }}</div>
   <ul class="dropdown-menu" v-show="openDropDown.data">
-    <li v-for="(match, i) in matchedAddressesToString.data" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i, validationErrors)">
+    <li v-for="(match, i) in matchedAddressesToString" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i, validationErrors)">
       {{ match }}
     </li>
   </ul>
@@ -25,16 +25,16 @@
         <input type="text" id="streetInput" name="street" :value="user.street ? user.street : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="numberInput">Number</label>
-        <input type="text" id="numberInput" name="number" :value="user.housenumber ? user.housenumber : ''" />
+        <label for="houseNumberInput">Number</label>
+        <input type="text" id="houseNumberInput" name="houseNumber" :value="user.houseNumber ? user.houseNumber : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="cityInput">City</label>
         <input type="text" id="cityInput" name="city" :value="user.city ? user.city : ''" />
       </div>
       <div class="col-lg-3 col-md-6 col-sm-12">
-        <label for="zipcodeInput">Zipcode</label>
-        <input type="text" id="zipcodeInput" name="zipcode" :value="user.zipcode ? user.zipcode : ''" />
+        <label for="zipCodeInput">Zipcode</label>
+        <input type="text" id="zipCodeInput" name="zipCode" :value="user.zipCode ? user.zipCode : ''" />
       </div>
     </div>
   </div>
@@ -42,12 +42,11 @@
 </template>
 
 <script lang="ts">
-import { watchEffect, reactive, computed, ComputedRef } from 'vue'
+import { watchEffect, reactive } from 'vue'
 import validate from '@/modules/directives/validate'
-import AddressInterface from '@/modules/types/IAddress'
 import { validationErrors, clearAddressValidationError } from '@/modules/features/useErrors'
-import performStringSearch from '@/modules/features/useAddresses'
-import { user, setUserAddress } from '@/modules/features/useUser'
+import { useAddresses } from '@/modules/features/useAddresses'
+import { getUser, setUserAddress } from '@/modules/features/useUser'
 
 export default {
   name: 'AddressAutocomplete',
@@ -55,48 +54,48 @@ export default {
     validate: validate
   },
   setup () {
+    const user = getUser()
     const currentIdx = reactive({ data: 0 })
-    const matchedAddressesToString = reactive({ data: [''] })
     const openDropDown = reactive({ data: false })
-    const matchedAddresses = computed(() => performStringSearch(user.value.addressString))
+    const { matchedAddresses, matchedAddressesToString } = useAddresses(user)
 
-    function findMatches (addr: ComputedRef<AddressInterface[]>): string[] {
-      matchedAddressesToString.data = addr.value.map<string>(el => Object.values(el).join(', '))
-      return matchedAddressesToString.data
-    }
     function openMatches (matchedAddressesToStringArray: string[]): boolean {
-      openDropDown.data = user.value.addressString !== undefined && user.value.addressString !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
+      openDropDown.data = user.value.address !== undefined && user.value.address !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
       return openDropDown.data
     }
     function resetDropDown (dropdDownListAction: boolean) {
       openDropDown.data = dropdDownListAction
       currentIdx.data = 0
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function matchesClick (index: number, valErr: any) {
-      setUserAddress(matchedAddresses.value[index])
-      resetDropDown(false)
-      clearAddressValidationError(valErr)
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function enter (valErr: any) {
-      if (matchedAddressesToString.data[currentIdx.data]) setUserAddress(matchedAddresses.value[currentIdx.data])
-      resetDropDown(false)
-      clearAddressValidationError(valErr)
-    }
     function up () {
-      if (currentIdx.data > 0) currentIdx.data--
+      if (currentIdx.data > 0 && openDropDown.data) currentIdx.data--
     }
     function down () {
-      if (currentIdx.data < matchedAddressesToString.data.length - 1) currentIdx.data++
+      if (currentIdx.data < matchedAddressesToString.value.length - 1 && openDropDown.data) currentIdx.data++
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function inputChange (valErr: any) {
       if (openDropDown.data === false) resetDropDown(true)
       clearAddressValidationError(valErr)
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function matchesClick (index: number, valErr: any) {
+      if (openDropDown.data) {
+        setUserAddress(matchedAddresses.value[index])
+        resetDropDown(false)
+        clearAddressValidationError(valErr)
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function enter (valErr: any) {
+      if (openDropDown.data) {
+        if (matchedAddressesToString.value[currentIdx.data]) setUserAddress(matchedAddresses.value[currentIdx.data])
+        resetDropDown(false)
+        clearAddressValidationError(valErr)
+      }
+    }
     watchEffect(() => {
-      openMatches(findMatches(computed(() => performStringSearch(user.value.addressString))))
+      openMatches(matchedAddressesToString.value)
     })
     return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors, user }
   }
