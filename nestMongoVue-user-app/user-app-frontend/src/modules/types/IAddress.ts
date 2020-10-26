@@ -1,6 +1,6 @@
 export default interface AddressInterface {
-  zipcode: string;
-  number: string;
+  zipCode: string;
+  houseNumber: string;
   street: string;
   city: string;
 }
