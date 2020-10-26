@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import validate from '@/modules/directives/validate'
-import { getUser } from '@/modules/features/useUser'
+import { useUser } from '@/modules/features/useUser'
 import { validationErrors, userErrors } from '@/modules/features/useErrors'
 
 export default {
@@ -34,6 +34,7 @@ export default {
     validate: validate
   },
   setup () {
+    const { getUser } = useUser()
     const user = getUser()
     return { user, validationErrors, userErrors }
   }

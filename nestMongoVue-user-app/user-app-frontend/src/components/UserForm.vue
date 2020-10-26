@@ -11,14 +11,13 @@
 </template>
 
 <script lang="ts">
-import { watchEffect } from 'vue'
 import validate from '@/modules/directives/validate'
 import AddressAutocomplete from '@/components/formRows/AddressAutocomplete.vue'
 import SigninInfo from '@/components/formRows/SigninInfo.vue'
 import PersonalData from '@/components/formRows/PersonalData.vue'
 import UserInterface from '@/modules/types/IUser'
-import { getUser, setUser } from '@/modules/features/useUser'
-import { validationErrors, userErrors, resetErrors, assignUserErrors } from '@/modules/features/useErrors'
+import { useUser } from '@/modules/features/useUser'
+import { validationErrors, resetErrors, assignUserErrors } from '@/modules/features/useErrors'
 
 export default {
   name: 'UserForm',
@@ -31,7 +30,9 @@ export default {
     validate: validate
   },
   async setup () {
+    const { getUser, getUserErrors } = useUser()
     const user = getUser()
+    const userErrors = getUserErrors()
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
@@ -39,16 +40,11 @@ export default {
       if (!validationErrorsCount && !userErrorsCount) {
         // users.value.push(user.value)
         console.log('Sending user data to server')
+        console.log(user.value)
         user.value = {} as UserInterface
         resetErrors()
       }
     }
-    watchEffect(async () => {
-      setUser(user.value)
-      console.log('New user data:')
-      console.log(user.value)
-      userErrors.value = await assignUserErrors(user.value)
-    })
     return { user, onSubmit, validationErrors, userErrors }
   }
 }
