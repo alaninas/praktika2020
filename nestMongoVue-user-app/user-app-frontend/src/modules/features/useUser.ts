@@ -1,7 +1,7 @@
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { ref, Ref, watchEffect } from 'vue'
-import { userErrors, assignUserErrors } from '@/modules/features/useErrors'
+import { userErrors, setUserErrors, clearUserErrors } from '@/modules/features/useUserErrors'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
 
@@ -40,8 +40,8 @@ export function useUser () {
     return user.value
   }
 
-  async function setUserErrors (inputUser: UserInterface) {
-    userErrors.value = await assignUserErrors(inputUser)
+  function resetUserErrors () {
+    clearUserErrors()
   }
 
   function getUserErrors () {
@@ -53,5 +53,5 @@ export function useUser () {
     await setUserErrors(user.value)
   })
 
-  return { getUser, setUser, getUserErrors, setUserAddress }
+  return { user, getUser, setUser, setUserAddress, getUserErrors, resetUserErrors, userErrors }
 }

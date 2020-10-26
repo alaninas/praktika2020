@@ -17,7 +17,7 @@ import SigninInfo from '@/components/formRows/SigninInfo.vue'
 import PersonalData from '@/components/formRows/PersonalData.vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
-import { validationErrors, resetErrors } from '@/modules/features/useErrors'
+import { validationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'
 
 export default {
   name: 'UserForm',
@@ -29,20 +29,19 @@ export default {
   directives: {
     validate: validate
   },
-  async setup () {
-    const { getUser, getUserErrors } = useUser()
-    const user = getUser()
-    const userErrors = getUserErrors()
+  setup () {
+    const { user, userErrors, resetUserErrors } = useUser()
+
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
-        // users.value.push(user.value)
         console.log('Sending user data to server')
         console.log(user.value)
         user.value = {} as UserInterface
-        resetErrors()
+        resetValidationErrors()
+        resetUserErrors()
       }
     }
     return { user, onSubmit, validationErrors, userErrors }

@@ -43,7 +43,7 @@
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
 import validate from '@/modules/directives/validate'
-import { validationErrors, clearAddressValidationError } from '@/modules/features/useErrors'
+import { validationErrors, clearAddressValidationError } from '@/modules/features/useValidationErrors'
 import { useAddresses } from '@/modules/features/useAddresses'
 import { useUser } from '@/modules/features/useUser'
 

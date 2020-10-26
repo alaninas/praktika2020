@@ -29,7 +29,7 @@
 <script lang="ts">
 import validate from '@/modules/directives/validate'
 import { useUser } from '@/modules/features/useUser'
-import { validationErrors } from '@/modules/features/useErrors'
+import { validationErrors } from '@/modules/features/useValidationErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {

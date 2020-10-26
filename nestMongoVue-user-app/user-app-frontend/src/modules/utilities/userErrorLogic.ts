@@ -9,8 +9,5 @@ export async function isNameUnique (user: UserInterface): Promise<boolean> {
 }
 
 export async function arePassworsEqual (user: UserInterface): Promise<boolean> {
-  // console.log(user.password)
-  // console.log(user.passwordConfirm)
-  // console.log(user.password === user.passwordConfirm)
   return user.password === user.passwordConfirm
 }
