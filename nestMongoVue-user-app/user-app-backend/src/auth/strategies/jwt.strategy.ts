@@ -9,7 +9,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
+            ignoreExpiration: true,
             secretOrKey: jwtConstants.secret,
         });
     }
@@ -18,6 +18,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // do a database lookup in our validate() method to extract more information about the user, 
     // resulting in a more enriched user object being available in our Request
     async validate(payload: any) {
-        return { userId: payload.sub, username: payload.username };
+        // console.log('----> inside validate')
+        // console.log(payload)
+        return { password: payload.sub, email: payload.email };
     }
 }

@@ -10,21 +10,26 @@ export class AuthService {
 		private jwtService: JwtService
 	) {}
 
-    async validateUser(name: string, pass: string): Promise<any> {
-        const user = await this.usersService.getOneUserByName(name);
+    async validateUser(email: string, pass: string): Promise<any> {
+        // console.log(email)
+        const user = await this.usersService.getOneUserByEmail(email);
+        // console.log(user)
+        // console.log(user.password)
+        // console.log(Md5.hashStr(pass).toString())
         if (user && user.password === Md5.hashStr(pass).toString()) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, ...result } = user;
             return result;
         }
+        // console.log(user)
         return null;
 	}
 	
 	async login(user: any) {
-        const payload = { username: user.name, sub: user._id };
+        // console.log('---> inside login')
+        // console.log(user)
+        const payload = { email: user.email, sub: user.password };
         // console.log(payload);
-		return {
-		    access_token: this.jwtService.sign(payload, {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES})
-		};
+		return { access_token: this.jwtService.sign(payload, {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES}) };
 	}
 }

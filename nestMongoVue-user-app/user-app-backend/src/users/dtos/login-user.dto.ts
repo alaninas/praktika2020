@@ -1,8 +1,9 @@
-import { IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class LoginUserDto {
     @IsNotEmpty()
-    readonly name: string;
+    @IsEmail()
+    email: string;
 
     @IsNotEmpty()
     @IsString()
