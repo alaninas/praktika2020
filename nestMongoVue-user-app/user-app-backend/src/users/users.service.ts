@@ -47,10 +47,9 @@ export class UsersService {
         if (await this.getOneUserByEmail(user.email)) throw new HttpException(`Email already in use #${user.email}`, HttpStatus.BAD_REQUEST);
         user.password = Md5.hashStr(user.password).toString();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {fullname, password, age, email, ...args} = user;
+        // const {...args} = user;
         // return await (new this.personModel(user)).save();
-        return await this.personModel.create({ fullname, password, age, email });
-
+        return await this.personModel.create(user);
     }
     
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
