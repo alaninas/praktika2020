@@ -3,8 +3,9 @@ import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength 
 export class UpdateUserDto {
     @IsNotEmpty()
     @IsEmail()
-    email?: string;
+    email: string;
 
+    @IsOptional()
     @IsNotEmpty()
     @IsString()
     @MinLength(4)
@@ -18,13 +19,29 @@ export class UpdateUserDto {
 
     @IsOptional()
     @IsString()
-    fullname?: string;
-  
-    @IsOptional()
-    @IsString()
     city?: string;
-  
+
     @IsOptional()
     @IsString()
-    address?: string;
+    country?: string;
+
+    @IsOptional()
+    @IsString()
+    firstname?: string;   
+    
+    @IsOptional()
+    @IsInt()
+    houseNumber?: number;​
+
+    @IsOptional()
+    @IsString()
+    lastname?: string
+
+    @IsOptional()
+    @IsString()
+    street?: string;
+
+    @IsOptional()
+    @IsInt()
+    zipCode?: number;​
 }

@@ -3,29 +3,43 @@ import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class Person extends Document {
-  // TODO: remove deprecated
-  @Prop()
-  name?: string;
-
   @Prop({ required: true })
   password: string;
-
-  @Prop()
-  age?: number;
 
   @Prop({ required: true })
   email: string;
 
   @Prop()
-  fullname?: string;
+  address?: string;
+
+  @Prop()
+  age?: number;
 
   @Prop()
   city?: string;
 
   @Prop()
-  address?: string;
+  country?: string;
 
-  @Prop({ ref: Person })
+  @Prop()
+  firstname?: string;   
+
+  @Prop()
+  fullname?: string;  
+  
+  @Prop()
+  houseNumber?: number;​
+
+  @Prop()
+  lastname?: string
+
+  @Prop()
+  street?: string;
+
+  @Prop()
+  zipCode?: number;​
+
+  @Prop()
   friends?: mongoose.Types.ObjectId[];
 
   @Prop()
