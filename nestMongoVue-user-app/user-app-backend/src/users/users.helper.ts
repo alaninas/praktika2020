@@ -25,7 +25,9 @@ export class UsersHelper {
             asc: 1,
             dsc: -1
         };
-        const docs = await this.myPModel.aggregate([ {$sort: {[column]: directions[direction], _id: -1} } ]);
+        const docs = await this.myPModel.aggregate([ 
+            column === 'id' ? {$sort: {_id: directions[direction]} } : {$sort: {[column]: directions[direction], _id: -1} }
+        ]);
         return docs
     }
 
