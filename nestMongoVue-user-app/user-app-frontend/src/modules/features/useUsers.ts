@@ -32,7 +32,7 @@ export async function useUsersFunc () {
   }
 
   function sortByFullName (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.fullName, b.fullName, reverse))
+    return users.value.data.sort((a, b) => compareStrings(a.fullname, b.fullname, reverse))
   }
 
   function sortByEmail (reverse: boolean): UserInterface[] {

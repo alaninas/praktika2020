@@ -20,8 +20,8 @@ export function useUser () {
   }
 
   function setFullnameSring (inputUser: UserInterface): UserInterface {
-    if (!inputUser.firstName || !inputUser.lastName) return user.value
-    user.value.fullName = [inputUser.firstName, inputUser.lastName].join(' ')
+    if (!inputUser.firstname || !inputUser.lastname) return user.value
+    user.value.fullname = [inputUser.firstname, inputUser.lastname].join(' ')
     return user.value
   }
 
@@ -31,8 +31,8 @@ export function useUser () {
     user.value.password = inputUser.password
     user.value.passwordConfirm = inputUser.passwordConfirm
     user.value.email = inputUser.email
-    user.value.firstName = inputUser.firstName
-    user.value.lastName = inputUser.lastName
+    user.value.firstname = inputUser.firstname
+    user.value.lastname = inputUser.lastname
     user.value.country = inputUser.country
     user.value.age = inputUser.age
     setFullnameSring(user.value)

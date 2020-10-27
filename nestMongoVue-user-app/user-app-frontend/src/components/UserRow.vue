@@ -11,7 +11,7 @@
     <td data-label="Full Name">{{ user.password }}</td>
     <td data-label="Age">{{ user.age }}</td>
     <td data-label="Email">{{ user.email }}</td>
-    <td data-label="Country">{{ user.name }}</td>
+    <td data-label="Fullname">{{ user.fullname }}</td>
     <td data-label="Address">{{ user.address }}</td>
   </tr>
 </template>

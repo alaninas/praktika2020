@@ -1,14 +1,14 @@
 <template>
   <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-12">
-      <label for="firstNameInput">First name</label>
-      <input type="text" id="firstNameInput" name="firstName" v-model="user.firstName" required v-validate />
-      <div class="error">{{ validationErrors.firstName }}</div>
+      <label for="firstnameInput">First name</label>
+      <input type="text" id="firstnameInput" name="firstname" v-model="user.firstname" required v-validate />
+      <div class="error">{{ validationErrors.firstname }}</div>
     </div>
     <div class="col-lg-3 col-md-6 col-sm-12">
-      <label for="lastNameInput">Last name</label>
-      <input type="text" id="lastNameInput" name="lastName" v-model="user.lastName" required v-validate />
-      <div class="error">{{ validationErrors.lastName }}</div>
+      <label for="lastnameInput">Last name</label>
+      <input type="text" id="lastnameInput" name="lastname" v-model="user.lastname" required v-validate />
+      <div class="error">{{ validationErrors.lastname }}</div>
     </div>
     <div class="col-lg-2 col-md-5 col-sm-12">
       <label for="ageInput">Age</label>

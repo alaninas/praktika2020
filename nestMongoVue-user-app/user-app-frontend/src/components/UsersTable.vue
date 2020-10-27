@@ -26,7 +26,7 @@
             <span class="arrow down" @click="sortByEmail(true)"></span>
           </div>
         </th>
-        <th>Name
+        <th>Fullname
           <div class="sort-arrows">
             <span class="arrow" @click="sortByName(false)"></span>
             <span class="arrow down" @click="sortByName(true)"></span>
@@ -54,7 +54,6 @@ import useUsers, { useUsersFunc } from '@/modules/features/useUsers'
 
 export default {
   name: 'UsersTable',
-  el: '#userTable',
   components: {
     UserRow
   },

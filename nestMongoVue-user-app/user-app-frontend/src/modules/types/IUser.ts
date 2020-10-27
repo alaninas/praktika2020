@@ -1,11 +1,10 @@
 export default interface UserInterface {
-    firstName?: string;
-    lastName?: string;
-    fullName?: string;
+    firstname?: string;
+    lastname?: string;
+    fullname?: string;
     age?: number;
     country?: string;
     url?: string;
-    // userName?: string;
     email?: string;
     password?: string;
     passwordConfirm?: string;
@@ -16,7 +15,6 @@ export default interface UserInterface {
     address?: string;
     friends?: Array<string>;
     movies?: Array<string>;
-    height?: number;
     _id?: string;
     name?: string;
 }
