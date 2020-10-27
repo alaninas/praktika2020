@@ -2,8 +2,11 @@ import { IsEmail, IsString, IsInt, IsNotEmpty, IsOptional, MaxLength, MinLength 
 import { IsEqualTo } from '../decorators/IsEqualTo'
 
 export class CreateUserDto {
+    // @IsNotEmpty()
+    // readonly name: string;
     @IsNotEmpty()
-    readonly name: string;
+    @IsEmail()
+    email: string;
 
     @IsNotEmpty()
     @IsString()
@@ -24,9 +27,16 @@ export class CreateUserDto {
     age?: number;
 
     @IsOptional()
-    @IsNotEmpty()
-    @IsEmail()
-    email?: string;
+    @IsString()
+    fullname?: string;
+  
+    @IsOptional()
+    @IsString()
+    city?: string;
+  
+    @IsOptional()
+    @IsString()
+    address?: string;
 
     // type string is not assignable to Type 'string[]' is not assignable to type '{ generationTime: number; equals: {}; getTimestamp: {}; toHexString: {}; }[]'
     // @IsOptional()
