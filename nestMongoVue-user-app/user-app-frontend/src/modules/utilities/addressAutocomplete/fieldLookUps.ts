@@ -1,5 +1,5 @@
 import AddressInterface from '@/modules/types/IAddress'
-import { matchCity, matchNumber, matchStreet, matchZipcode } from '@/modules/utilities/matchSingleField'
+import { matchCity, matchNumber, matchStreet, matchZipcode } from '@/modules/utilities/addressAutocomplete/matchField'
 
 type fieldName = 'street' | 'houseNumber' | 'city' | 'zipCode'
 type fieldEvalKeys = 'holdsValue' | 'isMatch'

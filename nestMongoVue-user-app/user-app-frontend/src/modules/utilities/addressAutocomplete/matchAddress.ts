@@ -1,5 +1,5 @@
 import AddressInterface from '@/modules/types/IAddress'
-import { fieldEval, fields, fillHoldsValueTable, fillIsAMatchTable, holdsValueTable, isAMatchTable } from '@/modules/types/matchAddressLookUps'
+import { fieldEval, fields, fillHoldsValueTable, fillIsAMatchTable, holdsValueTable, isAMatchTable } from '@/modules/utilities/addressAutocomplete/fieldLookUps'
 
 function getSingles (valuesTable: holdsValueTable, matchesTable: isAMatchTable): fieldEval[] {
   const res: fieldEval[] = []
@@ -50,7 +50,7 @@ function getFieldComparisons ({ vtable, mtable }: { vtable: holdsValueTable; mta
   return { singleFieldComparisons, dualFieldComparisons, tripleFieldComparisons, quadFieldComparisons }
 }
 
-function matchAddressFields (savedAddress: AddressInterface, parsedAddress: AddressInterface): boolean {
+function matchAddress (savedAddress: AddressInterface, parsedAddress: AddressInterface): boolean {
   let result = false
   const vtable = fillHoldsValueTable(parsedAddress)
   const mtable = fillIsAMatchTable(savedAddress, parsedAddress)
@@ -75,5 +75,5 @@ function matchAddressFields (savedAddress: AddressInterface, parsedAddress: Addr
 }
 
 export {
-  matchAddressFields
+  matchAddress
 }

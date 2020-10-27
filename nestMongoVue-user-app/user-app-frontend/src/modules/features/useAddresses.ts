@@ -1,7 +1,7 @@
 import addressesJson from '@/assets/jsons/addresses.json'
 import AddressInterface from '@/modules/types/IAddress'
-import { matchAddressFields } from '@/modules/utilities/matchAddress'
-import { parseSearchString } from '@/modules/utilities/parseAddressString'
+import { matchAddress } from '@/modules/utilities/addressAutocomplete/matchAddress'
+import { parseSearchString } from '@/modules/utilities/addressAutocomplete/parseString'
 import { computed, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 
@@ -13,7 +13,7 @@ export function useAddresses (user: Ref<UserInterface>) {
   function searchAddresses (searchString: string | undefined): AddressInterface[] {
     if (!searchString) return []
     const { matchString, parsedAddress } = parseSearchString(searchString)
-    const matchedAddresses = matchString && matchString.length > 0 ? addresses.filter(address => matchAddressFields(address, parsedAddress)) : []
+    const matchedAddresses = matchString && matchString.length > 0 ? addresses.filter(address => matchAddress(address, parsedAddress)) : []
     return matchedAddresses
   }
 
