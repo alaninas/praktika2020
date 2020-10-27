@@ -12,9 +12,9 @@
 
 <script lang="ts">
 import validate from '@/modules/directives/validate'
-import AddressAutocomplete from '@/components/formRows/AddressAutocomplete.vue'
-import SigninInfo from '@/components/formRows/SigninInfo.vue'
-import PersonalData from '@/components/formRows/PersonalData.vue'
+import AddressAutocomplete from '@/components/forms/newUser/formRows/AddressAutocomplete.vue'
+import SigninInfo from '@/components/forms/newUser/formRows/SigninInfo.vue'
+import PersonalData from '@/components/forms/newUser/formRows/PersonalData.vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
 import { getValidationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'

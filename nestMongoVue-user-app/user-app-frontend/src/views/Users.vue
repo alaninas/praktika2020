@@ -27,7 +27,7 @@
 <script lang="ts">
 import UsersSearch from '@/components/UsersSearch.vue'
 import UsersTable from '@/components/UsersTable.vue'
-import UserForm from '@/components/UserForm.vue'
+import UserForm from '@/components/forms/newUser/UserForm.vue'
 
 export default {
   name: 'Users',
