@@ -71,15 +71,15 @@ export class UsersController {
         return this.usersService.removeUserFriends(uid, fid);
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Put()
     async updateUser(@Body() user: UpdateUserDto): Promise<Person> {
         return this.usersService.updateUser(user);
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Delete()
-    async deleteUser(@Body('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
+    // @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async deleteUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
         return this.usersService.deleteUser(id);
     }
 }
