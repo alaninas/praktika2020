@@ -16,5 +16,4 @@ export default interface UserInterface {
     friends?: Array<string>;
     movies?: Array<string>;
     _id?: string;
-    name?: string;
 }
