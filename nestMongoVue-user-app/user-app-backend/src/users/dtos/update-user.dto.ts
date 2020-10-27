@@ -2,21 +2,29 @@ import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength 
 
 export class UpdateUserDto {
     @IsNotEmpty()
-    readonly name: string;
+    @IsEmail()
+    email?: string;
 
     @IsNotEmpty()
     @IsString()
     @MinLength(4)
     @MaxLength(20)
     // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'password too weak'})
-    password: string;
+    password?: string;
 
     @IsOptional()
     @IsInt()
     age?: number;
 
     @IsOptional()
-    @IsNotEmpty()
-    @IsEmail()
-    email?: string;
+    @IsString()
+    fullname?: string;
+  
+    @IsOptional()
+    @IsString()
+    city?: string;
+  
+    @IsOptional()
+    @IsString()
+    address?: string;
 }

@@ -3,8 +3,9 @@ import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class Person extends Document {
-  @Prop({ required: true })
-  name: string;
+  // TODO: remove deprecated
+  @Prop()
+  name?: string;
 
   @Prop({ required: true })
   password: string;
@@ -12,8 +13,17 @@ export class Person extends Document {
   @Prop()
   age?: number;
 
+  @Prop({ required: true })
+  email: string;
+
   @Prop()
-  email?: string;
+  fullname?: string;
+
+  @Prop()
+  city?: string;
+
+  @Prop()
+  address?: string;
 
   @Prop({ ref: Person })
   friends?: mongoose.Types.ObjectId[];
