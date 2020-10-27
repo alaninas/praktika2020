@@ -1,6 +1,8 @@
-import { ref } from 'vue'
+import { validationErrors } from '@/modules/states/validationErrors'
 
-export const validationErrors = ref({})
+export function getValidationErrors () {
+  return validationErrors
+}
 
 export function resetValidationErrors () {
   validationErrors.value = {}

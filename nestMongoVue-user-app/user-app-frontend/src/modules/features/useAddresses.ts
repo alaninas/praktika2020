@@ -1,15 +1,11 @@
-import addressesJson from '@/assets/jsons/addresses.json'
 import AddressInterface from '@/modules/types/IAddress'
 import { matchAddress } from '@/modules/utilities/addressAutocomplete/matchAddress'
 import { parseSearchString } from '@/modules/utilities/addressAutocomplete/parseString'
 import { computed, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
-
-// TODO: fill up adresses.json with real data, instead of dummy slots, add atleast 20 addresses
+import { addresses } from '@/modules/states/addresses'
 
 export function useAddresses (user: Ref<UserInterface>) {
-  const addresses: AddressInterface[] = addressesJson
-
   function searchAddresses (searchString: string | undefined): AddressInterface[] {
     if (!searchString) return []
     const { matchString, parsedAddress } = parseSearchString(searchString)

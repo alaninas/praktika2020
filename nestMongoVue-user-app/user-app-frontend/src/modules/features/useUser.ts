@@ -1,9 +1,9 @@
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
-import { ref, Ref, watchEffect } from 'vue'
-import { userErrors, setUserErrors, clearUserErrors } from '@/modules/features/useUserErrors'
-
-const user: Ref<UserInterface> = ref({} as UserInterface)
+import { watchEffect } from 'vue'
+import { setUserErrors, clearUserErrors } from '@/modules/features/useUserErrors'
+import { userErrors } from '@/modules/states/userErrors'
+import { user } from '@/modules/states/user'
 
 export function useUser () {
   function getUser () {

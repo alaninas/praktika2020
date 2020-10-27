@@ -17,7 +17,7 @@ import SigninInfo from '@/components/formRows/SigninInfo.vue'
 import PersonalData from '@/components/formRows/PersonalData.vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
-import { validationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'
+import { getValidationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'
 import { useUsers } from '@/modules/features/useUsers'
 
 export default {
@@ -33,6 +33,7 @@ export default {
   async setup () {
     const { user, userErrors, resetUserErrors } = useUser()
     const { addUser } = await useUsers()
+    const validationErrors = getValidationErrors()
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs

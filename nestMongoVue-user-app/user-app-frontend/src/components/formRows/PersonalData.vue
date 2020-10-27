@@ -29,7 +29,7 @@
 <script lang="ts">
 import validate from '@/modules/directives/validate'
 import { useUser } from '@/modules/features/useUser'
-import { validationErrors } from '@/modules/features/useValidationErrors'
+import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {
@@ -41,6 +41,7 @@ export default {
     const { getUser } = useUser()
     const user = getUser()
     const countries = countriesJson
+    const validationErrors = getValidationErrors()
     return { user, validationErrors, countries }
   }
 }

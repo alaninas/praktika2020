@@ -43,7 +43,7 @@
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
 import validate from '@/modules/directives/validate'
-import { validationErrors } from '@/modules/features/useValidationErrors'
+import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import { useAddresses } from '@/modules/features/useAddresses'
 import { useUser } from '@/modules/features/useUser'
 
@@ -58,6 +58,7 @@ export default {
     const currentIdx = reactive({ data: 0 })
     const openDropDown = reactive({ data: false })
     const { matchedAddresses, matchedAddressesToString } = useAddresses(user)
+    const validationErrors = getValidationErrors()
 
     function openMatches (matchedAddressesToStringArray: string[]): boolean {
       openDropDown.data = user.value.address !== undefined && user.value.address !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true

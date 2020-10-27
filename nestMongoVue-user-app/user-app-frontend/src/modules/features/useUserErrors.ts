@@ -1,8 +1,10 @@
 import UserInterface from '@/modules/types/IUser'
-import { ref } from 'vue'
 import { arePassworsEqual, isEmailUnique } from '@/modules/utilities/userErrorLogic'
+import { userErrors } from '@/modules/states/userErrors'
 
-export const userErrors = ref({ email: '', password: '' })
+export function getUserErrors () {
+  return userErrors
+}
 
 export async function setUserErrors (userInp: UserInterface) {
   // console.log('inside error update')
