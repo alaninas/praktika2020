@@ -28,5 +28,6 @@ export default {
   updated (el: any, binding: any) {
     const vm = binding.instance
     if (el.validity.valueMissing) initRequiredError({ el, vm })
+    if (el.validity.valid) vm.validationErrors[el.name] = ''
   }
 }

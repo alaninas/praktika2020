@@ -4,15 +4,15 @@
   <label for="addressInput">Address</label>
   <input
     class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
-    @keydown.enter="enter(validationErrors)"
+    @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
-    @input="inputChange(validationErrors)"
-    @click="enter(validationErrors)"
+    @input="inputChange()"
+    @click="enter()"
   />
   <div v-show="!openDropDown.data" class="error">{{ validationErrors.address }}</div>
   <ul class="dropdown-menu" v-show="openDropDown.data">
-    <li v-for="(match, i) in matchedAddressesToString" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i, validationErrors)">
+    <li v-for="(match, i) in matchedAddressesToString" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
       {{ match }}
     </li>
   </ul>
@@ -43,7 +43,7 @@
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
 import validate from '@/modules/directives/validate'
-import { validationErrors, clearAddressValidationError } from '@/modules/features/useValidationErrors'
+import { validationErrors } from '@/modules/features/useValidationErrors'
 import { useAddresses } from '@/modules/features/useAddresses'
 import { useUser } from '@/modules/features/useUser'
 
@@ -73,30 +73,25 @@ export default {
     function down () {
       if (currentIdx.data < matchedAddressesToString.value.length - 1 && openDropDown.data) currentIdx.data++
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function inputChange (valErr: any) {
+    function inputChange () {
       if (openDropDown.data === false) resetDropDown(true)
-      clearAddressValidationError(valErr)
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function matchesClick (index: number, valErr: any) {
+    function matchesClick (index: number) {
       if (openDropDown.data) {
         setUserAddress(matchedAddresses.value[index])
         resetDropDown(false)
-        clearAddressValidationError(valErr)
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function enter (valErr: any) {
+    function enter () {
       if (openDropDown.data) {
         if (matchedAddressesToString.value[currentIdx.data]) setUserAddress(matchedAddresses.value[currentIdx.data])
         resetDropDown(false)
-        clearAddressValidationError(valErr)
       }
     }
     watchEffect(() => {
       openMatches(matchedAddressesToString.value)
     })
+
     return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors, user }
   }
 }
