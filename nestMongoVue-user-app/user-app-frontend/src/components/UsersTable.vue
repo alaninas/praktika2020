@@ -4,14 +4,14 @@
       <tr>
         <th>UserId
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByUserId(false)"></span>
-            <span class="arrow down" @click="sortByUserId(true)"></span>
+            <span class="arrow" @click="sortById(false)"></span>
+            <span class="arrow down" @click="sortById(true)"></span>
           </div> | Del
         </th>
         <th>Password
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByPswd(false)"></span>
-            <span class="arrow down" @click="sortByPswd(true)"></span>
+            <span class="arrow" @click="sortByPassword(false)"></span>
+            <span class="arrow down" @click="sortByPassword(true)"></span>
           </div>
         </th>
         <th>Age
@@ -28,14 +28,14 @@
         </th>
         <th>Fullname
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByName(false)"></span>
-            <span class="arrow down" @click="sortByName(true)"></span>
+            <span class="arrow" @click="sortByFullname(false)"></span>
+            <span class="arrow down" @click="sortByFullname(true)"></span>
           </div>
         </th>
         <th>Address
           <div class="sort-arrows">
-            <span class="arrow" @click="sortByAddressString(false)"></span>
-            <span class="arrow down" @click="sortByAddressString(true)"></span>
+            <span class="arrow" @click="sortByAddress(false)"></span>
+            <span class="arrow down" @click="sortByAddress(true)"></span>
           </div>
         </th>
       </tr>
@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import UserRow from '@/components/UserRow.vue'
-import useUsers, { useUsersFunc } from '@/modules/features/useUsers'
+import { useUsers } from '@/modules/features/useUsers'
 
 export default {
   name: 'UsersTable',
@@ -58,9 +58,8 @@ export default {
     UserRow
   },
   async setup () {
-    const { usersBE } = await useUsers()
-    const { sortByUserId, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName, sortByPswd } = await useUsersFunc()
-    return { usersBE, sortByUserId, sortByEmail, sortByAge, sortByAddressString, sortByCountry, sortByFullName, sortByPswd }
+    const { sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById } = await useUsers()
+    return { sortById, sortByAge, sortByAddress, sortByFullname, sortByEmail, sortByPassword }
   }
 }
 </script>

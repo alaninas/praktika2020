@@ -2,7 +2,9 @@
   <div id="myUsers" class="card fluid"><p class="section">Add User</p>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
+        <Suspense>
         <UserForm />
+        </Suspense>
       </div>
     </div>
   </div>

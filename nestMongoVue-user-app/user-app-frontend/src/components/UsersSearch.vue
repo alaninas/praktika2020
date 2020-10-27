@@ -18,25 +18,22 @@
 <script lang="ts">
 import { reactive, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
-import { useUsersFunc } from '@/modules/features/useUsers'
+import { useUsers } from '@/modules/features/useUsers'
 
 export default {
   name: 'UsersSearch',
   async setup () {
     const pattern = reactive({ data: '' })
-    // const { usersBE } = await useUsers()
-    const { searchByEmail } = await useUsersFunc()
+    const { searchByEmail } = await useUsers()
     const userSearchResults: {data: UserInterface[] | []} = reactive({ data: [] })
 
     function userSearch (pattern?: string): UserInterface[] {
       userSearchResults.data = searchByEmail({ pattern })
       return userSearchResults.data
     }
-
     const stopHandle = watchEffect(() => {
       userSearch(pattern.data)
     })
-
     stopHandle()
 
     return { pattern, userSearch, userSearchResults }

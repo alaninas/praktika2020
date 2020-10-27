@@ -1,62 +1,130 @@
 import UserInterface from '@/modules/types/IUser'
-import { compareNumbers, compareStrings } from '@/modules/utilities/compareFunctions'
-import { ref, Ref } from 'vue'
+import { ref, Ref, watch } from 'vue'
 import { server } from '@/backend-server'
 import axios, { AxiosResponse } from 'axios'
 
-// let usersBE: UserInterface[]
-async function getBEusers (): Promise<Ref<AxiosResponse<UserInterface[]>>> {
-  const c: Ref<AxiosResponse<UserInterface[]>> = ref(await axios.get(`${server.baseURL}/users`))
-  // const d = c.value.data
-  return c
+// ***********************************************
+// TODO: move into separate module: axiosResponses
+async function getAllUsers (): Promise<AxiosResponse<UserInterface[]>> {
+  console.log('state calls unsorted users')
+  return await axios.get(`${server.baseURL}/users`)
 }
 
-export default async function useUsers () {
-  const usersBE = await getBEusers()
-  // usersBE.value.data.sort((a, b) => compareStrings(a.password, b.password, false))
-  // await usersBE.value.data.sort((a, b) => compareNumbers(a.age, b.age, false))
-  // const usersBE = usersB.sort((a, b) => compareStrings(a._id, b._id, false))
-  return { usersBE }
+async function getAllUsersSorted ({ column, direction }: { column: string; direction: string }): Promise<AxiosResponse<UserInterface[]>> {
+  console.log(`state calls sorted users by column: ${column} in order: ${direction}`)
+  return await axios.get(`${server.baseURL}/users/sort/${column}/${direction}`)
 }
 
-export async function useUsersFunc () {
-  const users = await getBEusers()
+async function postNewUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
+  console.log(`state calls createNewUser email: ${newUser.email}`)
+  return await axios.post(`${server.baseURL}/users`, newUser)
+}
 
+async function deleteUser (userId: string): Promise<AxiosResponse<UserInterface>> {
+  console.log(`state calls deleteUser id: ${userId}`)
+  return await axios.delete(`${server.baseURL}/users/${userId}`)
+}
+
+// *******************************************
+// TODO: move into separate module: usersState
+const users = ref([{} as UserInterface])
+const history = []
+history.push(users.value)
+
+function setState (data: UserInterface[]) {
+  console.log('>>> inside state setState')
+  users.value = data
+}
+
+function getState (): Ref<UserInterface[]> {
+  return users
+}
+
+async function loadUnsortedUsers (): Promise<Ref<UserInterface[]>> {
+  const c = await getAllUsers()
+  setState(c.data)
+  return getState()
+}
+
+async function loadSortedUsers (column: string, direction: string): Promise<Ref<UserInterface[]>> {
+  const c = await getAllUsersSorted({ column, direction })
+  setState(c.data)
+  return getState()
+}
+
+async function addStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
+  const c = await postNewUser(newUser)
+  const all = getState()
+  all.value.push(c.data)
+  setState(all.value)
+  return getState()
+}
+
+async function removeStateUser (userId: string): Promise<Ref<UserInterface[]>> {
+  const c = await deleteUser(userId)
+  const all = getState()
+  const index = all.value.findIndex(el => el.email === c.data.email)
+  all.value.splice(index, 1)
+  setState(all.value)
+  return getState()
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+watch(users, (newUsers, oldUsers) => {
+  history.push(newUsers)
+  console.log('from state watcher')
+  console.log(newUsers)
+  console.log(history.length)
+})
+
+// **********************************************
+// TODO: move into separate module: useUsersState
+export async function useUsers () {
   function searchByEmail ({ pattern = '' }: { pattern?: string }): UserInterface[] {
     const re = new RegExp(pattern, 'i')
-    return pattern ? users.value.data.filter(el => el.email && re.test(el.email)) : []
+    const myUsers = getState()
+    return pattern ? myUsers.value.filter(el => el.email && re.test(el.email)) : []
   }
 
-  function sortByUserId (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a._id, b._id, reverse))
+  function getDirection (reverse: boolean): 'dsc' | 'asc' {
+    const direction = reverse ? 'dsc' : 'asc'
+    return direction
   }
 
-  function sortByFullName (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.fullname, b.fullname, reverse))
+  async function unsorted (): Promise<Ref<UserInterface[]>> {
+    return await loadUnsortedUsers()
   }
 
-  function sortByEmail (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.email, b.email, reverse))
+  async function sortByEmail (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('email', getDirection(reverse))
   }
 
-  function sortByCountry (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.country, b.country, reverse))
+  async function sortByAge (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('age', getDirection(reverse))
   }
 
-  function sortByAddressString (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.address, b.address, reverse))
+  async function sortByAddress (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('address', getDirection(reverse))
   }
 
-  function sortByPswd (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.password, b.password, reverse))
+  async function sortByFullname (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('fullname', getDirection(reverse))
   }
 
-  function sortByName (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareStrings(a.name, b.name, reverse))
+  async function sortByPassword (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('password', getDirection(reverse))
   }
 
-  function sortByAge (reverse: boolean): UserInterface[] {
-    return users.value.data.sort((a, b) => compareNumbers(a.age, b.age, reverse))
+  async function sortById (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('id', getDirection(reverse))
   }
-  return { users, searchByEmail, sortByPswd, sortByName, sortByUserId, sortByAge, sortByEmail, sortByAddressString, sortByCountry, sortByFullName }
+
+  async function addUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
+    return await addStateUser(newUser)
+  }
+
+  async function removeUser (userId: string): Promise<Ref<UserInterface[]>> {
+    return await removeStateUser(userId)
+  }
+  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser }
 }
