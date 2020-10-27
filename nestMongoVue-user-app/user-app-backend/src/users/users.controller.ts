@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, UseGuards, Request} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Person } from './schemas/user.schema';
@@ -23,15 +23,22 @@ export class UsersController {
         return this.authService.login(user);
     }
 
-    // @UseGuards(JwtAuthGuard)
-    // @Get('profile')
-    // getProfile(@Request() req) {
-        // return req.user;
-    // }
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    getProfile(@Request() req) {
+        console.log(req.user)
+        return req.user;
+    }
 
     @Get()
     async getAllUsers(): Promise<Person[]> {
         return this.usersService.getAllUsers();
+    }
+
+    @Get('sort/:column/:direction')
+    async getAllUsersSorted(@Param('column') column: string, @Param('direction') direction: string): Promise<Person[]> {
+        console.log(`calls sorted users by column: ${column} in order: ${direction}`)
+        return this.usersService.getAllUsersSorted(column, direction);
     }
     
     @Get(':id')

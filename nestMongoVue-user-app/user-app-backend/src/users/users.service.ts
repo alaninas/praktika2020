@@ -18,6 +18,15 @@ export class UsersService {
         return await this.personModel.find();
     }
 
+    async getAllUsersSorted(column: string, direction: string): Promise<Person[]> {
+        // TODO: add params -- offset/pageNr ($skip), limit ($limit)
+        try {
+            return await this.usersHelper.sortUsers(column, direction);
+        } catch (error) {
+            throw new HttpException(`Can not sort users by column: ${column} in order: ${direction}`, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     async getOneUserById(id: ObjectID): Promise<Person> {
         return await this.personModel.findById(id);
     }
@@ -30,19 +39,17 @@ export class UsersService {
         return await this.usersHelper.getMoviesDetails(id);
     }
 
-    async getOneUserByName(username: string): Promise<Person> {
-        return this.personModel.findOne({name: username});
+    async getOneUserByEmail(useremail: string): Promise<Person> {
+        return this.personModel.findOne({email: useremail});
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {
-        if (await this.getOneUserByName(user.name)) throw new HttpException(`User name already in use #${user.name}`, HttpStatus.BAD_REQUEST);
+        if (await this.getOneUserByEmail(user.email)) throw new HttpException(`Email already in use #${user.email}`, HttpStatus.BAD_REQUEST);
         user.password = Md5.hashStr(user.password).toString();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {name, password, age, email, ...args} = user;
+        const {fullname, password, age, email, ...args} = user;
         // return await (new this.personModel(user)).save();
-        return await this.personModel.create({
-            name, password, age, email
-        });
+        return await this.personModel.create({ fullname, password, age, email });
 
     }
     
@@ -65,9 +72,9 @@ export class UsersService {
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
-        const userToUpdate = await this.getOneUserByName(user.name);
+        const userToUpdate = await this.getOneUserByEmail(user.email);
         const passwordDigest = Md5.hashStr(user.password).toString();
-        if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${user.name}`, HttpStatus.BAD_REQUEST);
+        if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${user.email}`, HttpStatus.BAD_REQUEST);
         return await userToUpdate.updateOne({password: passwordDigest, age: user.age, email: user.email});
     }
     
