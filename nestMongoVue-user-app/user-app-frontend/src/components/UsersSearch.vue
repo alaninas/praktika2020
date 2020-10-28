@@ -9,9 +9,9 @@
   <div class="section" v-if="userSearchResults.data.length">
     <ul>
       <li v-for="(user, i) in userSearchResults.data" :key="user">
-        Index: {{i}} |
-        Data: {{ displayUserData(user) }} |
-        Link: <router-link :to="{name: 'Edit', params: {id: user._id}}">{{ user._id }}</router-link>
+        <b>Index:</b> {{i}} |
+        <b>Data:</b> {{ displayUserData(user) }} |
+        <b>Link:</b> <router-link :to="{name: 'Edit', params: {id: user._id}}">{{ user._id }}</router-link>
       </li>
     </ul>
   </div>

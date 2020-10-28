@@ -38,7 +38,7 @@ export default {
     const { getUserById, editUser } = await useUsers()
     const userB = ref(await getUserById(route.params.id))
 
-    const { getUser, getUserErrors, clearUserState } = useUser({ myUser: userB, noDataReload: false })
+    const { getUser, getUserErrors, clearUserData } = useUser({ myUser: userB, noDataReload: false })
     const user = getUser()
     const userErrors = getUserErrors()
     const validationErrors = getValidationErrors()
@@ -49,12 +49,12 @@ export default {
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
         editUser(user.value)
-        clearUserState(user)
+        clearUserData()
       }
     }
     function navigate () {
       router.go(-1)
-      clearUserState(user)
+      clearUserData()
     }
 
     return { user, onSubmit, validationErrors, userErrors, navigate }
