@@ -3,7 +3,7 @@
   <div class="col-lg-3 col-md-4 col-sm-12">
   <label for="addressInput">Address</label>
   <input
-    class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
+    class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" v-validate
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
@@ -48,12 +48,11 @@ import { useAddresses } from '@/modules/features/useAddresses'
 import { useUser } from '@/modules/features/useUser'
 
 export default {
-  name: 'AddressAutocomplete',
   directives: {
     validate: validate
   },
   setup () {
-    const { getUser, setUserAddress } = useUser()
+    const { getUser, setUserAddress } = useUser({})
     const user = getUser()
     const currentIdx = reactive({ data: 0 })
     const openDropDown = reactive({ data: false })
