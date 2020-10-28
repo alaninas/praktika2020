@@ -1,6 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import { Ref } from 'vue'
-import { addStateUser, getState, loadSortedUsers, loadUnsortedUsers, removeStateUser } from '@/modules/states/users'
+import { addStateUser, getState, loadSortedUsers, loadUnsortedUsers, removeStateUser, getStateUser, updateStateUser } from '@/modules/states/users'
 
 export async function useUsers () {
   function searchByEmail ({ pattern = '' }: { pattern?: string }): UserInterface[] {
@@ -42,6 +42,10 @@ export async function useUsers () {
     return await loadSortedUsers('id', getDirection(reverse))
   }
 
+  async function sortByCountry (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('country', getDirection(reverse))
+  }
+
   async function addUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
     return await addStateUser(newUser)
   }
@@ -49,5 +53,15 @@ export async function useUsers () {
   async function removeUser (userId: string): Promise<Ref<UserInterface[]>> {
     return await removeStateUser(userId)
   }
-  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser }
+
+  async function getUserById (userId: string | string[]): Promise<UserInterface> {
+    // const c: string = userId[0].toString() || userId.toString()
+    // // if (userId[0]) c = userId[0].toString()
+    return await getStateUser(userId.toString())
+  }
+
+  async function editUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
+    return await updateStateUser(newUser)
+  }
+  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser, sortByCountry, getUserById, editUser }
 }

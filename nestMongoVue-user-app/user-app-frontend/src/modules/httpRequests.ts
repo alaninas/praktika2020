@@ -12,8 +12,18 @@ async function getAllUsersSorted ({ column, direction }: { column: string; direc
   return await axios.get(`${server.baseURL}/users/sort/${column}/${direction}`)
 }
 
+async function getOneUser (userId: string): Promise<AxiosResponse<UserInterface>> {
+  console.log(`state calls getOneByID: ${userId}`)
+  return await axios.get(`${server.baseURL}/users/${userId}`)
+}
+
 async function postNewUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
   console.log(`state calls createNewUser email: ${newUser.email}`)
+  return await axios.post(`${server.baseURL}/users`, newUser)
+}
+
+async function putUpdatedUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
+  console.log(`state calls updateOneUser email: ${newUser.email}`)
   return await axios.post(`${server.baseURL}/users`, newUser)
 }
 
@@ -26,5 +36,7 @@ export {
   getAllUsers,
   getAllUsersSorted,
   postNewUser,
-  deleteUser
+  deleteUser,
+  getOneUser,
+  putUpdatedUser
 }
