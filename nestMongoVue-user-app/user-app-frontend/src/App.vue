@@ -1,6 +1,7 @@
 <template>
   <div id="nav">
-    Users Home
+    <router-link to="/users">Users</router-link>
+    <!-- Users Home -->
     <!-- <router-link to="/">Counter</router-link> |
     <router-link to="/users">Users</router-link> -->
   </div>

@@ -32,6 +32,12 @@
             <span class="arrow down" @click="sortByFullname(true)"></span>
           </div>
         </th>
+        <th>Country
+          <div class="sort-arrows">
+            <span class="arrow" @click="sortByCountry(false)"></span>
+            <span class="arrow down" @click="sortByCountry(true)"></span>
+          </div>
+        </th>
         <th>Address
           <div class="sort-arrows">
             <span class="arrow" @click="sortByAddress(false)"></span>
@@ -58,8 +64,8 @@ export default {
     UserRow
   },
   async setup () {
-    const { sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById } = await useUsers()
-    return { sortById, sortByAge, sortByAddress, sortByFullname, sortByEmail, sortByPassword }
+    const { sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, sortByCountry } = await useUsers()
+    return { sortById, sortByAge, sortByAddress, sortByFullname, sortByEmail, sortByPassword, sortByCountry }
   }
 }
 </script>

@@ -1,6 +1,7 @@
 <template>
   <tr v-for="user in users" :key="user">
-    <td data-label="Id | Del" :title="user._id">{{ user._id.substr(20) }}
+    <td data-label="Id | Del" :title="user._id">
+      <router-link :to="{name: 'Edit', params: {id: user._id}}">{{ user._id.substr(18) }}</router-link>
       <label
         role="button"
         class="responsive-padding responsive-margin inverse"
@@ -12,6 +13,7 @@
     <td data-label="Age">{{ user.age }}</td>
     <td data-label="Email">{{ user.email }}</td>
     <td data-label="Fullname">{{ user.fullname }}</td>
+    <td data-label="Country">{{ user.country }}</td>
     <td data-label="Address">{{ user.address }}</td>
   </tr>
 </template>
