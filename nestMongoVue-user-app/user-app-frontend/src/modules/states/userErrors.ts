@@ -1,3 +1,3 @@
 import { ref } from 'vue'
 
-export const userErrors = ref({ email: '', password: '' })
+export const userErrors = ref({ password: '', passwordConfirm: '' })
