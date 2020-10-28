@@ -6,7 +6,7 @@
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
-          <UserForm />
+          <EditUser />
         </Suspense>
       </div>
     </div>
@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import UserForm from '@/components/forms/editUser/UserForm.vue'
+import EditUser from '@/components/forms/editUser/EditUser.vue'
 import router from '@/router'
 
 export default {
   name: 'Edit',
   components: {
-    UserForm
+    EditUser
   },
   setup () {
     function navigate () {

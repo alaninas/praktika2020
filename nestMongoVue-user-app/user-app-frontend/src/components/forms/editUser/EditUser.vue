@@ -23,7 +23,7 @@ import { useUsers } from '@/modules/features/useUsers'
 import { useRoute } from 'vue-router'
 
 export default {
-  name: 'UserForm',
+  name: 'EditUser',
   components: {
     SigninInfo,
     PersonalData,
@@ -42,7 +42,6 @@ export default {
     const { addUser, getUserById, editUser } = await useUsers()
     const validationErrors = getValidationErrors()
 
-    const c = route.params.id
     const editU = await getUserById(route.params.id)
     console.log(`user to edit: ${editU.email}`)
 

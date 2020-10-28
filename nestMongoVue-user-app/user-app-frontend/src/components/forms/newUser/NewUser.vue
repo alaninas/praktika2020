@@ -21,7 +21,7 @@ import { getValidationErrors, resetValidationErrors } from '@/modules/features/u
 import { useUsers } from '@/modules/features/useUsers'
 
 export default {
-  name: 'UserForm',
+  name: 'NewUser',
   components: {
     SigninInfo,
     PersonalData,

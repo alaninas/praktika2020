@@ -3,7 +3,7 @@
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
-        <UserForm />
+          <NewUser />
         </Suspense>
       </div>
     </div>
@@ -27,12 +27,12 @@
 <script lang="ts">
 import UsersSearch from '@/components/UsersSearch.vue'
 import UsersTable from '@/components/UsersTable.vue'
-import UserForm from '@/components/forms/newUser/UserForm.vue'
+import NewUser from '@/components/forms/newUser/NewUser.vue'
 
 export default {
   name: 'Users',
   components: {
-    UserForm,
+    NewUser,
     UsersSearch,
     UsersTable
   },
