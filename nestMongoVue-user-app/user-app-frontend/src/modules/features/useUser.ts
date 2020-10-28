@@ -8,12 +8,12 @@ export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?
     return loadUser(myUser, noDataReload)
   }
 
-  function setUserAddress (inputAddress: AddressInterface): UserInterface {
-    return setStateAddress(inputAddress)
+  function setUserAddress (address: AddressInterface): UserInterface {
+    return setStateAddress(address)
   }
 
-  function setUser (inputUser: UserInterface): UserInterface {
-    return setState(inputUser)
+  function setUser (user: UserInterface): UserInterface {
+    return setState(user)
   }
 
   function resetUserErrors () {
@@ -24,5 +24,14 @@ export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?
     return getStateErrors()
   }
 
-  return { getUser, setUser, setUserAddress, getUserErrors, resetUserErrors }
+  function displayUserData (user: UserInterface): string {
+    const { age, email, fullname, country, address } = user
+    const init = [age, email, fullname, country, address]
+    const arr: (string | number)[] = []
+    init.forEach(element => {
+      if (element) arr.push(element)
+    })
+    return arr.join(', ')
+  }
+  return { getUser, setUser, setUserAddress, getUserErrors, resetUserErrors, displayUserData }
 }

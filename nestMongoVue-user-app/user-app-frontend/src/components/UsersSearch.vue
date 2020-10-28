@@ -9,7 +9,9 @@
   <div class="section" v-if="userSearchResults.data.length">
     <ul>
       <li v-for="(user, i) in userSearchResults.data" :key="user">
-        {{ user.userName }} -- {{ user.fullnameString}} -- {{ user.age }} -- {{ user.email }} -- {{ user.country }} -- {{ user.addressString }} -- {{i}}
+        Index: {{i}} |
+        Data: {{ displayUserData(user) }} |
+        Link: <router-link :to="{name: 'Edit', params: {id: user._id}}">{{ user._id }}</router-link>
       </li>
     </ul>
   </div>
@@ -19,12 +21,14 @@
 import { reactive, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUsers } from '@/modules/features/useUsers'
+import { useUser } from '@/modules/features/useUser'
 
 export default {
   name: 'UsersSearch',
   async setup () {
     const pattern = reactive({ data: '' })
     const { searchByEmail } = await useUsers()
+    const { displayUserData } = useUser({})
     const userSearchResults: {data: UserInterface[] | []} = reactive({ data: [] })
 
     function userSearch (pattern?: string): UserInterface[] {
@@ -36,7 +40,7 @@ export default {
     })
     stopHandle()
 
-    return { pattern, userSearch, userSearchResults }
+    return { pattern, userSearch, userSearchResults, displayUserData }
   }
 }
 </script>
