@@ -16,45 +16,45 @@ function getState (): Ref<UserInterface[]> {
 }
 
 async function loadUnsortedUsers (): Promise<Ref<UserInterface[]>> {
-  const c = await getAllUsers()
-  setState(c.data)
+  const response = await getAllUsers()
+  setState(response.data)
   return getState()
 }
 
 async function loadSortedUsers (column: string, direction: string): Promise<Ref<UserInterface[]>> {
-  const c = await getAllUsersSorted({ column, direction })
-  setState(c.data)
+  const response = await getAllUsersSorted({ column, direction })
+  setState(response.data)
   return getState()
 }
 
 async function getStateUser (id: string): Promise<UserInterface> {
-  const c = await getOneUser(id)
-  return c.data
+  const response = await getOneUser(id)
+  return response.data
 }
 
 async function updateStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
-  const c = await putUpdatedUser(newUser)
-  const all = getState()
-  const index = all.value.findIndex(el => el.email === c.data.email)
-  all.value[index] = c.data
-  setState(all.value)
+  const response = await putUpdatedUser(newUser)
+  const allUsers = getState()
+  const index = allUsers.value.findIndex(el => el.email === response.data.email)
+  allUsers.value[index] = response.data
+  setState(allUsers.value)
   return getState()
 }
 
 async function addStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
-  const c = await postNewUser(newUser)
-  const all = getState()
-  all.value.push(c.data)
-  setState(all.value)
+  const response = await postNewUser(newUser)
+  const allUsers = getState()
+  allUsers.value.push(response.data)
+  setState(allUsers.value)
   return getState()
 }
 
 async function removeStateUser (userId: string): Promise<Ref<UserInterface[]>> {
-  const c = await deleteUser(userId)
-  const all = getState()
-  const index = all.value.findIndex(el => el.email === c.data.email)
-  all.value.splice(index, 1)
-  setState(all.value)
+  const response = await deleteUser(userId)
+  const allUsers = getState()
+  const index = allUsers.value.findIndex(el => el.email === response.data.email)
+  allUsers.value.splice(index, 1)
+  setState(allUsers.value)
   return getState()
 }
 
