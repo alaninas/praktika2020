@@ -2,6 +2,7 @@ import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { Ref } from 'vue'
 import { getState, setState, setStateAddress, getStateErrors, resetStateErrors, loadUser } from '@/modules/states/user'
+import { resetValidationErrors } from '@/modules/features/useValidationErrors'
 
 export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?: Ref<UserInterface>; noDataReload?: boolean }) {
   function getUser (): Ref<UserInterface> {
@@ -24,6 +25,12 @@ export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?
     return getStateErrors()
   }
 
+  function clearUserState (user: Ref<UserInterface>) {
+    user.value = {} as UserInterface
+    resetValidationErrors()
+    resetUserErrors()
+  }
+
   function displayUserData (user: UserInterface): string {
     const { age, email, fullname, country, address } = user
     const init = [age, email, fullname, country, address]
@@ -33,5 +40,5 @@ export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?
     })
     return arr.join(', ')
   }
-  return { getUser, setUser, setUserAddress, getUserErrors, resetUserErrors, displayUserData }
+  return { getUser, setUser, setUserAddress, getUserErrors, resetUserErrors, displayUserData, clearUserState }
 }
