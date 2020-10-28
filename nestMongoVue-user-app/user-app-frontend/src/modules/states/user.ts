@@ -1,8 +1,7 @@
 import { ref, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
-import { setUserErrors, clearUserErrors } from '@/modules/features/useUserErrors'
-import { userErrors } from '@/modules/states/userErrors'
+import { getUserErrors, setUserErrors, clearUserErrors } from '@/modules/features/useUserErrors'
 import { resetValidationErrors } from '@/modules/features/useValidationErrors'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
@@ -57,7 +56,7 @@ function resetStateErrors () {
 }
 
 function getStateErrors () {
-  return userErrors
+  return getUserErrors()
 }
 
 function loadUser (myUser: Ref<UserInterface>, noDataReload: boolean): Ref<UserInterface> {

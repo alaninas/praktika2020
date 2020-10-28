@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
-  <p>Edit form {{ user.email }}</p>
+  <p>Email: {{ user.email }}</p>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <EditLogin />
     <EditPersonal />

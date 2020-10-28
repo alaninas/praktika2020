@@ -3,7 +3,7 @@
     type="text"
     name="searchInput"
     v-model="pattern.data"
-    placeholder="user name to search"
+    placeholder="user email to search"
     @input="userSearch(pattern.data)" @keyup.enter="userSearch(pattern.data)"
   />
   <div class="section" v-if="userSearchResults.data.length">
