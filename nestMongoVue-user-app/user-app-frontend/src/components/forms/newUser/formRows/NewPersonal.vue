@@ -33,12 +33,11 @@ import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {
-  name: 'PersonalData',
   directives: {
     validate: validate
   },
   setup () {
-    const { getUser } = useUser()
+    const { getUser } = useUser({})
     const user = getUser()
     const countries = countriesJson
     const validationErrors = getValidationErrors()

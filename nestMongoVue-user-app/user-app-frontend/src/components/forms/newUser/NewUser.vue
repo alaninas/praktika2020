@@ -2,9 +2,9 @@
 <div>
   <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
-    <SigninInfo />
-    <PersonalData />
-    <AddressAutocomplete />
+    <NewLogin />
+    <NewPersonal />
+    <NewAddress />
     <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
   </form>
 </div>
@@ -12,26 +12,28 @@
 
 <script lang="ts">
 import validate from '@/modules/directives/validate'
-import AddressAutocomplete from '@/components/forms/newUser/formRows/AddressAutocomplete.vue'
-import SigninInfo from '@/components/forms/newUser/formRows/SigninInfo.vue'
-import PersonalData from '@/components/forms/newUser/formRows/PersonalData.vue'
+import NewAddress from '@/components/forms/newUser/formRows/NewAddress.vue'
+import NewLogin from '@/components/forms/newUser/formRows/NewLogin.vue'
+import NewPersonal from '@/components/forms/newUser/formRows/NewPersonal.vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
 import { getValidationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'
 import { useUsers } from '@/modules/features/useUsers'
+import { ref } from 'vue'
 
 export default {
-  name: 'NewUser',
   components: {
-    SigninInfo,
-    PersonalData,
-    AddressAutocomplete
+    NewLogin,
+    NewPersonal,
+    NewAddress
   },
   directives: {
     validate: validate
   },
   async setup () {
-    const { user, userErrors, resetUserErrors } = useUser()
+    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: ref({} as UserInterface), reloadFlag: false })
+    const userErrors = getUserErrors()
+    const user = getUser()
     const { addUser } = await useUsers()
     const validationErrors = getValidationErrors()
 
@@ -40,9 +42,10 @@ export default {
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
-        console.log('--> Sending user data to server')
-        console.log(user.value)
+        // console.log('--> Sending user data to server')
+        // console.log(user.value)
         addUser(user.value)
+        // TODO: move to func
         user.value = {} as UserInterface
         resetValidationErrors()
         resetUserErrors()

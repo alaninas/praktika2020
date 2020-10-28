@@ -24,12 +24,13 @@ import { useUser } from '@/modules/features/useUser'
 import { getValidationErrors } from '@/modules/features/useValidationErrors'
 
 export default {
-  name: 'SigninInfo',
   directives: {
     validate: validate
   },
   setup () {
-    const { user, userErrors } = useUser()
+    const { getUser, getUserErrors } = useUser({})
+    const userErrors = getUserErrors()
+    const user = getUser()
     const validationErrors = getValidationErrors()
     return { user, validationErrors, userErrors }
   }

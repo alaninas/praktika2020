@@ -48,12 +48,11 @@ import { useAddresses } from '@/modules/features/useAddresses'
 import { useUser } from '@/modules/features/useUser'
 
 export default {
-  name: 'AddressAutocomplete',
   directives: {
     validate: validate
   },
   setup () {
-    const { getUser, setUserAddress } = useUser()
+    const { getUser, setUserAddress } = useUser({})
     const user = getUser()
     const currentIdx = reactive({ data: 0 })
     const openDropDown = reactive({ data: false })
