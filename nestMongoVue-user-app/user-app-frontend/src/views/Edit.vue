@@ -1,7 +1,4 @@
 <template>
-  <!-- <h4>
-    <button class="button primary" v-on:click="navigate()"> View All Users </button>
-  </h4> -->
   <div id="myUsers" class="card fluid"><p class="section">Update User #{{ $route.params.id }}</p>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">

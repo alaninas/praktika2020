@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
-  <p>Email: {{ user.email }}</p>
+  <h5>Email: {{ user.email }}</h5>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <EditLogin />
     <EditPersonal />
@@ -17,9 +17,8 @@ import validate from '@/modules/directives/validate'
 import EditAddress from '@/components/forms/editUser/formRows/EditAddress.vue'
 import EditLogin from '@/components/forms/editUser/formRows/EditLogin.vue'
 import EditPersonal from '@/components/forms/editUser/formRows/EditPersonal.vue'
-import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
-import { getValidationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'
+import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import { useUsers } from '@/modules/features/useUsers'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
@@ -39,7 +38,7 @@ export default {
     const { getUserById, editUser } = await useUsers()
     const userB = ref(await getUserById(route.params.id))
 
-    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: userB, noDataReload: false })
+    const { getUser, getUserErrors, clearUserState } = useUser({ myUser: userB, noDataReload: false })
     const user = getUser()
     const userErrors = getUserErrors()
     const validationErrors = getValidationErrors()
@@ -50,18 +49,12 @@ export default {
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
         editUser(user.value)
-        // TODO: to function
-        user.value = {} as UserInterface
-        resetValidationErrors()
-        resetUserErrors()
+        clearUserState(user)
       }
     }
     function navigate () {
       router.go(-1)
-      // TODO: move to function
-      user.value = {} as UserInterface
-      resetValidationErrors()
-      resetUserErrors()
+      clearUserState(user)
     }
 
     return { user, onSubmit, validationErrors, userErrors, navigate }
