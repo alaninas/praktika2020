@@ -59,9 +59,13 @@ function getStateErrors () {
   return getUserErrors()
 }
 
+function clearState () {
+  user.value = {} as UserInterface
+}
+
 function loadUser (myUser: Ref<UserInterface>, noDataReload: boolean): Ref<UserInterface> {
   if (!noDataReload) {
-    user.value = {} as UserInterface
+    clearState()
     setState(myUser.value)
     resetStateErrors()
     resetValidationErrors()
