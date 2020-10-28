@@ -31,7 +31,7 @@ export default {
     validate: validate
   },
   async setup () {
-    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: ref({} as UserInterface), reloadFlag: false })
+    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: ref({} as UserInterface), noDataReload: false })
     const userErrors = getUserErrors()
     const user = getUser()
     const { addUser } = await useUsers()

@@ -39,7 +39,7 @@ export default {
     const { getUserById, editUser } = await useUsers()
     const userB = ref(await getUserById(route.params.id))
 
-    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: userB, reloadFlag: false })
+    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: userB, noDataReload: false })
     const user = getUser()
     const userErrors = getUserErrors()
     const validationErrors = getValidationErrors()
