@@ -9,14 +9,14 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     @MinLength(4)
-    @MaxLength(20)
+    @MaxLength(40)
     // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'password too weak'})
     password: string;
 
     @IsNotEmpty()
     @IsString()
     @MinLength(4)
-    @MaxLength(20)
+    @MaxLength(40)
     @IsEqualTo('password', {message: 'passwords do not match'})
     passwordConfirm: string;
 
@@ -59,7 +59,6 @@ export class CreateUserDto {
     @IsOptional()
     @IsInt()
     zipCode?: number;​
-
     // type string is not assignable to Type 'string[]' is not assignable to type '{ generationTime: number; equals: {}; getTimestamp: {}; toHexString: {}; }[]'
     // @IsOptional()
     // @IsArray()

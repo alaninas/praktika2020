@@ -44,11 +44,11 @@ export class UsersService {
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {
-        if (await this.getOneUserByEmail(user.email)) throw new HttpException(`Email already in use #${user.email}`, HttpStatus.BAD_REQUEST);
-        user.password = Md5.hashStr(user.password).toString();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        // const {...args} = user;
-        // return await (new this.personModel(user)).save();
+        const duplicate = await this.personModel.findOne({ email: user.email });
+        if (duplicate) throw new HttpException(`Email already in use #${user.email}`, HttpStatus.BAD_REQUEST);
+        const passwordDigest = Md5.hashStr(user.password).toString();
+        user.password = passwordDigest;
+        user.passwordConfirm = passwordDigest;
         return await this.personModel.create(user);
     }
     
@@ -71,10 +71,14 @@ export class UsersService {
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
-        const userToUpdate = await this.getOneUserByEmail(user.email);
+        // await this.personModel.syncIndexes();
+        const { _id, ...args } = user
+        const userToUpdate = await this.personModel.findOne({ _id: _id });
         const passwordDigest = Md5.hashStr(user.password).toString();
-        if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${user.email}`, HttpStatus.BAD_REQUEST);
-        return await userToUpdate.updateOne({password: passwordDigest, age: user.age, email: user.email});
+        if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${_id}`, HttpStatus.BAD_REQUEST);
+        user.password = passwordDigest;
+        user.passwordConfirm = passwordDigest;
+        return await userToUpdate.updateOne(args);
     }
     
     async deleteUser(id: ObjectID): Promise<Person> {

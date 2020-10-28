@@ -1,17 +1,27 @@
-import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEqualTo } from "../decorators/IsEqualTo";
 
 export class UpdateUserDto {
+    @IsOptional()
     @IsNotEmpty()
-    @IsEmail()
-    email: string;
+    @IsMongoId()
+    _id?: string;
 
     @IsOptional()
     @IsNotEmpty()
     @IsString()
     @MinLength(4)
-    @MaxLength(20)
+    @MaxLength(40)
     // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'password too weak'})
     password?: string;
+
+    @IsOptional()
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(4)
+    @MaxLength(40)
+    @IsEqualTo('password', {message: 'passwords do not match'})
+    passwordConfirm?: string;
 
     @IsOptional()
     @IsInt()

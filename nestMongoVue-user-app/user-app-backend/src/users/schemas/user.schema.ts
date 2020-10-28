@@ -4,10 +4,13 @@ import mongoose, { Document } from 'mongoose';
 @Schema()
 export class Person extends Document {
   @Prop({ required: true })
-  password: string;
+  password?: string;
 
   @Prop({ required: true })
-  email: string;
+  passwordConfirm?: string;
+
+  @Prop({ required: true })
+  email?: string;
 
   @Prop()
   address?: string;
