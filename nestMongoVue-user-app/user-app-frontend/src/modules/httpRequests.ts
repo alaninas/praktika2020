@@ -24,7 +24,7 @@ async function postNewUser (newUser: UserInterface): Promise<AxiosResponse<UserI
 
 async function putUpdatedUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
   console.log(`state calls updateOneUser email: ${newUser.email}`)
-  return await axios.post(`${server.baseURL}/users`, newUser)
+  return await axios.put(`${server.baseURL}/users`, newUser)
 }
 
 async function deleteUser (userId: string): Promise<AxiosResponse<UserInterface>> {
