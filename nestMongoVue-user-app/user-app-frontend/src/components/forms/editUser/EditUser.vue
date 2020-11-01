@@ -49,7 +49,7 @@ export default {
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
         editUser(user.value)
-        clearUserData()
+        // clearUserData()
       }
     }
     function navigate () {

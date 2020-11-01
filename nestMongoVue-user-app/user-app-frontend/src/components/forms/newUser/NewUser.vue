@@ -17,7 +17,7 @@ import NewLogin from '@/components/forms/newUser/formRows/NewLogin.vue'
 import NewPersonal from '@/components/forms/newUser/formRows/NewPersonal.vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
-import { getValidationErrors, resetValidationErrors } from '@/modules/features/useValidationErrors'
+import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import { useUsers } from '@/modules/features/useUsers'
 import { ref } from 'vue'
 
@@ -31,7 +31,7 @@ export default {
     validate: validate
   },
   async setup () {
-    const { getUser, getUserErrors, resetUserErrors } = useUser({ myUser: ref({} as UserInterface), noDataReload: false })
+    const { getUser, getUserErrors, clearUserData } = useUser({ myUser: ref({} as UserInterface), noDataReload: false })
     const userErrors = getUserErrors()
     const user = getUser()
     const { addUser } = await useUsers()
@@ -42,13 +42,8 @@ export default {
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
-        // console.log('--> Sending user data to server')
-        // console.log(user.value)
         addUser(user.value)
-        // TODO: move to func
-        user.value = {} as UserInterface
-        resetValidationErrors()
-        resetUserErrors()
+        clearUserData()
       }
     }
 
