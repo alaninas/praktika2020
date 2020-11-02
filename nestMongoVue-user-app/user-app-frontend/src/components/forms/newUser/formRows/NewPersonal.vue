@@ -29,18 +29,16 @@
 <script lang="ts">
 import validate from '@/modules/directives/validate'
 import { useUser } from '@/modules/features/useUser'
-import { getValidationErrors } from '@/modules/features/useValidationErrors'
+import { validationErrors } from '@/modules/states/formErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {
   directives: {
     validate: validate
   },
-  setup () {
-    const { getUser } = useUser({})
-    const user = getUser()
+  async setup () {
+    const { user } = await useUser({})
     const countries = countriesJson
-    const validationErrors = getValidationErrors()
     return { user, validationErrors, countries }
   }
 }

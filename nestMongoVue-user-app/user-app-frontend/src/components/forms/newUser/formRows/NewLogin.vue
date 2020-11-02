@@ -21,17 +21,14 @@
 <script lang="ts">
 import validate from '@/modules/directives/validate'
 import { useUser } from '@/modules/features/useUser'
-import { getValidationErrors } from '@/modules/features/useValidationErrors'
+import { userErrors, validationErrors } from '@/modules/states/formErrors'
 
 export default {
   directives: {
     validate: validate
   },
-  setup () {
-    const { getUser, getUserErrors } = useUser({})
-    const userErrors = getUserErrors()
-    const user = getUser()
-    const validationErrors = getValidationErrors()
+  async setup () {
+    const { user } = await useUser({})
     return { user, validationErrors, userErrors }
   }
 }

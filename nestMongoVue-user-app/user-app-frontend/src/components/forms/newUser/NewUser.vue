@@ -2,9 +2,15 @@
 <div>
   <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
-    <NewLogin />
-    <NewPersonal />
-    <NewAddress />
+    <Suspense>
+      <NewLogin />
+    </Suspense>
+    <Suspense>
+      <NewPersonal />
+    </Suspense>
+    <Suspense>
+      <NewAddress />
+    </Suspense>
     <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
   </form>
 </div>
@@ -15,11 +21,9 @@ import validate from '@/modules/directives/validate'
 import NewAddress from '@/components/forms/newUser/formRows/NewAddress.vue'
 import NewLogin from '@/components/forms/newUser/formRows/NewLogin.vue'
 import NewPersonal from '@/components/forms/newUser/formRows/NewPersonal.vue'
-import UserInterface from '@/modules/types/IUser'
 import { useUser } from '@/modules/features/useUser'
-import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import { useUsers } from '@/modules/features/useUsers'
-import { ref } from 'vue'
+import { userErrors, validationErrors } from '@/modules/states/formErrors'
 
 export default {
   components: {
@@ -31,11 +35,8 @@ export default {
     validate: validate
   },
   async setup () {
-    const { getUser, getUserErrors, clearUserData } = useUser({ myUser: ref({} as UserInterface), noDataReload: false })
-    const userErrors = getUserErrors()
-    const user = getUser()
+    const { user, clearUserData } = await useUser({ noDataReload: false })
     const { addUser } = await useUsers()
-    const validationErrors = getValidationErrors()
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
