@@ -29,3 +29,15 @@ span.arrow:hover {
 .sort-arrows span ~ span {
   margin-left: .0125rem;
 }
+.users-saved-inactive table td,
+.users-saved-inactive table th,
+.users-saved-inactive table td a:link {
+  color: #7d7d7d;
+}
+.users-saved-inactive table td a:hover {
+  color: #212121;
+}
+.users-saved-inactive table td [role="button"].inverse {
+  --button-back-color: #7d7d7d;
+  pointer-events: none;
+}
