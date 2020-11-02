@@ -2,12 +2,12 @@
   <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-12">
       <label for="firstnameInput">First name</label>
-      <input type="text" id="firstnameInput" name="firstname" v-model="user.firstname" v-validate />
+      <input type="text" id="firstnameInput" name="firstname" v-model="user.firstname" required v-validate />
       <div class="error">{{ validationErrors.firstname }}</div>
     </div>
     <div class="col-lg-3 col-md-6 col-sm-12">
       <label for="lastnameInput">Last name</label>
-      <input type="text" id="lastnameInput" name="lastname" v-model="user.lastname" v-validate />
+      <input type="text" id="lastnameInput" name="lastname" v-model="user.lastname" required v-validate />
       <div class="error">{{ validationErrors.lastname }}</div>
     </div>
     <div class="col-lg-2 col-md-5 col-sm-12">
@@ -17,7 +17,7 @@
     </div>
     <div id="countries" class="col-lg-4 col-md-7 col-sm-12">
       <label for="countryInput">Country</label>
-      <select id="countryInput" v-model="user.country" name="country" v-validate >
+      <select id="countryInput" v-model="user.country" name="country" required v-validate >
         <option disabled value="">Please select a country</option>
         <option v-for="country in countries" :key="country">{{ country.name }}</option>
       </select>
@@ -29,18 +29,16 @@
 <script lang="ts">
 import validate from '@/modules/directives/validate'
 import { useUser } from '@/modules/features/useUser'
-import { getValidationErrors } from '@/modules/features/useValidationErrors'
+import { validationErrors } from '@/modules/states/formErrors'
 import countriesJson from '@/assets/jsons/countries.json'
 
 export default {
   directives: {
     validate: validate
   },
-  setup () {
-    const { getUser } = useUser({ })
-    const user = getUser()
+  async setup () {
+    const { user } = await useUser({})
     const countries = countriesJson
-    const validationErrors = getValidationErrors()
     return { user, validationErrors, countries }
   }
 }

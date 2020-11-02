@@ -3,7 +3,7 @@
   <div class="col-lg-3 col-md-4 col-sm-12">
   <label for="addressInput">Address</label>
   <input
-    class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" v-validate
+    class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
     @keydown.enter="enter()"
     @keydown.down="down()"
     @keydown.up="up()"
@@ -43,21 +43,19 @@
 <script lang="ts">
 import { watchEffect, reactive } from 'vue'
 import validate from '@/modules/directives/validate'
-import { getValidationErrors } from '@/modules/features/useValidationErrors'
 import { useAddresses } from '@/modules/features/useAddresses'
 import { useUser } from '@/modules/features/useUser'
+import { validationErrors } from '@/modules/states/formErrors'
 
 export default {
   directives: {
     validate: validate
   },
-  setup () {
-    const { getUser, setUserAddress } = useUser({})
-    const user = getUser()
+  async setup () {
+    const { user, setUserAddress } = await useUser({})
     const currentIdx = reactive({ data: 0 })
     const openDropDown = reactive({ data: false })
     const { matchedAddresses, matchedAddressesToString } = useAddresses(user)
-    const validationErrors = getValidationErrors()
 
     function openMatches (matchedAddressesToStringArray: string[]): boolean {
       openDropDown.data = user.value.address !== undefined && user.value.address !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
@@ -77,20 +75,18 @@ export default {
       if (openDropDown.data === false) resetDropDown(true)
     }
     function matchesClick (index: number) {
-      if (openDropDown.data) {
-        setUserAddress(matchedAddresses.value[index])
-        resetDropDown(false)
-      }
+      if (openDropDown.data) currentIdx.data = index
+      setUserAddress(matchedAddresses.value[currentIdx.data])
+      resetDropDown(false)
     }
     function enter () {
-      if (openDropDown.data) {
-        if (matchedAddressesToString.value[currentIdx.data]) setUserAddress(matchedAddresses.value[currentIdx.data])
-        resetDropDown(false)
-      }
+      setUserAddress(matchedAddresses.value[currentIdx.data])
+      resetDropDown(false)
     }
-    watchEffect(() => {
+    const stopHandle = watchEffect(() => {
       openMatches(matchedAddressesToString.value)
     })
+    stopHandle()
 
     return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors, user }
   }
