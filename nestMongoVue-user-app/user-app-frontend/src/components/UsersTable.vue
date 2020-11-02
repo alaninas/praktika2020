@@ -70,5 +70,5 @@ export default {
 }
 </script>
 
-<style scoped src="@/assets/csss/usersTable.css">
+<style src="@/assets/csss/usersTable.css">
 </style>
