@@ -54,14 +54,15 @@ export async function useUsers () {
     return await removeStateUser(userId)
   }
 
-  async function getUserById (userId: string | string[]): Promise<UserInterface> {
-    // const c: string = userId[0].toString() || userId.toString()
-    // // if (userId[0]) c = userId[0].toString()
-    return await getStateUser(userId.toString())
-  }
+  // async function getUserById (userId: string | string[]): Promise<UserInterface> {
+  //   // const c: string = userId[0].toString() || userId.toString()
+  //   // // if (userId[0]) c = userId[0].toString()
+  //   if (!userId) return {} as UserInterface
+  //   return await getStateUser(userId.toString())
+  // }
 
   async function editUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
     return await updateStateUser(newUser)
   }
-  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser, sortByCountry, getUserById, editUser }
+  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser, sortByCountry, editUser }
 }

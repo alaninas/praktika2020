@@ -1,14 +1,12 @@
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
-import { Ref } from 'vue'
-import { getState, setState, setStateAddress, getStateErrors, resetStateErrors, loadUser, clearState } from '@/modules/states/user'
+import { getState, setState, setStateAddress, loadUser, clearState } from '@/modules/states/user'
 
-export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?: Ref<UserInterface>; noDataReload?: boolean }) {
-  function getUser (): Ref<UserInterface> {
-    return loadUser(myUser, noDataReload)
-  }
+export async function useUser ({ userId = '', noDataReload = true }: { userId?: string; noDataReload?: boolean }) {
+  const user = await loadUser(userId, noDataReload)
 
   function setUserAddress (address: AddressInterface): UserInterface {
+    if (!address) address = { street: '', houseNumber: '', city: '', zipCode: '' }
     return setStateAddress(address)
   }
 
@@ -16,26 +14,9 @@ export function useUser ({ myUser = getState(), noDataReload = true }: { myUser?
     return setState(user)
   }
 
-  function resetUserErrors () {
-    resetStateErrors()
-  }
-
-  function getUserErrors () {
-    return getStateErrors()
-  }
-
   function clearUserData () {
     clearState()
   }
 
-  function displayUserData (user: UserInterface): string {
-    const { age, email, fullname, country, address } = user
-    const init = [age, email, fullname, country, address]
-    const arr: (string | number)[] = []
-    init.forEach(element => {
-      if (element) arr.push(element)
-    })
-    return arr.join(', ')
-  }
-  return { getUser, setUser, setUserAddress, getUserErrors, resetUserErrors, displayUserData, clearUserData }
+  return { user, setUser, setUserAddress, clearUserData }
 }
