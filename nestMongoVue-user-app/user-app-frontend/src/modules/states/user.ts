@@ -14,7 +14,7 @@ function getState () {
   return user
 }
 
-function setStateAddress (inputAddress: AddressInterface): UserInterface {
+function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: '', zipCode: '' } }: { inputAddress?: AddressInterface }): UserInterface {
   const { street, houseNumber, city, zipCode } = inputAddress
   user.value.street = street
   user.value.houseNumber = parseInt(houseNumber)
@@ -52,7 +52,7 @@ function setState (inputUser: UserInterface): UserInterface {
   if (inputUser.age) user.value.age = parseInt(inputUser.age.toString())
   setNameData(inputUser)
   user.value.country = inputUser.country || ''
-  setStateAddress(getAddressFromUser(inputUser))
+  setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
   return user.value
 }

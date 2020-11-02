@@ -10,9 +10,9 @@
     @input="inputChange()"
     @click="enter()"
   />
-  <div v-show="!openDropDown.data" class="error">{{ validationErrors.address }}</div>
-  <ul class="dropdown-menu" v-show="openDropDown.data">
-    <li v-for="(match, i) in matchedAddressesToString" :key="i" v-bind:class="{'autocomplete-active': i === currentIdx.data}" @click="matchesClick(i)">
+  <div v-show="!addressAutocomplete.openDropDown" class="error">{{ validationErrors.address }}</div>
+  <ul class="dropdown-menu" v-show="addressAutocomplete.openDropDown">
+    <li v-for="(match, i) in matchedAddressesToString" :key="i" v-bind:class="{'autocomplete-active': i === addressAutocomplete.currentIdx}" @click="matchesClick(i)">
       {{ match }}
     </li>
   </ul>
@@ -41,9 +41,8 @@
 </template>
 
 <script lang="ts">
-import { watchEffect, reactive } from 'vue'
 import validate from '@/modules/directives/validate'
-import { useAddresses } from '@/modules/features/useAddresses'
+import { useAddressAutocomplete } from '@/modules/features/useAddressAutocomplete'
 import { useUser } from '@/modules/features/useUser'
 import { validationErrors } from '@/modules/states/formErrors'
 
@@ -52,43 +51,9 @@ export default {
     validate: validate
   },
   async setup () {
-    const { user, setUserAddress } = await useUser({})
-    const currentIdx = reactive({ data: 0 })
-    const openDropDown = reactive({ data: false })
-    const { matchedAddresses, matchedAddressesToString } = useAddresses(user)
-
-    function openMatches (matchedAddressesToStringArray: string[]): boolean {
-      openDropDown.data = user.value.address !== undefined && user.value.address !== '' && matchedAddressesToStringArray.length !== 0 && openDropDown.data === true
-      return openDropDown.data
-    }
-    function resetDropDown (dropdDownListAction: boolean) {
-      openDropDown.data = dropdDownListAction
-      currentIdx.data = 0
-    }
-    function up () {
-      if (currentIdx.data > 0 && openDropDown.data) currentIdx.data--
-    }
-    function down () {
-      if (currentIdx.data < matchedAddressesToString.value.length - 1 && openDropDown.data) currentIdx.data++
-    }
-    function inputChange () {
-      if (openDropDown.data === false) resetDropDown(true)
-    }
-    function matchesClick (index: number) {
-      if (openDropDown.data) currentIdx.data = index
-      setUserAddress(matchedAddresses.value[currentIdx.data])
-      resetDropDown(false)
-    }
-    function enter () {
-      setUserAddress(matchedAddresses.value[currentIdx.data])
-      resetDropDown(false)
-    }
-    const stopHandle = watchEffect(() => {
-      openMatches(matchedAddressesToString.value)
-    })
-    stopHandle()
-
-    return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, openDropDown, currentIdx, matchedAddresses, validationErrors, user }
+    const { user } = await useUser({})
+    const { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedAddressesToString, matchedAddresses } = useAddressAutocomplete(user)
+    return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, matchedAddresses, validationErrors, user, addressAutocomplete }
   }
 }
 </script>
