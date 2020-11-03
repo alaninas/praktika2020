@@ -3,7 +3,7 @@ import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { resetFormErrors, setUserErrors } from '@/modules/states/formErrors'
 import { getAddressFromUser, prepareUserProperties } from '@/modules/utilities/user-utility'
-import { getStateUser } from '@/modules/states/users'
+import { getUsersStateUser } from '@/modules/states/users'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
 
@@ -37,7 +37,7 @@ function clearState () {
 }
 
 async function loadState (userId: string, noDataReload: boolean): Promise<Ref<UserInterface>> {
-  const myUser = userId ? await getStateUser(userId) : {} as UserInterface
+  const myUser = userId ? await getUsersStateUser(userId) : {} as UserInterface
   if (!noDataReload) {
     if (!userId || getState().value._id !== myUser._id) {
       clearState()

@@ -27,26 +27,26 @@ async function loadSortedUsers (column: string, direction: string): Promise<Ref<
   return getState()
 }
 
-async function getStateUser (id: string): Promise<UserInterface> {
+async function getUsersStateUser (id: string): Promise<UserInterface> {
   const response = await getOneUser(id)
   return response.data
 }
 
-async function updateStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
+async function updateUsersStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
   await putUpdatedUser(newUser)
   const allUsers = await getAllUsers()
   setState(allUsers.data)
   return getState()
 }
 
-async function addStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
+async function addUsersStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
   await postNewUser(newUser)
   const allUsers = await getAllUsers()
   setState(allUsers.data)
   return getState()
 }
 
-async function removeStateUser (userId: string): Promise<Ref<UserInterface[]>> {
+async function removeUsersStateUser (userId: string): Promise<Ref<UserInterface[]>> {
   await deleteUser(userId)
   const allUsers = await getAllUsers()
   setState(allUsers.data)
@@ -67,8 +67,8 @@ export {
   getState,
   loadUnsortedUsers,
   loadSortedUsers,
-  addStateUser,
-  removeStateUser,
-  getStateUser,
-  updateStateUser
+  addUsersStateUser,
+  removeUsersStateUser,
+  getUsersStateUser,
+  updateUsersStateUser
 }
