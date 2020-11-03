@@ -44,7 +44,7 @@ export default {
     const updatePswd = reactive({ data: false })
     const route = useRoute()
     const { editUser } = await useUsers()
-    const userId = ref(route.params.id.toString())
+    const userId = ref(route.params.id?.toString() || '')
     const { user, clearUserData, clearUserPassword, sendUserPasswordToServer } = await useUser(userId.value ? { userId: userId.value, noDataReload: false } : {})
 
     function onSubmit (valErrs: never[]) {

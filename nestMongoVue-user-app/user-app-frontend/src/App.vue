@@ -1,5 +1,7 @@
 <template>
   <div id="nav">
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/register">Register</router-link> |
     <router-link to="/users">Users</router-link>
     <!-- Users Home -->
     <!-- <router-link to="/">Counter</router-link> |
