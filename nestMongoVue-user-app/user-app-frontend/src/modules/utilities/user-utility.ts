@@ -34,9 +34,24 @@ function getLoginFromUser (inputUser: UserInterface): LoginInterface {
   return { password, email, _id }
 }
 
+function prepareUserProperties (inputUser: UserInterface): UserInterface {
+  const { firstname, lastname, passwordConfirm, password, email, _id, country, age } = inputUser
+  inputUser.firstname = firstname || ''
+  inputUser.lastname = lastname || ''
+  inputUser.fullname = firstname && lastname ? [firstname, lastname].join(' ') : ''
+  inputUser.password = password
+  inputUser.passwordConfirm = passwordConfirm
+  inputUser.email = email
+  inputUser._id = _id
+  inputUser.country = country || ''
+  if (age) inputUser.age = parseInt(age.toString())
+  return inputUser
+}
+
 export {
   displayUserData,
   getAddressFromUser,
   getPasswordFromUser,
-  getLoginFromUser
+  getLoginFromUser,
+  prepareUserProperties
 }

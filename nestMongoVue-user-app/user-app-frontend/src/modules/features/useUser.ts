@@ -1,9 +1,9 @@
-import { setState, loadUser, clearState } from '@/modules/states/user'
+import { setState, loadState, clearState } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
 
 export async function useUser ({ userId = '', noDataReload = true }: { userId?: string; noDataReload?: boolean }) {
-  const user = await loadUser(userId, noDataReload)
+  const user = await loadState(userId, noDataReload)
 
   function clearUserData () {
     clearState()

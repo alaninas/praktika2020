@@ -2,7 +2,7 @@ import { ref, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { resetFormErrors, setUserErrors } from '@/modules/states/formErrors'
-import { getAddressFromUser } from '@/modules/utilities/user-utility'
+import { getAddressFromUser, prepareUserProperties } from '@/modules/utilities/user-utility'
 import { getStateUser } from '@/modules/states/users'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
@@ -24,33 +24,8 @@ function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: 
   return user.value
 }
 
-function setStateFullname (inputUser: UserInterface): UserInterface {
-  user.value.fullname = inputUser.firstname && inputUser.lastname ? [inputUser.firstname, inputUser.lastname].join(' ') : ''
-  return user.value
-}
-
-function setNameData (inputUser: UserInterface) {
-  user.value.firstname = inputUser.firstname || ''
-  user.value.lastname = inputUser.lastname || ''
-  setStateFullname(user.value)
-}
-
-function setStatePassword (inputUser: UserInterface) {
-  user.value.password = inputUser.password
-  user.value.passwordConfirm = inputUser.passwordConfirm
-}
-
-function setStateLogin (inputUser: UserInterface) {
-  setStatePassword(inputUser)
-  user.value.email = inputUser.email
-  user.value._id = inputUser._id
-}
-
 function setState (inputUser: UserInterface): UserInterface {
-  setStateLogin(inputUser)
-  if (inputUser.age) user.value.age = parseInt(inputUser.age.toString())
-  setNameData(inputUser)
-  user.value.country = inputUser.country || ''
+  user.value = prepareUserProperties(inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
   return user.value
@@ -61,7 +36,7 @@ function clearState () {
   resetFormErrors()
 }
 
-async function loadUser (userId: string, noDataReload: boolean): Promise<Ref<UserInterface>> {
+async function loadState (userId: string, noDataReload: boolean): Promise<Ref<UserInterface>> {
   const myUser = userId ? await getStateUser(userId) : {} as UserInterface
   if (!noDataReload) {
     if (!userId || getState().value._id !== myUser._id) {
@@ -72,10 +47,12 @@ async function loadUser (userId: string, noDataReload: boolean): Promise<Ref<Use
   return getState()
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 watchEffect(() => {
   setState(user.value)
   // TODO: debug prints to remove
   console.log('>> from user watcher')
+  console.log(user.value)
   history.push(user.value)
   console.log(history.length)
 })
@@ -85,10 +62,6 @@ export {
   getState,
   setState,
   setStateAddress,
-  setStateFullname,
-  loadUser,
-  clearState,
-  setStatePassword,
-  setStateLogin,
-  resetFormErrors
+  loadState,
+  clearState
 }
