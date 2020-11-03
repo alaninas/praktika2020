@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-lg-4 col-md-12 col-sm-12">
       <label for="emailInput">Email</label>
-      <input type="email" id="emailInput" name="email" v-model="user.email" :class="userErrors.email ? 'invalid' : ''" required v-validate />
+      <input type="email" id="emailInput" name="email" v-model="user.email" required v-validate />
       <div class="error">{{ validationErrors.email }}</div>
     </div>
     <div class="col-lg-4 col-md-6 col-sm-12">
