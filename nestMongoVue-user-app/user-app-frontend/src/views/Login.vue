@@ -3,7 +3,7 @@
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
-          <EditUser />
+          <LoginUser />
         </Suspense>
       </div>
     </div>
@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import EditUser from '@/components/forms/editUser/EditUser.vue'
+import LoginUser from '@/components/forms/loginUser/LoginUser.vue'
 
 export default {
   components: {
-    EditUser
+    LoginUser
   },
   setup () {
     return { }
