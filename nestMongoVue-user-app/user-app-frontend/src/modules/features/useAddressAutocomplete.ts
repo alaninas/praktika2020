@@ -16,8 +16,8 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
   }
 
   function setAutocomplete ({ dropdown, idx }: { dropdown: boolean; idx: number }) {
-    addressAutocomplete.value.openDropDown = dropdown
-    addressAutocomplete.value.currentIdx = idx
+    setOpenDropDown(dropdown)
+    setCurrentIdx(idx)
   }
 
   function resetDropDown (dropdown: boolean) {

@@ -40,15 +40,14 @@ function setStatePassword (inputUser: UserInterface) {
   user.value.passwordConfirm = inputUser.passwordConfirm
 }
 
-function setLoginData (inputUser: UserInterface) {
+function setStateLogin (inputUser: UserInterface) {
   setStatePassword(inputUser)
   user.value.email = inputUser.email
   user.value._id = inputUser._id
 }
 
 function setState (inputUser: UserInterface): UserInterface {
-  console.log('+++!!!!---> from user state setter')
-  setLoginData(inputUser)
+  setStateLogin(inputUser)
   if (inputUser.age) user.value.age = parseInt(inputUser.age.toString())
   setNameData(inputUser)
   user.value.country = inputUser.country || ''
@@ -64,8 +63,6 @@ function clearState () {
 
 async function loadUser (userId: string, noDataReload: boolean): Promise<Ref<UserInterface>> {
   const myUser = userId ? await getStateUser(userId) : {} as UserInterface
-  console.log(`+++----> from user loader dataReload: ${noDataReload}`)
-  console.log(myUser)
   if (!noDataReload) {
     if (!userId || getState().value._id !== myUser._id) {
       clearState()
@@ -78,7 +75,7 @@ async function loadUser (userId: string, noDataReload: boolean): Promise<Ref<Use
 watchEffect(() => {
   setState(user.value)
   // TODO: debug prints to remove
-  console.log('-------> from user watcher')
+  console.log('-> from user watcher')
   console.log(user.value)
   history.push(user.value)
   console.log(history.length)
@@ -91,5 +88,8 @@ export {
   setStateAddress,
   setStateFullname,
   loadUser,
-  clearState
+  clearState,
+  setStatePassword,
+  setStateLogin,
+  resetFormErrors
 }
