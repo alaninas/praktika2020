@@ -56,7 +56,6 @@ export default {
         console.log(`send update user to server, forgetPswd flag: ${updatePswd.data}`)
         console.log(user.value)
         editUser(user.value)
-        // router.push({ name: 'Edit', params: { id: route.params.id } })
         // clearUserData()
       }
     }
