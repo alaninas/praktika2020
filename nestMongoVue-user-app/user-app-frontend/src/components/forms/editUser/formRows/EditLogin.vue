@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" v-show="update">
     <div class="col-lg-6 col-md-6 col-sm-12">
       <label for="userPassword">Pswd1</label>
       <input type="password" id="userPassword" name="password" v-model="user.password" :class="userErrors.password ? 'invalid' : ''" minlength="4" required v-validate />
@@ -17,14 +17,22 @@
 import validate from '@/modules/directives/validate'
 import { useUser } from '@/modules/features/useUser'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
+import { computed } from 'vue'
 
 export default {
+  props: {
+    updatePswd: {
+      type: Boolean,
+      required: true
+    }
+  },
   directives: {
     validate: validate
   },
-  async setup () {
+  async setup (props: Readonly<{updatePswd: boolean} & {}>) {
+    const update = computed(() => props.updatePswd)
     const { user } = await useUser({})
-    return { user, validationErrors, userErrors }
+    return { user, validationErrors, userErrors, update }
   }
 }
 </script>
