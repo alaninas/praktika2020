@@ -6,4 +6,4 @@ export default interface LoginInterface {
   _id: string;
 }
 
-export const login = ref({ password: '', email: '', _id: '' } as LoginInterface)
+export const loginData = ref({ password: '', email: '', _id: '' } as LoginInterface)

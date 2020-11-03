@@ -5,4 +5,4 @@ export default interface PasswordInterface {
   passwordConfirm: string;
 }
 
-export const pass = ref({ password: '', passwordConfirm: '' } as PasswordInterface)
+export const passData = ref({ password: '', passwordConfirm: '' } as PasswordInterface)
