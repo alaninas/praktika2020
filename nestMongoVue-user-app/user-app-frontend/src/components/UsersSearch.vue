@@ -24,7 +24,6 @@ import { useUsers } from '@/modules/features/useUsers'
 import { displayUserData } from '@/modules/utilities/user-utility'
 
 export default {
-  name: 'UsersSearch',
   async setup () {
     const pattern = reactive({ data: '' })
     const { searchByEmail } = await useUsers()

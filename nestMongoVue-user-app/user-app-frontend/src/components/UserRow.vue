@@ -23,7 +23,6 @@ import { useUsers } from '@/modules/features/useUsers'
 import { useUser } from '@/modules/features/useUser'
 
 export default {
-  name: 'UserRow',
   async setup () {
     const { unsorted, removeUser } = await useUsers()
     const users = await unsorted()

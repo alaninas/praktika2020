@@ -30,7 +30,6 @@ import UsersTable from '@/components/UsersTable.vue'
 import NewUser from '@/components/forms/newUser/NewUser.vue'
 
 export default {
-  name: 'Users',
   components: {
     NewUser,
     UsersSearch,
