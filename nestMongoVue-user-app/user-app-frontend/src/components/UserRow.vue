@@ -31,13 +31,11 @@ export default {
     const userId = ref('')
 
     function usersRemove (param: string) {
-      console.log(`inside userDelete ${param}`)
       removeUser(param)
     }
 
     async function clickUserEdit (id: string) {
       userId.value = id
-      console.log(`@@@@@@@@@@@ -> ${id}`)
       await useUser({ userId: userId.value, noDataReload: false })
     }
 

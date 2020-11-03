@@ -8,7 +8,6 @@ const history = []
 history.push(users.value)
 
 function setState (data: UserInterface[]) {
-  console.log('>>> inside state setState')
   users.value = data
 }
 
@@ -57,11 +56,9 @@ async function removeStateUser (userId: string): Promise<Ref<UserInterface[]>> {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 watch([user, users], ([user, users], [prevUser, prevUsers]) => {
   history.push(users)
-  console.log('from users state watcher -- on users')
-  console.log(users)
+  console.log('>> from users state watcher -- on users')
   history.push(user)
-  console.log('from users state watcher -- on user')
-  console.log(user)
+  console.log('>> from users state watcher -- on user')
   console.log(history.length)
 })
 

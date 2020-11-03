@@ -75,8 +75,7 @@ async function loadUser (userId: string, noDataReload: boolean): Promise<Ref<Use
 watchEffect(() => {
   setState(user.value)
   // TODO: debug prints to remove
-  console.log('-> from user watcher')
-  console.log(user.value)
+  console.log('>> from user watcher')
   history.push(user.value)
   console.log(history.length)
 })
