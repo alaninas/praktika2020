@@ -3,13 +3,13 @@ import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class Person extends Document {
-  @Prop({ required: true })
+  @Prop()
   password?: string;
 
-  @Prop({ required: true })
+  @Prop()
   passwordConfirm?: string;
 
-  @Prop({ required: true })
+  @Prop()
   email?: string;
 
   @Prop()
