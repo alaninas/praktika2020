@@ -71,13 +71,22 @@ export class UsersService {
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
-        // await this.personModel.syncIndexes();
         const { _id, ...args } = user
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, passwordConfirm, ...argsWOpswd } = args
         const userToUpdate = await this.personModel.findOne({ _id: _id });
-        const passwordDigest = Md5.hashStr(user.password).toString();
-        if (passwordDigest === userToUpdate.password) throw new HttpException(`New password matches the old: user #${_id}`, HttpStatus.BAD_REQUEST);
-        user.password = passwordDigest;
-        user.passwordConfirm = passwordDigest;
+        const oldpswd = userToUpdate.password
+        if (password) {
+            const passwordDigest = Md5.hashStr(args.password).toString();
+            if (passwordDigest === oldpswd) throw new HttpException(`New password matches the old: user #${_id} pswd: ${passwordDigest}`, HttpStatus.BAD_REQUEST);
+            args.password = passwordDigest;
+            args.passwordConfirm = passwordDigest;
+        } else {
+            args.password = userToUpdate.password;
+            args.passwordConfirm = userToUpdate.passwordConfirm;
+        }
+        // console.log(argsWOpswd)
+        // console.log(password)
         return await userToUpdate.updateOne(args);
     }
     
