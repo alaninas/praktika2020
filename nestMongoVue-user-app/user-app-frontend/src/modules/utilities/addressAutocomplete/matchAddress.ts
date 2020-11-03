@@ -55,22 +55,10 @@ function matchAddress (savedAddress: AddressInterface, parsedAddress: AddressInt
   const vtable = fillHoldsValueTable(parsedAddress)
   const mtable = fillIsAMatchTable(savedAddress, parsedAddress)
   const { singleFieldComparisons, dualFieldComparisons, tripleFieldComparisons, quadFieldComparisons } = getFieldComparisons({ vtable, mtable })
-  if (quadFieldComparisons.holdsValue) {
-    // console.log('by quad')
-    return quadFieldComparisons.isMatch
-  }
-  if (tripleFieldComparisons.some(el => { if (el.holdsValue) { result = el.isMatch; return true } })) {
-    // console.log('by triple')
-    return result
-  }
-  if (dualFieldComparisons.some(el => { if (el.holdsValue) { result = el.isMatch; return true } })) {
-    // console.log('by double')
-    return result
-  }
-  if (singleFieldComparisons.some(el => { if (el.holdsValue) { result = el.isMatch; return true } })) {
-    // console.log('by single')
-    return result
-  }
+  if (quadFieldComparisons.holdsValue) return quadFieldComparisons.isMatch
+  if (tripleFieldComparisons.some(el => { if (el.holdsValue) { result = el.isMatch; return true } })) return result
+  if (dualFieldComparisons.some(el => { if (el.holdsValue) { result = el.isMatch; return true } })) return result
+  if (singleFieldComparisons.some(el => { if (el.holdsValue) { result = el.isMatch; return true } })) return result
   return result
 }
 
