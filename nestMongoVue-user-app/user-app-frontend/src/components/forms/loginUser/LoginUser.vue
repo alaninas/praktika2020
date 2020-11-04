@@ -16,8 +16,7 @@
 import validate from '@/modules/directives/validate'
 import Login from '@/components/forms/loginUser/formRows/Login.vue'
 import { validationErrors } from '@/modules/states/formErrors'
-import LoginInterface, { loginData } from '@/modules/types/ILogin'
-import { loadState, loginUser, logoutUser } from '@/modules/states/login'
+import { useLogin } from '@/modules/features/useLogin'
 
 export default {
   components: {
@@ -27,7 +26,9 @@ export default {
     validate: validate
   },
   async setup () {
-    loginData.value = loadState({ email: 'u230@gm.com', password: 'pswd' }).value
+    // loginData.value = loadState({ email: 'u230@gm.com', password: 'pswd' }).value
+    // const { userLogin, loggedIn, loginUser, logoutUser } = useLogin({ userLoginInit: { email: 'u230@gm.com', password: 'pswd' }, noDataReload: false })
+    const { userLogin, loginUser, logoutUser } = useLogin({})
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
@@ -35,20 +36,22 @@ export default {
       if (!validationErrorsCount) {
         // addUser(user.value)
         // clearUserData()
-        console.log(loginData.value)
+        console.log(userLogin.value)
       }
     }
 
     async function testIn () {
-      const c = await loginUser(loginData.value)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const c = await loginUser()
       return true
     }
-    async function testOut () {
-      const c = await logoutUser()
+    function testOut () {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const c = logoutUser()
       return true
     }
 
-    return { loginData, onSubmit, validationErrors, testIn, testOut }
+    return { onSubmit, validationErrors, testIn, testOut }
   }
 }
 </script>
