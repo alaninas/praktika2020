@@ -8,8 +8,6 @@
     <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
   </form>
 </div>
-<label role="button" class="button tertiary responsive-padding responsive-margin" @click="testIn()">Test auth login</label>
-<label role="button" class="button inverse responsive-padding responsive-margin" @click="testOut()">Test auth logout</label>
 </template>
 
 <script lang="ts">
@@ -26,32 +24,19 @@ export default {
     validate: validate
   },
   async setup () {
-    // loginData.value = loadState({ email: 'u230@gm.com', password: 'pswd' }).value
-    // const { userLogin, loggedIn, loginUser, logoutUser } = useLogin({ userLoginInit: { email: 'u230@gm.com', password: 'pswd' }, noDataReload: false })
-    const { userLogin, loginUser, logoutUser } = useLogin({})
+    const { userLogin, loginUser } = useLogin({})
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       if (!validationErrorsCount) {
-        // addUser(user.value)
+        loginUser()
         // clearUserData()
         console.log(userLogin.value)
       }
     }
 
-    async function testIn () {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const c = await loginUser()
-      return true
-    }
-    function testOut () {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const c = logoutUser()
-      return true
-    }
-
-    return { onSubmit, validationErrors, testIn, testOut }
+    return { onSubmit, validationErrors }
   }
 }
 </script>
