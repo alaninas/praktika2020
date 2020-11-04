@@ -25,9 +25,12 @@ function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: 
 }
 
 function setState (inputUser: UserInterface): UserInterface {
+  // console.log('--> from user setState')
+  // console.log(user.value)
   user.value = prepareUserProperties(inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
+  console.log(user.value)
   return user.value
 }
 
@@ -38,8 +41,10 @@ function clearState () {
 
 async function loadState (userId: string, noDataReload: boolean): Promise<Ref<UserInterface>> {
   const myUser = userId ? await getUsersStateUser(userId) : {} as UserInterface
+  // console.log(`!!!! inside load userState userId: ${userId}`)
+  // console.log(myUser)
   if (!noDataReload) {
-    if (!userId || getState().value._id !== myUser._id) {
+    if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
       clearState()
       setState(myUser)
     }

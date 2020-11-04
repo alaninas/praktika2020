@@ -1,6 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import { ref, Ref, watch } from 'vue'
-import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser } from '@/modules/services/users-service'
+import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail } from '@/modules/services/users-service'
 
 const user = ref({} as UserInterface)
 const users = ref([{} as UserInterface])
@@ -29,6 +29,13 @@ async function loadSortedUsers (column: string, direction: string): Promise<Ref<
 
 async function getUsersStateUser (id: string): Promise<UserInterface> {
   const response = await getOneUser(id)
+  console.log('<<-- answer from the server')
+  console.log(response.data)
+  return response.data
+}
+
+async function getUsersStateUserByEmail (email: string): Promise<UserInterface> {
+  const response = await getOneUserByEmail(email)
   return response.data
 }
 
@@ -70,5 +77,6 @@ export {
   addUsersStateUser,
   removeUsersStateUser,
   getUsersStateUser,
-  updateUsersStateUser
+  updateUsersStateUser,
+  getUsersStateUserByEmail
 }

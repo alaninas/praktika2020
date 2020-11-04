@@ -4,27 +4,49 @@ import axios, { AxiosResponse } from 'axios'
 import { TokenInterface, tokenService } from '@/modules/services/token-service'
 import LoginInterface from '@/modules/types/ILogin'
 import router from '@/router'
+// import { useLogin } from '@/modules/features/useLogin'
+import { getLog, getToken, loginData, loadState, loginStateUser, logoutStateUser } from '@/modules/states/login'
+import { user } from '../states/user'
 
-const token = tokenService.getAccessToken()
-// const privateEndpoints = ['edit']
+const token = null
+// axios.defaults.headers.common.Authorization = token ? `Bearer ${token}` : null
+axios.defaults.headers.common.Authorization = null
+const editFormUrl = /(http:\/\/localhost:3000\/users\/)([^/]{24})/
 
-// TODO: move to separate module
-// get list of userIds in DB
-// check urls against the existing id list <-- private pages
 axios.interceptors.request.use(req => {
-  console.log(`>> Request: ${req.method} ${req.url} ${JSON.stringify(req.headers)}`)
-  req.headers.Authorization = `Bearer ${token}`
+  const loggedToken = getToken().value
+  const isLogged = getLog().value
+  console.log(`>> Request: ${req.method} ${req.url} ${JSON.stringify(req.headers.common)}`)
+  // req.headers.Authorization = `Bearer ${token}`
+  // req.headers.common = { Authorization: `Bearer ${token}` }
+  // req.headers.common.Authorization = 'TEST222'
+  req.headers.common.Authorization = (loggedToken || token) ? `Bearer ${loggedToken || token}` : null
   if (!tokenService.isLoggedIn()) {
     // {name: 'Edit', params: {id: user._id}}
     console.log(`>>>>>>>>>> not logged in at URL: ${req.url}`)
   }
-  if (req.url === 'http://localhost:3000/users/5f640595fc86ad6952e2a47f') {
-    if (!tokenService.isLoggedIn()) {
-      console.log('----> redirecting')
-      router.push({ name: 'Login' })
-    }
+  const match = req.url?.match(editFormUrl)
+  if (match && !isLogged) {
+    console.log('----> redirecting')
+    router.push({ name: 'Login' })
   }
-  console.log(`-> at URL: ${req.url} TOKEN: ${token} LoggedIn: ${tokenService.isLoggedIn()}`)
+  if (match && isLogged && match[2] !== loginData.value._id) {
+    console.log(`----> can not display other users profiles: ${loginData.value._id} -- ${match[2]}`)
+    router.replace({ name: 'Users' })
+  }
+  // 'http://localhost:3000/users' + getId() -> authorised if loggedIn
+  //                               + some-other-24bit-hexadecimal -> is not authorised
+  //                               + all-other-cases-not-supervised
+  // (http:\/\/localhost:3000\/users\/)([^/]{24})
+  // if (req.url === 'http://localhost:3000/users/5f640595fc86ad6952e2a47f') {
+  //   if (!tokenService.isLoggedIn()) {
+  //     console.log('----> redirecting')
+  //     router.push({ name: 'Login' })
+  //   }
+  // }
+  console.log(`----> at URL: ${req.url} TOKEN: ${token} LoggedIn: ${token}`)
+  console.log(`----> watched URL: ${req.url} TOKEN: ${loggedToken} LoggedIn: ${isLogged} UserId: ${loginData.value._id}`)
+  console.log(`>> Request UPDATED: ${req.method} ${req.url} ${JSON.stringify(req.headers.common)}`)
   // req.headers.Authorization = `Bearer ${token}`
   return req
 })
@@ -38,23 +60,25 @@ axios.interceptors.response.use(res => {
   return res
 })
 
+function revokeUserLogin (): object {
+  try {
+    tokenService.logout()
+    axios.defaults.headers.common.Authorization = null
+    return { statusCode: 200, message: 'Successfully logged out' }
+  } catch (err) {
+    return { statusCode: 400, message: 'Error in log out' }
+  }
+}
+
 async function postUserLogin (loginData: LoginInterface): Promise<object> {
   try {
     const response: AxiosResponse<TokenInterface> = await axios.post(`${server.baseURL}/users/auth/login`, loginData)
     // eslint-disable-next-line @typescript-eslint/camelcase
-    tokenService.login({ access_token: response.data.access_token, email: loginData.email })
+    // tokenService.login({ access_token: response.data.access_token, email: loginData.email, id: loginData._id || '' })
+    tokenService.login(response.data)
     return response.data
   } catch (err) {
     return { statusCode: 401, message: 'Unauthorized' }
-  }
-}
-
-function doUserLogout (): object {
-  try {
-    tokenService.logout()
-    return { statusCode: 200, message: 'Successfully logged out' }
-  } catch (err) {
-    return { statusCode: 400, message: 'Error in log out' }
   }
 }
 
@@ -68,6 +92,10 @@ async function getAllUsersSorted ({ column, direction }: { column: string; direc
 
 async function getOneUser (userId: string): Promise<AxiosResponse<UserInterface>> {
   return await axios.get(`${server.baseURL}/users/${userId}`)
+}
+
+async function getOneUserByEmail (email: string): Promise<AxiosResponse<UserInterface>> {
+  return await axios.get(`${server.baseURL}/users/email/${email}`)
 }
 
 async function postNewUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
@@ -90,5 +118,6 @@ export {
   getOneUser,
   putUpdatedUser,
   postUserLogin,
-  doUserLogout
+  revokeUserLogin,
+  getOneUserByEmail
 }
