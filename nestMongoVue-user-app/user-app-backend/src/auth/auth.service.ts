@@ -11,11 +11,7 @@ export class AuthService {
 	) {}
 
     async validateUser(email: string, pass: string): Promise<any> {
-        // console.log(email)
         const user = await this.usersService.getOneUserByEmail(email);
-        // console.log(user)
-        // console.log(user.password)
-        // console.log(Md5.hashStr(pass).toString())
         if (user && user.password === Md5.hashStr(pass).toString()) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, ...result } = user;
@@ -28,8 +24,11 @@ export class AuthService {
 	async login(user: any) {
         // console.log('---> inside login')
         // console.log(user)
-        const payload = { email: user.email, sub: user.password };
-        // console.log(payload);
-		return { access_token: this.jwtService.sign(payload, {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES}) };
+        const payload = { email: user.email, sub: user.password, _id: user._id };
+		return { 
+            access_token: this.jwtService.sign(payload, {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES}),
+            email: payload.email,
+            id: payload._id
+        };
 	}
 }

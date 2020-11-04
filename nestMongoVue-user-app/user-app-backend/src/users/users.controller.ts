@@ -23,12 +23,12 @@ export class UsersController {
         return this.authService.login(user);
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    getProfile(@Request() req) {
-        console.log(req.user)
-        return req.user;
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Get('profile')
+    // getProfile(@Request() req) {
+    //     console.log(req.user)
+    //     return req.user;
+    // }
 
     @Get()
     async getAllUsers(): Promise<Person[]> {
@@ -41,6 +41,11 @@ export class UsersController {
         return this.usersService.getAllUsersSorted(column, direction);
     }
     
+    @Get('email/:email')
+    async getOneUserByEmail(@Param('email') email: string): Promise<Person> {
+        return this.usersService.getOneUserByEmail(email);
+    }
+
     @Get(':id')
     async getOneUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
         return this.usersService.getOneUserById(id);
@@ -71,7 +76,7 @@ export class UsersController {
         return this.usersService.removeUserFriends(uid, fid);
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Put()
     async updateUser(@Body() user: UpdateUserDto): Promise<Person> {
         return this.usersService.updateUser(user);

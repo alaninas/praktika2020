@@ -18,7 +18,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
     // console.log('>>> inside validation')
     // console.log(user._doc);
-    // return user._doc;
-    return user;
+    return user._doc;
+    // return user;
   }
 }
