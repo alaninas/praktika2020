@@ -1,4 +1,4 @@
-import AddressInterface from '@/modules/types/IAddress'
+import AddressInterface from '../IAddress'
 
 function matchZipcode (savedAddress: AddressInterface, zipCode: string): boolean {
   if (zipCode.length < 1) return false

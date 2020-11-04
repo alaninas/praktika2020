@@ -1,5 +1,5 @@
-import AddressInterface from '@/modules/types/IAddress'
-import { fieldEval, fields, fillHoldsValueTable, fillIsAMatchTable, holdsValueTable, isAMatchTable } from '@/modules/utilities/addressAutocomplete/fieldLookUps'
+import AddressInterface from '../IAddress'
+import { fieldEval, fields, fillHoldsValueTable, fillIsAMatchTable, holdsValueTable, isAMatchTable } from './fieldLookUps'
 
 function getSingles (valuesTable: holdsValueTable, matchesTable: isAMatchTable): fieldEval[] {
   const res: fieldEval[] = []

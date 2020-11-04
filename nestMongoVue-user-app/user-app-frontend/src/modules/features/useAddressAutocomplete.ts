@@ -2,10 +2,10 @@ import { Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import { setStateAddress } from '@/modules/states/user'
 import { addressAutocomplete } from '@/modules/types/IAddressAutocomplete'
-import { useAddresses } from '@/modules/features/useAddresses'
+import { runAddressMatch } from '@/modules/libs/addressMatch/runAddressMatch'
 
 export function useAddressAutocomplete (user: Ref<UserInterface>) {
-  const { matchedAddresses, matchedAddressesToString } = useAddresses(user)
+  const { matchedAddresses, matchedAddressesToString } = runAddressMatch(user)
 
   function setOpenDropDown (dropdown: boolean) {
     addressAutocomplete.value.openDropDown = dropdown

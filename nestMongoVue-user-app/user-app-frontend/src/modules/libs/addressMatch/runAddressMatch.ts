@@ -1,11 +1,11 @@
-import AddressInterface from '@/modules/types/IAddress'
-import { matchAddress } from '@/modules/utilities/addressAutocomplete/matchAddress'
-import { parseSearchString } from '@/modules/utilities/addressAutocomplete/parseString'
+import AddressInterface from './IAddress'
+import { addresses } from './addresses'
+import { matchAddress } from './bin/matchAddress'
+import { parseSearchString } from './bin/parseString'
 import { computed, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
-import { addresses } from '@/modules/states/addresses'
 
-export function useAddresses (user: Ref<UserInterface>) {
+export function runAddressMatch (user: Ref<UserInterface>) {
   function searchAddresses (searchString: string | undefined): AddressInterface[] {
     if (!searchString) return []
     const { matchString, parsedAddress } = parseSearchString(searchString)

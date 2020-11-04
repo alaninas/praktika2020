@@ -1,4 +1,4 @@
-import AddressInterface from '@/modules/types/IAddress'
+import AddressInterface from '../IAddress'
 
 const zipCodeFirst = /^([\d+-?\d+]{4,6})\s*([A-Za-z- ]+(\s+[0-9]{1,3} g.)?|( g.)?)?(\s+[0-9]{1,4})?$/
 

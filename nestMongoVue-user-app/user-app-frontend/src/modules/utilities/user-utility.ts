@@ -1,5 +1,5 @@
 import UserInterface from '@/modules/types/IUser'
-import AddressInterface from '@/modules/types/IAddress'
+import AddressInterface from '@/modules/libs/addressMatch/IAddress'
 import PasswordInterface from '@/modules/types/IPassword'
 import LoginInterface from '@/modules/types/ILogin'
 
