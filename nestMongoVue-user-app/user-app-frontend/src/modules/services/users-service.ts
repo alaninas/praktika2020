@@ -1,29 +1,41 @@
 import UserInterface from '@/modules/types/IUser'
 import { server } from '@/backend-server'
 import axios, { AxiosResponse } from 'axios'
-import { reqInterceptor, resInterceptor } from '@/modules/services/index'
+import { TokenInterface, tokenService } from '@/modules/services/token-service'
+import LoginInterface from '@/modules/types/ILogin'
 
-// axios.interceptors.request.use(req => {
-//   console.log(`Request: ${req.method} ${req.url} ${JSON.stringify(req.headers)}`)
-//   // Important: request interceptors **must** return the request.
-//   // patikrini ar yra tokenas, jei ne redirectini i login
-//   // jei yra pridedi prie requesto headeriu
-//   // sąrašas puslapių ant kurių reikia daryt redirect
-//   // tikrinam req.url, ar jis nepriklauso šitam sąrašui
-//   // dedam headerius ir redirectinam tik jei priklauso šitam sąrašui
-//   // routerio logikos galime netaikyti: būtų aktualu jei turėtume dauigau rolių
-//   return req
-// })
-// axios.interceptors.response.use(res => {
-//   console.log(`Response: ${res.status} ${JSON.stringify(res.headers)}`)
-//   // Important: response interceptors **must** return the response.
-//   // ant 401 redirectink i logina
-//   // priklausyma public puslapiu sarasui galime netikrinti
-//   return res
-// })
+const token = tokenService.getAccessToken()
+const privateEndpoints = ['edit']
 
-axios.interceptors.request.use(reqInterceptor)
-axios.interceptors.response.use(resInterceptor)
+axios.interceptors.request.use(req => {
+  console.log(`>> Request: ${req.method} ${req.url} ${JSON.stringify(req.headers)}`)
+  if (!tokenService.isLoggedIn()) {
+    // {name: 'Edit', params: {id: user._id}}
+    console.log(`>>>>>>>>>> not logged in at URL: ${req.url}`)
+  }
+  console.log(`-> at URL: ${req.url} TOKEN: ${token}`)
+  req.headers.Authorization = `Bearer ${token}`
+  return req
+})
+
+async function postUserLogin (loginData: LoginInterface): Promise<object> {
+  try {
+    const response: AxiosResponse<TokenInterface> = await axios.post(`${server.baseURL}/users/auth/login`, loginData)
+    tokenService.login(response.data)
+    return response.data
+  } catch (err) {
+    return { statusCode: 401, message: 'Unauthorized' }
+  }
+}
+
+async function doUserLogout (): Promise<object> {
+  try {
+    tokenService.logout()
+    return { statusCode: 200, message: 'Successfully logged out' }
+  } catch (err) {
+    return { statusCode: 400, message: 'Error in log out' }
+  }
+}
 
 async function getAllUsers (): Promise<AxiosResponse<UserInterface[]>> {
   return await axios.get(`${server.baseURL}/users`)
@@ -55,5 +67,7 @@ export {
   postNewUser,
   deleteUser,
   getOneUser,
-  putUpdatedUser
+  putUpdatedUser,
+  postUserLogin,
+  doUserLogout
 }

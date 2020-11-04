@@ -8,15 +8,16 @@
     <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
   </form>
 </div>
-<label role="button" class="button tertiary responsive-padding responsive-margin" @click="test()">Test auth login</label>
+<label role="button" class="button tertiary responsive-padding responsive-margin" @click="testIn()">Test auth login</label>
+<label role="button" class="button inverse responsive-padding responsive-margin" @click="testOut()">Test auth logout</label>
 </template>
 
 <script lang="ts">
 import validate from '@/modules/directives/validate'
 import Login from '@/components/forms/loginUser/formRows/Login.vue'
-import { useUser } from '@/modules/features/useUser'
-import { useUsers } from '@/modules/features/useUsers'
 import { validationErrors } from '@/modules/states/formErrors'
+import LoginInterface, { loginData } from '@/modules/types/ILogin'
+import { loadState, loginUser, logoutUser } from '@/modules/states/login'
 
 export default {
   components: {
@@ -26,23 +27,28 @@ export default {
     validate: validate
   },
   async setup () {
-    const { user, clearUserData } = await useUser({ noDataReload: false })
-    const { addUser } = await useUsers()
+    loginData.value = loadState({ email: 'u230@gm.com', password: 'pswd' }).value
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       if (!validationErrorsCount) {
-        addUser(user.value)
-        clearUserData()
+        // addUser(user.value)
+        // clearUserData()
+        console.log(loginData.value)
       }
     }
 
-    function test () {
+    async function testIn () {
+      const c = await loginUser(loginData.value)
+      return true
+    }
+    async function testOut () {
+      const c = await logoutUser()
       return true
     }
 
-    return { user, onSubmit, validationErrors, test }
+    return { loginData, onSubmit, validationErrors, testIn, testOut }
   }
 }
 </script>
