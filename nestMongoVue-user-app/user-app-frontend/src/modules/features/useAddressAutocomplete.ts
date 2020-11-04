@@ -2,7 +2,7 @@ import { Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import { setStateAddress } from '@/modules/states/user'
 import { addressAutocomplete } from '@/modules/types/IAddressAutocomplete'
-import { runAddressMatch } from '@/modules/libs/addressMatch/runAddressMatch'
+import { runAddressMatch } from '@/modules/libs/addresses/runAddressMatch'
 
 export function useAddressAutocomplete (user: Ref<UserInterface>) {
   const { matchedAddresses, matchedAddressesToString } = runAddressMatch(user)
