@@ -16,12 +16,12 @@ export async function useUser ({ userId = '', noDataReload = true }: { userId?: 
     setState(user.value)
   }
 
-  function clearUserPassword (forgetPassword: boolean) {
+  function updateUserPassword (forgetPassword: boolean) {
     if (forgetPassword) passData.value = getPasswordFromUser(user.value)
     user.value.password = forgetPassword ? '' : passData.value.password
     user.value.passwordConfirm = forgetPassword ? '' : passData.value.passwordConfirm
     setState(user.value)
   }
 
-  return { user, clearUserData, clearUserPassword, preparePasswordForServer }
+  return { user, clearUserData, updateUserPassword, preparePasswordForServer }
 }

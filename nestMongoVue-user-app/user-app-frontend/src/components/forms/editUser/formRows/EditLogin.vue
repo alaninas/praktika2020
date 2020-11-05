@@ -1,5 +1,5 @@
 <template>
-  <div class="row" v-show="update">
+  <div class="row" v-show="isUpdated">
     <div class="col-lg-6 col-md-6 col-sm-12">
       <label for="userPassword">Pswd1</label>
       <input type="password" id="userPassword" name="password" v-model="user.password" :class="userErrors.password ? 'invalid' : ''" minlength="4" required v-validate />
@@ -21,7 +21,7 @@ import { computed } from 'vue'
 
 export default {
   props: {
-    updatePswd: {
+    isPswdUpdated: {
       type: Boolean,
       required: true
     }
@@ -29,10 +29,10 @@ export default {
   directives: {
     validate: validate
   },
-  async setup (props: Readonly<{updatePswd: boolean} & {}>) {
-    const update = computed(() => props.updatePswd)
+  async setup (props: Readonly<{isPswdUpdated: boolean} & {}>) {
+    const isUpdated = computed(() => props.isPswdUpdated)
     const { user } = await useUser({})
-    return { user, validationErrors, userErrors, update }
+    return { user, validationErrors, userErrors, isUpdated }
   }
 }
 </script>
