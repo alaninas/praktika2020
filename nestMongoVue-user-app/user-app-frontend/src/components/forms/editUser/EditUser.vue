@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import validate from '@/modules/directives/validate'
+import validate from '@/directives/validate'
 import EditAddress from '@/components/forms/editUser/formRows/EditAddress.vue'
 import EditLogin from '@/components/forms/editUser/formRows/EditLogin.vue'
 import EditPersonal from '@/components/forms/editUser/formRows/EditPersonal.vue'

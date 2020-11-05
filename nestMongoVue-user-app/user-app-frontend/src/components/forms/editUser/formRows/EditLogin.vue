@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import validate from '@/modules/directives/validate'
+import validate from '@/directives/validate'
 import { useUser } from '@/modules/features/useUser'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
 import { computed } from 'vue'

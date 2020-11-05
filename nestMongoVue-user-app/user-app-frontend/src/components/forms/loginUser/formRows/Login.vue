@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import validate from '@/modules/directives/validate'
+import validate from '@/directives/validate'
 import { validationErrors } from '@/modules/states/formErrors'
 // import { loginData } from '@/modules/states/login'
 import { useLogin } from '@/modules/features/useLogin'

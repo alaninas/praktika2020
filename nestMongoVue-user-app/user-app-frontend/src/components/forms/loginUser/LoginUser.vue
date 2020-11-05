@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import validate from '@/modules/directives/validate'
+import validate from '@/directives/validate'
 import Login from '@/components/forms/loginUser/formRows/Login.vue'
 import { validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'

@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import validate from '@/modules/directives/validate'
+import validate from '@/directives/validate'
 import NewAddress from '@/components/forms/newUser/formRows/NewAddress.vue'
 import NewLogin from '@/components/forms/newUser/formRows/NewLogin.vue'
 import NewPersonal from '@/components/forms/newUser/formRows/NewPersonal.vue'
