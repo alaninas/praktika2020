@@ -1,4 +1,4 @@
-import AddressInterface from '../IAddress'
+import AddressInterface from '@/modules/types/IAddress'
 import { fieldEval, fields, fillHoldsValueTable, fillIsAMatchTable, holdsValueTable, isAMatchTable } from './fieldLookUps'
 
 function getSingles (valuesTable: holdsValueTable, matchesTable: isAMatchTable): fieldEval[] {

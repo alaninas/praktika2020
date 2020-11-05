@@ -1,6 +1,6 @@
 import { ref, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
-import AddressInterface from '@/modules/libs/addresses/IAddress'
+import AddressInterface from '@/modules/types/IAddress'
 import { resetFormErrors, setUserErrors } from '@/modules/states/formErrors'
 import { getAddressFromUser, prepareUserProperties } from '@/modules/utilities/user-utility'
 import { getUsersStateUser } from '@/modules/states/users'

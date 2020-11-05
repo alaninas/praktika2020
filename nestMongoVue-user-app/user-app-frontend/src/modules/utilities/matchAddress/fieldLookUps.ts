@@ -1,4 +1,4 @@
-import AddressInterface from '../IAddress'
+import AddressInterface from '@/modules/types/IAddress'
 import { matchCity, matchNumber, matchStreet, matchZipcode } from './matchField'
 
 type fieldName = 'street' | 'houseNumber' | 'city' | 'zipCode'

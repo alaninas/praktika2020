@@ -1,7 +1,6 @@
-import AddressInterface from './IAddress'
-import { addresses } from './addresses'
-import { matchAddress } from './bin/matchAddress'
-import { parseSearchString } from './bin/parseString'
+import AddressInterface, { addresses } from '../types/IAddress'
+import { matchAddress } from '@/modules/utilities/matchAddress/matchAddress'
+import { parseSearchString } from '@/modules/utilities/matchAddress/parseString'
 import { computed, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 
