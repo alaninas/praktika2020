@@ -14,14 +14,23 @@ function setUserErrors (user: UserInterface) {
   return userErrors.value
 }
 
-function resetFormErrors () {
+function resetValidationErrors () {
   validationErrors.value = {}
+}
+
+function resetUserErrors () {
   userErrors.value = { password: '', passwordConfirm: '' }
+}
+
+function resetFormErrors () {
+  resetValidationErrors()
+  resetUserErrors()
 }
 
 export {
   userErrors,
   validationErrors,
   setUserErrors,
-  resetFormErrors
+  resetFormErrors,
+  resetValidationErrors
 }
