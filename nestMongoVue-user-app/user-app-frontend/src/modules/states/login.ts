@@ -35,11 +35,16 @@ function getToken (): Ref<string | null> {
   return loggedToken
 }
 
+function clearLoginState () {
+  resetFormErrors()
+  setState({ password: '', email: '', _id: '' } as LoginInterface)
+}
+
 function loadState (data: LoginInterface, noDataReload: boolean): Ref<LoginInterface> {
   if (!noDataReload) {
     tokenService.logout()
-    resetFormErrors()
-    // const b = tokenService.isLoggedIn()
+    // resetFormErrors()
+    // clearLoginState()
     setState(data)
   }
   return getState()
@@ -55,6 +60,7 @@ async function loginStateUser (data: LoginInterface): Promise<Ref<LoginInterface
   data._id = id
   const token = await postUserLogin(data)
   setState({ password: '', email: '', _id: '' } as LoginInterface)
+  // clearLoginState()
   setState(data)
   console.log('>>>>>> my login response')
   console.log(token)
@@ -65,7 +71,8 @@ function logoutStateUser (): Ref<LoginInterface> {
   const response = revokeUserLogin()
   console.log('>>>>>> my logout response')
   console.log(response)
-  setState({ password: '', email: '' } as LoginInterface)
+  setState({ password: '', email: '', _id: '' } as LoginInterface)
+  // clearLoginState()
   return getState()
 }
 
@@ -86,5 +93,6 @@ export {
   loginStateUser,
   logoutStateUser,
   getLog,
-  getToken
+  getToken,
+  clearLoginState
 }

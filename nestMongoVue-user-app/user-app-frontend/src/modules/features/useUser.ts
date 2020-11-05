@@ -9,7 +9,7 @@ export async function useUser ({ userId = '', noDataReload = true }: { userId?: 
     clearState()
   }
 
-  function sendUserPasswordToServer (forgetPassword: boolean) {
+  function preparePasswordForServer (forgetPassword: boolean) {
     if (forgetPassword) passData.value = getPasswordFromUser(user.value)
     user.value.password = forgetPassword ? passData.value.password : undefined
     user.value.passwordConfirm = forgetPassword ? passData.value.passwordConfirm : undefined
@@ -23,5 +23,5 @@ export async function useUser ({ userId = '', noDataReload = true }: { userId?: 
     setState(user.value)
   }
 
-  return { user, clearUserData, clearUserPassword, sendUserPasswordToServer }
+  return { user, clearUserData, clearUserPassword, preparePasswordForServer }
 }
