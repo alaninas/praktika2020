@@ -1,8 +1,9 @@
 import LoginInterface from '@/modules/types/ILogin'
 import { ref, Ref, watch } from 'vue'
-import { revokeUserLogin, postUserLogin, getOneUserByEmail } from '@/modules/services/users-service'
+import { revokeUserLogin } from '@/modules/services/users-service'
 import { resetFormErrors } from '@/modules/states/formErrors'
 import { tokenService } from '../services/token-service'
+import { loginUsersStateUser } from './users'
 
 // tokenService.getUsername()
 const loginData = ref({ password: '', email: tokenService.getUsername() || '', _id: tokenService.getUserId() || '' } as LoginInterface)
@@ -50,20 +51,10 @@ function loadState (data: LoginInterface, noDataReload: boolean): Ref<LoginInter
   return getState()
 }
 
-async function getStateUserId (email: string): Promise<string> {
-  const u = await getOneUserByEmail(email)
-  return u.data._id || ''
-}
-
 async function loginStateUser (data: LoginInterface): Promise<Ref<LoginInterface>> {
-  const id = await getStateUserId(data.email)
-  data._id = id
-  const token = await postUserLogin(data)
+  const response = await loginUsersStateUser(data)
   setState({ password: '', email: '', _id: '' } as LoginInterface)
-  // clearLoginState()
-  setState(data)
-  console.log('>>>>>> my login response')
-  console.log(token)
+  setState(response)
   return getState()
 }
 

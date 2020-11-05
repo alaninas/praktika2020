@@ -1,6 +1,7 @@
 import UserInterface from '@/modules/types/IUser'
 import { ref, Ref, watch } from 'vue'
-import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail } from '@/modules/services/users-service'
+import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin } from '@/modules/services/users-service'
+import LoginInterface from '../types/ILogin'
 
 const user = ref({} as UserInterface)
 const users = ref([{} as UserInterface])
@@ -34,11 +35,6 @@ async function getUsersStateUser (id: string): Promise<UserInterface> {
   return response.data
 }
 
-async function getUsersStateUserByEmail (email: string): Promise<UserInterface> {
-  const response = await getOneUserByEmail(email)
-  return response.data
-}
-
 async function updateUsersStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
   await putUpdatedUser(newUser)
   const allUsers = await getAllUsers()
@@ -60,6 +56,20 @@ async function removeUsersStateUser (userId: string): Promise<Ref<UserInterface[
   return getState()
 }
 
+async function getUserIdByEmail (email: string): Promise<string> {
+  const u = await getOneUserByEmail(email)
+  return u.data._id || ''
+}
+
+async function loginUsersStateUser (data: LoginInterface): Promise<LoginInterface> {
+  const id = await getUserIdByEmail(data.email)
+  data._id = id
+  const token = await postUserLogin(data)
+  console.log('>>>>>> my login response')
+  console.log(token)
+  return data
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 watch([user, users], ([user, users], [prevUser, prevUsers]) => {
   history.push(users)
@@ -78,5 +88,5 @@ export {
   removeUsersStateUser,
   getUsersStateUser,
   updateUsersStateUser,
-  getUsersStateUserByEmail
+  loginUsersStateUser
 }

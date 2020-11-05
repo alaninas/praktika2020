@@ -20,7 +20,7 @@ function reqInterceptor () {
       router.push({ name: 'Login' })
     }
     if (match && isLogged && match[2] !== loginData.value._id) {
-      console.log(`----> can not display other users profiles: ${loginData.value._id} -- ${match[2]}`)
+      console.log(`----> can not edit other users profiles: ${loginData.value._id} -- ${match[2]}`)
       router.replace({ name: 'Users' })
     }
     console.log(`----> watched URL: ${req.url} TOKEN: ${loggedToken} LoggedIn: ${isLogged} UserId: ${loginData.value._id}`)

@@ -5,6 +5,7 @@ import { TokenInterface, tokenService } from '@/modules/services/token-service'
 import LoginInterface from '@/modules/types/ILogin'
 import { resetHeaders, reqInterceptor, resInterceptor } from './headers-service'
 
+resetHeaders()
 reqInterceptor()
 resInterceptor()
 
