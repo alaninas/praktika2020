@@ -24,14 +24,14 @@ export default {
     validate: validate
   },
   async setup () {
-    const { userLogin, loginUser } = useLogin({})
+    const { userLogin, loginUser, clearLoginData } = useLogin({})
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       if (!validationErrorsCount) {
         loginUser()
-        // clearUserData()
+        clearLoginData()
         console.log(userLogin.value)
       }
     }
