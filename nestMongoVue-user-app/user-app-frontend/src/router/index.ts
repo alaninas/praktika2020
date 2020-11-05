@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import { loggedIn } from '@/modules/states/login'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -32,12 +33,12 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.name !== 'login' && !isAuthenticated) {
-//     next({ name: 'login' })
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.name === 'Login' && loggedIn.value === true) {
+    next({ name: 'Users' })
+  } else {
+    next()
+  }
+})
 
 export default router

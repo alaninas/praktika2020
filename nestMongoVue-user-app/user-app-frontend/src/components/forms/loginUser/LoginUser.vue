@@ -5,8 +5,13 @@
     <Suspense>
       <Login />
     </Suspense>
-    <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
+    <div v-show="!loggedIn">
+      <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
+    </div>
   </form>
+  <div v-show="loggedIn">
+    <label role="button" class="button primary" v-on:click="navigateUp()">Next >></label>
+  </div>
 </div>
 </template>
 
@@ -15,6 +20,7 @@ import validate from '@/modules/directives/validate'
 import Login from '@/components/forms/loginUser/formRows/Login.vue'
 import { validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
+import router from '@/router'
 
 export default {
   components: {
@@ -24,11 +30,13 @@ export default {
     validate: validate
   },
   async setup () {
-    const { userLogin, loginUser, clearLoginData } = useLogin({})
+    const { userLogin, loginUser, clearLoginData, loggedIn } = useLogin({ noDataReload: false })
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
+      console.log('--> sending logIn to server')
+      console.log(validationErrors.value)
       if (!validationErrorsCount) {
         loginUser()
         clearLoginData()
@@ -36,7 +44,11 @@ export default {
       }
     }
 
-    return { onSubmit, validationErrors }
+    function navigateUp () {
+      router.push({ name: 'Users' })
+    }
+
+    return { onSubmit, validationErrors, loggedIn, navigateUp }
   }
 }
 </script>
