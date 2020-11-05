@@ -6,7 +6,7 @@
           <div class="sort-arrows">
             <span class="arrow" @click="sortById(false)"></span>
             <span class="arrow down" @click="sortById(true)"></span>
-          </div> | Del
+          </div>
         </th>
         <th>Password
           <div class="sort-arrows">

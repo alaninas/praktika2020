@@ -2,8 +2,9 @@
 <div>
   <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
   <h5>Email: {{ user.email }}</h5>
-  <button class="button secondary" v-on:click="navigate()">Cancel profile update</button>
-  <button class="button tertiary" v-on:click="passwordUpdate(updatePswd.data)">{{ updatePswd.data ? 'Choose old password' : 'Set new password' }}</button>
+  <label role="button" class="responsive-padding responsive-margin inverse" @click="deleteProfile(user._id)">Delete profile</label>
+  <label role="button" class="button secondary" v-on:click="navigateUp()">Cancel profile update</label>
+  <label role="button" class="button tertiary" v-on:click="passwordUpdate(updatePswd.data)">{{ updatePswd.data ? 'Choose old password' : 'Set new password' }}</label>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
       <EditLogin v-bind:updatePswd="updatePswd.data" />
@@ -30,6 +31,7 @@ import { useRoute } from 'vue-router'
 import { reactive, ref } from 'vue'
 import router from '@/router'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
+import { useLogin } from '@/modules/features/useLogin'
 
 export default {
   components: {
@@ -43,23 +45,22 @@ export default {
   async setup () {
     const updatePswd = reactive({ data: false })
     const route = useRoute()
-    const { editUser } = await useUsers()
+    const { editUser, removeUser } = await useUsers()
+    const { logoutUser } = useLogin({})
     const userId = ref(route.params.id?.toString() || '')
-    const { user, clearUserData, clearUserPassword, sendUserPasswordToServer } = await useUser(userId.value ? { userId: userId.value, noDataReload: false } : {})
+    const { user, clearUserData, clearUserPassword, preparePasswordForServer } = await useUser(userId.value ? { userId: userId.value, noDataReload: false } : {})
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
-        sendUserPasswordToServer(updatePswd.data)
-        console.log(`send update user to server, forgetPswd flag: ${updatePswd.data}`)
-        console.log(user.value)
+        preparePasswordForServer(updatePswd.data)
         editUser(user.value)
         // clearUserData()
       }
     }
-    function navigate () {
+    function navigateUp () {
       router.push({ name: 'Users' })
       clearUserData()
     }
@@ -67,8 +68,13 @@ export default {
       updatePswd.data = !update
       clearUserPassword(updatePswd.data)
     }
+    async function deleteProfile (param: string) {
+      await removeUser(param)
+      logoutUser()
+      navigateUp()
+    }
 
-    return { user, onSubmit, validationErrors, userErrors, navigate, updatePswd, passwordUpdate }
+    return { user, onSubmit, validationErrors, userErrors, navigateUp, updatePswd, passwordUpdate, deleteProfile }
   }
 }
 </script>
