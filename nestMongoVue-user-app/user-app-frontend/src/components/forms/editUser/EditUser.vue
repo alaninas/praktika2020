@@ -2,12 +2,17 @@
 <div>
   <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
   <h5>Email: {{ user.email }}</h5>
-  <label role="button" class="responsive-padding responsive-margin inverse" @click="deleteProfile(user._id)">Delete profile</label>
-  <label role="button" class="button secondary" v-on:click="navigateUp()">Cancel profile update</label>
-  <label role="button" class="button tertiary" v-on:click="passwordUpdate(isPswdUpdated.data)">{{ isPswdUpdated.data ? 'Choose old password' : 'Set new password' }}</label>
+  <label role="button" class="responsive-padding responsive-margin inverse" v-show="!isDeleteApproved" @click="isDeleteApproved = !isDeleteApproved">Delete profile</label>
+  <div class="card fluid warning" v-show="isDeleteApproved">
+    <p>Please confirm user {{ user.email }} profile delete
+      <label role="button" class="responsive-padding responsive-margin inverse" @click="deleteProfile(user._id)">Delete profile</label>
+    </p>
+  </div>
+  <label role="button" class="button secondary" @click="navigateUp()">Cancel profile update</label>
+  <label role="button" class="button tertiary" @click="passwordUpdate(isPswdUpdated)">{{ isPswdUpdated ? 'Choose old password' : 'Set new password' }}</label>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
-      <EditLogin v-bind:isPswdUpdated="isPswdUpdated.data" />
+      <EditLogin v-bind:isPswdUpdated="isPswdUpdated" />
     </Suspense>
     <Suspense>
       <EditPersonal />
@@ -28,7 +33,7 @@ import EditPersonal from '@/components/forms/editUser/formRows/EditPersonal.vue'
 import { useUser } from '@/modules/features/useUser'
 import { useUsers } from '@/modules/features/useUsers'
 import { useRoute } from 'vue-router'
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import router from '@/router'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
@@ -43,7 +48,8 @@ export default {
     validate: validate
   },
   async setup () {
-    const isPswdUpdated = reactive({ data: false })
+    const isPswdUpdated = ref(false)
+    const isDeleteApproved = ref(false)
     const route = useRoute()
     const { editUser, removeUser } = await useUsers()
     const { logoutUser } = useLogin({})
@@ -55,7 +61,7 @@ export default {
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       const userErrorsCount = Object.values(userErrors.value).filter(el => !!el).length
       if (!validationErrorsCount && !userErrorsCount) {
-        preparePasswordForServer(isPswdUpdated.data)
+        preparePasswordForServer(isPswdUpdated.value)
         editUser(user.value)
         // clearUserData()
       }
@@ -65,8 +71,8 @@ export default {
       clearUserData()
     }
     function passwordUpdate (updateFlag: boolean) {
-      isPswdUpdated.data = !updateFlag
-      updateUserPassword(isPswdUpdated.data)
+      isPswdUpdated.value = !updateFlag
+      updateUserPassword(isPswdUpdated.value)
     }
     async function deleteProfile (param: string) {
       await removeUser(param)
@@ -74,7 +80,7 @@ export default {
       navigateUp()
     }
 
-    return { user, onSubmit, validationErrors, userErrors, navigateUp, isPswdUpdated, passwordUpdate, deleteProfile }
+    return { user, onSubmit, validationErrors, userErrors, navigateUp, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved }
   }
 }
 </script>
