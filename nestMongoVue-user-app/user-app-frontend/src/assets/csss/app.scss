@@ -11,17 +11,20 @@
   padding: .625rem;
   border-bottom: .125rem solid rgb(41, 41, 41);
   margin-bottom: .625rem;
-
-  a {
+  a,
+  span {
     font-variant-caps: all-small-caps;
     font-size: larger;
     color: #2c3e50;
+  }
+  a {
     &.router-link-exact-active {
       color: #1976d2;
     }
   }
 }
 
+// User prompts
 .card.success {
 	--card-back-color: #25e83105;
 	--card-border-color: #3ce825;
@@ -30,3 +33,6 @@
 	--card-back-color: #ffca2826;
 	--card-border-color: #e8b825;
 }
+// .auth-status {
+//   float: right !important;
+// }
