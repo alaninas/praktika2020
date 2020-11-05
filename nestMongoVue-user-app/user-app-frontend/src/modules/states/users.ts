@@ -1,6 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import { ref, Ref, watch } from 'vue'
-import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin } from '@/modules/services/users-service'
+import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin } from '@/modules/services'
 import LoginInterface from '@/modules/types/ILogin'
 
 const users = ref([{} as UserInterface])
