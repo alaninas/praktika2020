@@ -15,7 +15,7 @@ const tokenService = {
     localStorage.setItem(ID_KEY, token.id)
   },
   logout () {
-    if (!this.isLoggedIn()) throw new Error('Not logged in')
+    if (!this.isLoggedIn()) console.log('User Not logged in')
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(NAME_KEY)
     localStorage.removeItem(ID_KEY)
