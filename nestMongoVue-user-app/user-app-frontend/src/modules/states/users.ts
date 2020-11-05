@@ -1,14 +1,14 @@
 import UserInterface from '@/modules/types/IUser'
 import { ref, Ref, watch } from 'vue'
 import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin } from '@/modules/services/users-service'
-import LoginInterface from '../types/ILogin'
+import LoginInterface from '@/modules/types/ILogin'
 
-const user = ref({} as UserInterface)
 const users = ref([{} as UserInterface])
 const history = []
 history.push(users.value)
 
 function setState (data: UserInterface[]) {
+  console.log('from users setState')
   users.value = data
 }
 
@@ -71,11 +71,9 @@ async function loginUsersStateUser (data: LoginInterface): Promise<LoginInterfac
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-watch([user, users], ([user, users], [prevUser, prevUsers]) => {
+watch(users, (users, prevUsers) => {
   history.push(users)
   console.log('>> from users state watcher -- on users')
-  history.push(user)
-  console.log('>> from users state watcher -- on user')
   console.log(history.length)
 })
 

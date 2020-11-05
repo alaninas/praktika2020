@@ -5,11 +5,11 @@
     <Suspense>
       <Login />
     </Suspense>
-    <div v-show="!loggedIn">
+    <div v-show="!isLoggedIn">
       <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
     </div>
   </form>
-  <div v-show="loggedIn">
+  <div v-show="isLoggedIn">
     <label role="button" class="button primary" v-on:click="navigateUp()">Next >></label>
   </div>
 </div>
@@ -30,7 +30,7 @@ export default {
     validate: validate
   },
   async setup () {
-    const { userLogin, loginUser, clearLoginData, loggedIn } = useLogin({ noDataReload: false })
+    const { userLoginData, loginUser, clearLoginData, isLoggedIn } = useLogin({ noDataReload: false })
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
@@ -40,15 +40,14 @@ export default {
       if (!validationErrorsCount) {
         loginUser()
         clearLoginData()
-        console.log(userLogin.value)
+        console.log(userLoginData.value)
       }
     }
-
     function navigateUp () {
       router.push({ name: 'Users' })
     }
 
-    return { onSubmit, validationErrors, loggedIn, navigateUp }
+    return { onSubmit, validationErrors, isLoggedIn, navigateUp }
   }
 }
 </script>

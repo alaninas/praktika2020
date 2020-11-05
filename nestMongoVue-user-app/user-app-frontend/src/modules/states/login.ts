@@ -1,25 +1,21 @@
 import LoginInterface from '@/modules/types/ILogin'
 import { ref, Ref, watch } from 'vue'
-import { revokeUserLogin } from '@/modules/services/users-service'
-import { resetFormErrors, resetValidationErrors } from '@/modules/states/formErrors'
+import { resetValidationErrors } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
 import { loginUsersStateUser } from './users'
 
-// tokenService.getUsername()
 const loginData = ref({ password: '', email: tokenService.getUsername() || '', _id: tokenService.getUserId() || '' } as LoginInterface)
-const loggedIn = ref(tokenService.isLoggedIn())
-const loggedToken = ref(tokenService.getAccessToken())
+const isAuthenticated = ref(tokenService.holdsAccessToken())
+const accessToken = ref(tokenService.getAccessToken())
 
 const history = []
 history.push(loginData.value)
 
 function setState (data: LoginInterface) {
-  console.log('>>>>>> my login SetState')
+  console.log('--> my login SetState')
   loginData.value = data
-  const b = tokenService.isLoggedIn()
-  const t = tokenService.getAccessToken()
-  loggedIn.value = b
-  loggedToken.value = t
+  isAuthenticated.value = tokenService.holdsAccessToken()
+  accessToken.value = tokenService.getAccessToken()
 }
 
 function getState (): Ref<LoginInterface> {
@@ -28,25 +24,35 @@ function getState (): Ref<LoginInterface> {
   return loginData
 }
 
-function getLog (): Ref<boolean> {
-  return loggedIn
+function getAuthUserId (): string {
+  return loginData.value._id
 }
 
-function getToken (): Ref<string | null> {
-  return loggedToken
+function getIsAuth (): boolean {
+  return isAuthenticated.value
+}
+
+function getToken (): string | null {
+  return accessToken.value
+}
+
+function resetState () {
+  setState({ password: '', email: '', _id: '' } as LoginInterface)
 }
 
 function clearLoginState () {
   resetValidationErrors()
-  setState({ password: '', email: '', _id: '' } as LoginInterface)
+  resetState()
+}
+
+function performLogout () {
+  tokenService.logout()
+  clearLoginState()
 }
 
 function loadState (data: LoginInterface, noDataReload: boolean): Ref<LoginInterface> {
   if (!noDataReload) {
-    // TODO: move to function
-    tokenService.logout()
-    // resetFormErrors()
-    clearLoginState()
+    performLogout()
     setState(data)
   }
   return getState()
@@ -54,21 +60,13 @@ function loadState (data: LoginInterface, noDataReload: boolean): Ref<LoginInter
 
 async function loginStateUser (data: LoginInterface): Promise<Ref<LoginInterface>> {
   const response = await loginUsersStateUser(data)
-  setState({ password: '', email: '', _id: '' } as LoginInterface)
+  resetState()
   setState(response)
   return getState()
 }
 
 function logoutStateUser (): Ref<LoginInterface> {
-  // TODO: move to function
-  tokenService.logout()
-  clearLoginState()
-  // TODO: remove revokeUser from service, because now headers are set with loginData coming from this state
-  // const response = revokeUserLogin()
-  // console.log('>>>>>> my logout response')
-  // console.log(response)
-  // setState({ password: '', email: '', _id: '' } as LoginInterface)
-  // clearLoginState()
+  performLogout()
   return getState()
 }
 
@@ -77,9 +75,8 @@ watch(loginData, (loginData) => {
   history.push(loginData)
   console.log('>> from login state watcher')
   console.log(loginData)
-  console.log(loggedIn.value)
-  console.log(getLog().value)
-  console.log(getToken().value)
+  console.log(getIsAuth())
+  console.log(getToken())
   console.log(history.length)
 })
 
@@ -87,10 +84,11 @@ export {
   loadState,
   loginStateUser,
   logoutStateUser,
-  getLog,
+  getIsAuth,
   getToken,
+  getAuthUserId,
   clearLoginState,
-  loggedIn,
-  loggedToken,
+  isAuthenticated,
+  accessToken,
   loginData
 }

@@ -64,8 +64,8 @@ export default {
       router.push({ name: 'Users' })
       clearUserData()
     }
-    function passwordUpdate (update: boolean) {
-      isPswdUpdated.data = !update
+    function passwordUpdate (updateFlag: boolean) {
+      isPswdUpdated.data = !updateFlag
       updateUserPassword(isPswdUpdated.data)
     }
     async function deleteProfile (param: string) {

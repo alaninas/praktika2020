@@ -1,25 +1,13 @@
-import UserInterface from '@/modules/types/IUser'
 import { server } from '@/backend-server'
 import axios, { AxiosResponse } from 'axios'
-import { TokenInterface, tokenService } from '@/modules/services/token-service'
 import LoginInterface from '@/modules/types/ILogin'
+import UserInterface from '@/modules/types/IUser'
+import { TokenInterface, tokenService } from './token-service'
 import { resetHeaders, reqInterceptor, resInterceptor } from './headers-service'
 
 resetHeaders()
 reqInterceptor()
 resInterceptor()
-
-// TODO: move to separate module
-// TODO: remove. deprecated. see login logic
-function revokeUserLogin (): object {
-  try {
-    tokenService.logout()
-    resetHeaders()
-    return { statusCode: 200, message: 'Successfully logged out' }
-  } catch (err) {
-    return { statusCode: 400, message: 'Error in log out' }
-  }
-}
 
 async function postUserLogin (loginData: LoginInterface): Promise<object> {
   try {
@@ -67,6 +55,5 @@ export {
   getOneUser,
   putUpdatedUser,
   postUserLogin,
-  revokeUserLogin,
   getOneUserByEmail
 }

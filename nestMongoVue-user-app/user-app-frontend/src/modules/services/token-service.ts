@@ -15,7 +15,7 @@ const tokenService = {
     localStorage.setItem(ID_KEY, token.id)
   },
   logout () {
-    if (!this.isLoggedIn()) console.log('User Not logged in')
+    if (!this.holdsAccessToken()) console.log('User Not logged in')
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(NAME_KEY)
     localStorage.removeItem(ID_KEY)
@@ -29,7 +29,7 @@ const tokenService = {
   getAccessToken (): string | null {
     return localStorage.getItem(TOKEN_KEY) || null
   },
-  isLoggedIn (): boolean {
+  holdsAccessToken (): boolean {
     return !!this.getAccessToken()
   }
 }

@@ -1,17 +1,17 @@
 <template>
-  <div id="nav" v-show="!loggedIn">
+  <div id="nav" v-show="!isLoggedIn">
     <router-link to="/login">Login</router-link> |
     <router-link to="/register">Register</router-link> |
     <router-link to="/users">Users</router-link>
   </div>
-  <div id="nav" v-show="loggedIn">
+  <div id="nav" v-show="isLoggedIn">
     <router-link to="/users">Users</router-link> |
     <label role="button" class="button inverse responsive-padding responsive-margin" @click="logoutUser()">Auth Logout</label>
   </div>
-  <div class="card fluid success" v-show="loggedIn">
-    <p>Logged in with email: {{ userLogin.email }}</p>
+  <div class="card fluid success" v-show="isLoggedIn">
+    <p>Logged in with email: {{ userLoginData.email }}</p>
   </div>
-  <div class="card fluid warning" v-show="!loggedIn">
+  <div class="card fluid warning" v-show="!isLoggedIn">
     <p>Please login to edit profile</p>
   </div>
   <router-view/>
@@ -22,8 +22,8 @@ import { useLogin } from './modules/features/useLogin'
 
 export default {
   setup () {
-    const { userLogin, loggedIn, logoutUser } = useLogin({})
-    return { loggedIn, userLogin, logoutUser }
+    const { userLoginData, isLoggedIn, logoutUser } = useLogin({})
+    return { isLoggedIn, userLoginData, logoutUser }
   }
 }
 </script>

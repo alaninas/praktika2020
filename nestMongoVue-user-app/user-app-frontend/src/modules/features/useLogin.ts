@@ -1,14 +1,14 @@
 import { watch } from 'vue'
 import LoginInterface from '@/modules/types/ILogin'
-import { getLog, getToken, loadState, loginStateUser, logoutStateUser, clearLoginState } from '@/modules/states/login'
+import { loadState, loginStateUser, logoutStateUser, clearLoginState, accessToken, isAuthenticated } from '@/modules/states/login'
 
 export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' } as LoginInterface, noDataReload = true }: { userLoginInit?: LoginInterface; noDataReload?: boolean }) {
-  const userLogin = loadState(userLoginInit, noDataReload)
-  const loggedIn = getLog()
-  const loggedToken = getToken()
+  const userLoginData = loadState(userLoginInit, noDataReload)
+  const isLoggedIn = isAuthenticated
+  const token = accessToken
 
   async function loginUser () {
-    await loginStateUser(userLogin.value)
+    await loginStateUser(userLoginData.value)
   }
 
   function logoutUser () {
@@ -20,11 +20,11 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  watch(loggedIn, (loggedIn) => {
+  watch(isLoggedIn, (isLoggedIn) => {
     console.log('---> check logging.... ')
-    console.log(`is logged in: ${loggedIn}`)
-    console.log(`token: ${loggedToken.value}`)
+    console.log(`is logged in: ${isLoggedIn}`)
+    console.log(`token: ${token.value}`)
   })
 
-  return { userLogin, loggedIn, loginUser, logoutUser, loggedToken, clearLoginData }
+  return { userLoginData, isLoggedIn, token, loginUser, logoutUser, clearLoginData }
 }
