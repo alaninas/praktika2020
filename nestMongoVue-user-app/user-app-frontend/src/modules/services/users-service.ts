@@ -9,6 +9,8 @@ resetHeaders()
 reqInterceptor()
 resInterceptor()
 
+// TODO: move to separate module
+// TODO: remove. deprecated. see login logic
 function revokeUserLogin (): object {
   try {
     tokenService.logout()

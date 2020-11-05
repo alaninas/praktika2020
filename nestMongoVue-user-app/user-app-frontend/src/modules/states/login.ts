@@ -1,8 +1,8 @@
 import LoginInterface from '@/modules/types/ILogin'
 import { ref, Ref, watch } from 'vue'
 import { revokeUserLogin } from '@/modules/services/users-service'
-import { resetFormErrors } from '@/modules/states/formErrors'
-import { tokenService } from '../services/token-service'
+import { resetFormErrors, resetValidationErrors } from '@/modules/states/formErrors'
+import { tokenService } from '@/modules/services/token-service'
 import { loginUsersStateUser } from './users'
 
 // tokenService.getUsername()
@@ -37,15 +37,16 @@ function getToken (): Ref<string | null> {
 }
 
 function clearLoginState () {
-  resetFormErrors()
+  resetValidationErrors()
   setState({ password: '', email: '', _id: '' } as LoginInterface)
 }
 
 function loadState (data: LoginInterface, noDataReload: boolean): Ref<LoginInterface> {
   if (!noDataReload) {
+    // TODO: move to function
     tokenService.logout()
     // resetFormErrors()
-    // clearLoginState()
+    clearLoginState()
     setState(data)
   }
   return getState()
@@ -59,10 +60,14 @@ async function loginStateUser (data: LoginInterface): Promise<Ref<LoginInterface
 }
 
 function logoutStateUser (): Ref<LoginInterface> {
-  const response = revokeUserLogin()
-  console.log('>>>>>> my logout response')
-  console.log(response)
-  setState({ password: '', email: '', _id: '' } as LoginInterface)
+  // TODO: move to function
+  tokenService.logout()
+  clearLoginState()
+  // TODO: remove revokeUser from service, because now headers are set with loginData coming from this state
+  // const response = revokeUserLogin()
+  // console.log('>>>>>> my logout response')
+  // console.log(response)
+  // setState({ password: '', email: '', _id: '' } as LoginInterface)
   // clearLoginState()
   return getState()
 }
@@ -79,11 +84,13 @@ watch(loginData, (loginData) => {
 })
 
 export {
-  loginData,
   loadState,
   loginStateUser,
   logoutStateUser,
   getLog,
   getToken,
-  clearLoginState
+  clearLoginState,
+  loggedIn,
+  loggedToken,
+  loginData
 }
