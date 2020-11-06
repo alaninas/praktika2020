@@ -1,6 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import { ref, Ref, watch } from 'vue'
-import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin } from '@/modules/services'
+import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin, putUserTempPass } from '@/modules/services'
 import LoginInterface from '@/modules/types/ILogin'
 
 const users = ref([{} as UserInterface])
@@ -30,8 +30,6 @@ async function loadSortedUsers (column: string, direction: string): Promise<Ref<
 
 async function getUsersStateUser (id: string): Promise<UserInterface> {
   const response = await getOneUser(id)
-  console.log('<<-- answer from the server')
-  console.log(response.data)
   return response.data
 }
 
@@ -57,16 +55,29 @@ async function removeUsersStateUser (userId: string): Promise<Ref<UserInterface[
 }
 
 async function getUserIdByEmail (email: string): Promise<string> {
-  const u = await getOneUserByEmail(email)
-  return u.data._id || ''
+  return (await getOneUserByEmail(email)).data._id || ''
+}
+
+async function getUserPswdByEmail (email: string): Promise<string> {
+  return (await getOneUserByEmail(email)).data.password || ''
 }
 
 async function loginUsersStateUser (data: LoginInterface): Promise<LoginInterface> {
-  const id = await getUserIdByEmail(data.email)
-  data._id = id
+  data._id = await getUserIdByEmail(data.email)
   const token = await postUserLogin(data)
   console.log('>>>>>> my login response')
   console.log(token)
+  return data
+}
+
+async function forgetUsersStatePassword (data: LoginInterface): Promise<LoginInterface> {
+  const pswd = await getUserPswdByEmail(data.email)
+  const newp = pswd.substr(18)
+  data.password = ''
+  await putUserTempPass(data.email, newp)
+  console.log('>>>>>> forget password response')
+  console.log(data)
+  console.log(`>> new password: ${newp}`)
   return data
 }
 
@@ -86,5 +97,6 @@ export {
   removeUsersStateUser,
   getUsersStateUser,
   updateUsersStateUser,
-  loginUsersStateUser
+  loginUsersStateUser,
+  forgetUsersStatePassword
 }

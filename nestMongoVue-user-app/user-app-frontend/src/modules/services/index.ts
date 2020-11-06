@@ -43,6 +43,10 @@ async function putUpdatedUser (newUser: UserInterface): Promise<AxiosResponse<Us
   return await axios.put(`${server.baseURL}/users`, newUser)
 }
 
+async function putUserTempPass (email: string, pass: string): Promise<AxiosResponse<UserInterface>> {
+  return await axios.put(`${server.baseURL}/users/email/${email}`, { sub: pass })
+}
+
 async function deleteUser (userId: string): Promise<AxiosResponse<UserInterface>> {
   return await axios.delete(`${server.baseURL}/users/${userId}`)
 }
@@ -55,5 +59,6 @@ export {
   getOneUser,
   putUpdatedUser,
   postUserLogin,
-  getOneUserByEmail
+  getOneUserByEmail,
+  putUserTempPass
 }

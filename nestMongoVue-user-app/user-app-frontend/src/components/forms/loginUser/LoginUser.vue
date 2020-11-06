@@ -1,16 +1,15 @@
 <template>
 <div>
-  <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
-      <Login />
+      <Login v-bind:forget="forgetPassword" />
     </Suspense>
     <div v-show="!isLoggedIn">
-      <input type="submit" value="Submit" class="button primary responsive-padding responsive-margin" />
+      <input type="submit" value="Submit" :class="userLoginData.password.length < 4 ? 'disabled button bordered' : 'button primary responsive-padding responsive-margin'" />
     </div>
   </form>
   <div v-show="isLoggedIn">
-    <label role="button" class="button primary" v-on:click="navigateUp()">Next >></label>
+    <label role="button" class="button primary" @click="navigateUp()">Next >></label>
   </div>
 </div>
 </template>
@@ -21,6 +20,7 @@ import Login from '@/components/forms/loginUser/formRows/Login.vue'
 import { validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
 import router from '@/router'
+import { ref } from 'vue'
 
 export default {
   components: {
@@ -31,23 +31,25 @@ export default {
   },
   async setup () {
     const { userLoginData, loginUser, clearLoginData, isLoggedIn } = useLogin({ noDataReload: false })
+    const forgetPassword = ref(false)
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       console.log('--> sending logIn to server')
       console.log(validationErrors.value)
-      if (!validationErrorsCount) {
+      console.log(userLoginData.value)
+      if (!validationErrorsCount && userLoginData.value.password.length > 4) {
         loginUser()
         clearLoginData()
         console.log(userLoginData.value)
       }
     }
-    function navigateUp () {
-      router.push({ name: 'Users' })
+    async function navigateUp () {
+      await router.push({ name: 'Users' })
     }
 
-    return { onSubmit, validationErrors, isLoggedIn, navigateUp }
+    return { onSubmit, validationErrors, isLoggedIn, navigateUp, forgetPassword, userLoginData }
   }
 }
 </script>

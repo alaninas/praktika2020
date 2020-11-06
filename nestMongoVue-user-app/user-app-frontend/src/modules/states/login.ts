@@ -2,7 +2,7 @@ import LoginInterface from '@/modules/types/ILogin'
 import { ref, Ref, watch } from 'vue'
 import { resetValidationErrors } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
-import { loginUsersStateUser } from './users'
+import { forgetUsersStatePassword, loginUsersStateUser } from './users'
 
 const loginData = ref({ password: '', email: tokenService.getUsername() || '', _id: tokenService.getUserId() || '' } as LoginInterface)
 const isAuthenticated = ref(tokenService.holdsAccessToken())
@@ -65,6 +65,14 @@ async function loginStateUser (data: LoginInterface): Promise<Ref<LoginInterface
   return getState()
 }
 
+async function forgetStatePassword (data: LoginInterface): Promise<Ref<LoginInterface>> {
+  console.log('inside forget')
+  const response = await forgetUsersStatePassword(data)
+  resetState()
+  setState(response)
+  return getState()
+}
+
 function logoutStateUser (): Ref<LoginInterface> {
   performLogout()
   return getState()
@@ -88,6 +96,7 @@ export {
   getToken,
   getAuthUserId,
   clearLoginState,
+  forgetStatePassword,
   isAuthenticated,
   accessToken,
   loginData

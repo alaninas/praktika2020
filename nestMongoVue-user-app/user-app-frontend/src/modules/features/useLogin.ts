@@ -1,6 +1,7 @@
 import { watch } from 'vue'
 import LoginInterface from '@/modules/types/ILogin'
 import { loadState, loginStateUser, logoutStateUser, clearLoginState, accessToken, isAuthenticated } from '@/modules/states/login'
+import { forgetUsersStatePassword } from '../states/users'
 
 export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' } as LoginInterface, noDataReload = true }: { userLoginInit?: LoginInterface; noDataReload?: boolean }) {
   const userLoginData = loadState(userLoginInit, noDataReload)
@@ -9,6 +10,10 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
 
   async function loginUser () {
     await loginStateUser(userLoginData.value)
+  }
+
+  async function forgetUserPassword () {
+    await forgetUsersStatePassword(userLoginData.value)
   }
 
   function logoutUser () {
@@ -26,5 +31,5 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
     console.log(`token: ${token.value}`)
   })
 
-  return { userLoginData, isLoggedIn, token, loginUser, logoutUser, clearLoginData }
+  return { userLoginData, isLoggedIn, token, loginUser, logoutUser, clearLoginData, forgetUserPassword }
 }

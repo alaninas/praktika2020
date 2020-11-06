@@ -1,7 +1,7 @@
 <template>
   <tr v-for="user in users" :key="user">
     <td data-label="Id" :title="user._id">
-      <router-link :to="{name: 'Edit', params: {id: user._id}}" v-on:click="clickUserEdit(user._id, $route.params.id !== user._id)">{{ user._id.substr(18) }}</router-link>
+      <router-link :to="{name: 'Edit', params: {id: user._id}}" @click="clickUserEdit(user._id, $route.params.id !== user._id)">{{ user._id.substr(18) }}</router-link>
     </td>
     <td data-label="Full Name">{{ user.password }}</td>
     <td data-label="Age">{{ user.age }}</td>

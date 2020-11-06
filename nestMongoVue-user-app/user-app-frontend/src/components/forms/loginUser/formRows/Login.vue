@@ -7,25 +7,52 @@
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
       <label for="userPassword">Pswd1</label>
-      <input type="password" id="userPassword" name="password" v-model="userLoginData.password" minlength="4" required v-validate />
+      <input type="password" id="userPassword" name="password" v-model="userLoginData.password" v-validate />
       <div class="error">{{ validationErrors.password }}</div>
     </div>
   </div>
+  <label
+    v-show="!isLoggedIn"
+    role="button"
+    :class="forgotPassword ? 'disabled button bordered' : 'responsive-padding responsive-margin inverse'"
+    @click="performForgetPassword(forgotPassword, validationErrors)">
+      {{ forgotPassword ? 'Check email for new password' : 'Forgot password ?' }}
+  </label>
 </template>
 
 <script lang="ts">
 import validate from '@/directives/validate'
 import { validationErrors } from '@/modules/states/formErrors'
-// import { loginData } from '@/modules/states/login'
 import { useLogin } from '@/modules/features/useLogin'
+import { ref } from 'vue'
 
 export default {
+  props: {
+    forget: {
+      type: Boolean,
+      required: true
+    }
+  },
   directives: {
     validate: validate
   },
-  async setup () {
-    const { userLoginData } = useLogin({})
-    return { userLoginData, validationErrors }
+  async setup (props: Readonly<{forget: boolean} & {}>) {
+    const forgotPassword = ref(props.forget)
+    const { userLoginData, forgetUserPassword, isLoggedIn } = useLogin({})
+
+    function performForgetPassword (param: boolean, valErrs: never[]) {
+      validationErrors.value = valErrs
+      const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
+      console.log('--> sending logIn to server')
+      console.log(userLoginData.value.email)
+      console.log(validationErrors.value)
+      console.log(param)
+      if (!validationErrorsCount && param === false) {
+        forgetUserPassword()
+        forgotPassword.value = true
+      }
+    }
+    return { userLoginData, validationErrors, forgotPassword, performForgetPassword, isLoggedIn }
   }
 }
 </script>

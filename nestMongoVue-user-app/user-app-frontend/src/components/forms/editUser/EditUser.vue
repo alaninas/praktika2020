@@ -65,8 +65,8 @@ export default {
         // clearUserData()
       }
     }
-    function navigateUp () {
-      router.push({ name: 'Users' })
+    async function navigateUp () {
+      await router.push({ name: 'Users' })
       clearUserData()
     }
     function passwordUpdate (updateFlag: boolean) {
