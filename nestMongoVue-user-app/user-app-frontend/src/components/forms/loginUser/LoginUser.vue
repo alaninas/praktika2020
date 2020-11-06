@@ -11,6 +11,9 @@
   <div v-show="isLoggedIn">
     <label role="button" class="button primary" @click="navigateUp()">Next >></label>
   </div>
+  <!-- <div>
+    <label role="button" class="button primary" @click="testMail()">TEST MAIL</label>
+  </div> -->
 </div>
 </template>
 
@@ -21,6 +24,7 @@ import { validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
 import router from '@/router'
 import { ref } from 'vue'
+// import { sendMail } from '@/modules/services/mail-service'
 
 export default {
   components: {
@@ -48,6 +52,9 @@ export default {
     async function navigateUp () {
       await router.push({ name: 'Users' })
     }
+    // async function testMail () {
+    //   await sendMail()
+    // }
 
     return { onSubmit, validationErrors, isLoggedIn, navigateUp, isPasswordForgotten, userLoginData }
   }

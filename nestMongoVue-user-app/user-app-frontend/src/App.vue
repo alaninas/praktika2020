@@ -14,7 +14,7 @@
       <router-link to="/users">All Users</router-link>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-5">
-      <router-link to="/users" @click="logoutUser()">Logout</router-link> |
+      <router-link to="/login" @click="logoutUser()">Logout</router-link> |
       <span>{{userLoginData.email}}</span>
     </div>
   </div>

@@ -14,7 +14,7 @@
   <label
     v-show="!isLoggedIn"
     role="button"
-    :class="isPasswordForgotten ? 'disabled button bordered' : 'responsive-padding responsive-margin inverse'"
+    :class="isPasswordForgotten ? 'disabled button bordered' : 'responsive-padding responsive-margin tertiary'"
     @click="performForgetPassword(isPasswordForgotten, validationErrors)">
       {{ isPasswordForgotten ? 'Check email for new password' : 'Forgot password ?' }}
   </label>
