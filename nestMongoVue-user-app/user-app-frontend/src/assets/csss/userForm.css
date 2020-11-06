@@ -43,3 +43,19 @@ div.error {
   color: var(--input-invalid-color);
   margin-top: 0;
 }
+/* Disabled fields and buttons*/
+label.disabled,
+input.disabled {
+	cursor: not-allowed;
+	--button-back-color: #7d7c7c;
+}
+input.disabled:hover,
+input.disabled:focus,
+label.disabled:hover,
+label.disabled:focus {
+	background-color: #7d7c7c;
+}
+label.disabled,
+input.disabled {
+  color: #f8f8f8;
+}
