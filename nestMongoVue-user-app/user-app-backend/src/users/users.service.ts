@@ -42,6 +42,15 @@ export class UsersService {
     async getOneUserByEmail(useremail: string): Promise<Person> {
         return this.personModel.findOne({email: useremail});
     }
+
+    async updatePasswordByEmail(useremail: string, pass: string): Promise<Person> {
+        const userToUpdate = await this.personModel.findOne({email: useremail});
+        if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
+        const passwordDigest = Md5.hashStr(pass).toString();
+        const passwordConfirm = passwordDigest
+        const password = passwordDigest
+        return await userToUpdate.updateOne({ password, passwordConfirm });
+    }
     
     async createUser(user: CreateUserDto): Promise<Person> {
         const duplicate = await this.personModel.findOne({ email: user.email });
@@ -85,8 +94,6 @@ export class UsersService {
             args.password = userToUpdate.password;
             args.passwordConfirm = userToUpdate.passwordConfirm;
         }
-        // console.log(argsWOpswd)
-        // console.log(password)
         return await userToUpdate.updateOne(args);
     }
     
