@@ -1,4 +1,4 @@
-# dummy-project
+# user-app-frontend
 
 ## Project setup
 ```

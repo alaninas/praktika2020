@@ -71,8 +71,7 @@ async function loginUsersStateUser (data: LoginInterface): Promise<LoginInterfac
 }
 
 async function forgetUsersStatePassword (data: LoginInterface): Promise<LoginInterface> {
-  const pswd = await getUserPswdByEmail(data.email)
-  const newp = pswd.substr(18)
+  const newp = (await getUserPswdByEmail(data.email)).substr(18)
   data.password = ''
   await putUserTempPass(data.email, newp)
   console.log('>>>>>> forget password response')
