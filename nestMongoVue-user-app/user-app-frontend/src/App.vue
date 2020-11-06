@@ -1,21 +1,21 @@
 <template>
   <div id="nav" class="row" v-show="!isLoggedIn">
-    <div class="col-lg-10 col-md-9 col-sm-7">
+    <div class="col-lg-11 col-md-10 col-sm-7">
       <router-link to="/login">Login</router-link> |
       <router-link to="/register">Register</router-link> |
-      <router-link to="/users">Users</router-link>
+      <router-link to="/users">All Users</router-link>
     </div>
-    <div class="col-lg-2 col-md-3 col-sm-5">
+    <div class="col-lg-1 col-md-2 col-sm-5">
       <span>User: anonymous</span>
     </div>
   </div>
   <div id="nav" class="row" v-show="isLoggedIn">
-    <div class="col-lg-10 col-md-8 col-sm-6">
-      <router-link to="/users">Users</router-link>
+    <div class="col-lg-10 col-md-10 col-sm-7">
+      <router-link to="/users">All Users</router-link>
     </div>
-    <div class="col-lg-2 col-md-4 col-sm-6">
+    <div class="col-lg-2 col-md-2 col-sm-5">
       <router-link to="" @click="logoutUser()">Logout</router-link> |
-      <span>User: {{userLoginData.email}}</span>
+      <span>{{userLoginData.email}}</span>
     </div>
   </div>
   <router-view/>

@@ -1,15 +1,14 @@
 <template>
 <div>
-  <!-- See: https://stackoverflow.com/questions/895171/prevent-users-from-submitting-a-form-by-hitting-enter/11560180 -->
-  <h5>Email: {{ user.email }}</h5>
   <label role="button" class="responsive-padding responsive-margin inverse" v-show="!isDeleteApproved" @click="isDeleteApproved = !isDeleteApproved">Delete profile</label>
   <div class="card fluid warning" v-show="isDeleteApproved">
-    <p>Please confirm user {{ user.email }} profile delete
+    <p>Please confirm profile action
       <label role="button" class="responsive-padding responsive-margin inverse" @click="deleteProfile(user._id)">Delete profile</label>
+      <label role="button" class="responsive-padding responsive-margin bordered" @click="isDeleteApproved = !isDeleteApproved">Cancel delete</label>
     </p>
   </div>
-  <label role="button" class="button secondary" @click="navigateUp()">Cancel profile update</label>
-  <label role="button" class="button tertiary" @click="passwordUpdate(isPswdUpdated)">{{ isPswdUpdated ? 'Choose old password' : 'Set new password' }}</label>
+  <label role="button" class="responsive-padding responsive-margin secondary" @click="navigateUp()">Back to All Users</label>
+  <label role="button" class="responsive-padding responsive-margin tertiary" @click="passwordUpdate(isPswdUpdated)">{{ isPswdUpdated ? 'Choose old password' : 'Set new password' }}</label>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
       <EditLogin v-bind:isPswdUpdated="isPswdUpdated" />
