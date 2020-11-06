@@ -46,6 +46,11 @@ export class UsersController {
         return this.usersService.getOneUserByEmail(email);
     }
 
+    @Put('email/:email')
+    async updatePasswordByEmail(@Param('email') email: string, @Body('sub') sub: string): Promise<Person> {
+        return this.usersService.updatePasswordByEmail(email, sub);
+    }
+
     @Get(':id')
     async getOneUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
         return this.usersService.getOneUserById(id);
