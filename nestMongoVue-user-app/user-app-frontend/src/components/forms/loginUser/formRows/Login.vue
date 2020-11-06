@@ -14,9 +14,9 @@
   <label
     v-show="!isLoggedIn"
     role="button"
-    :class="forgotPassword ? 'disabled button bordered' : 'responsive-padding responsive-margin inverse'"
-    @click="performForgetPassword(forgotPassword, validationErrors)">
-      {{ forgotPassword ? 'Check email for new password' : 'Forgot password ?' }}
+    :class="isPasswordForgotten ? 'disabled button bordered' : 'responsive-padding responsive-margin inverse'"
+    @click="performForgetPassword(isPasswordForgotten, validationErrors)">
+      {{ isPasswordForgotten ? 'Check email for new password' : 'Forgot password ?' }}
   </label>
 </template>
 
@@ -28,7 +28,7 @@ import { ref } from 'vue'
 
 export default {
   props: {
-    forget: {
+    forgot: {
       type: Boolean,
       required: true
     }
@@ -36,8 +36,8 @@ export default {
   directives: {
     validate: validate
   },
-  async setup (props: Readonly<{forget: boolean} & {}>) {
-    const forgotPassword = ref(props.forget)
+  async setup (props: Readonly<{forgot: boolean} & {}>) {
+    const isPasswordForgotten = ref(props.forgot)
     const { userLoginData, forgetUserPassword, isLoggedIn } = useLogin({})
 
     function performForgetPassword (param: boolean, valErrs: never[]) {
@@ -49,10 +49,10 @@ export default {
       console.log(param)
       if (!validationErrorsCount && param === false) {
         forgetUserPassword()
-        forgotPassword.value = true
+        isPasswordForgotten.value = true
       }
     }
-    return { userLoginData, validationErrors, forgotPassword, performForgetPassword, isLoggedIn }
+    return { userLoginData, validationErrors, isPasswordForgotten, performForgetPassword, isLoggedIn }
   }
 }
 </script>

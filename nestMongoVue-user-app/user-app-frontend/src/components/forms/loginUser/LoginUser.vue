@@ -2,7 +2,7 @@
 <div>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
-      <Login v-bind:forget="forgetPassword" />
+      <Login v-bind:forgot="isPasswordForgotten" />
     </Suspense>
     <div v-show="!isLoggedIn">
       <input type="submit" value="Submit" :class="userLoginData.password.length < 4 ? 'disabled button bordered' : 'button primary responsive-padding responsive-margin'" />
@@ -31,7 +31,7 @@ export default {
   },
   async setup () {
     const { userLoginData, loginUser, clearLoginData, isLoggedIn } = useLogin({ noDataReload: false })
-    const forgetPassword = ref(false)
+    const isPasswordForgotten = ref(false)
 
     function onSubmit (valErrs: never[]) {
       validationErrors.value = valErrs
@@ -49,7 +49,7 @@ export default {
       await router.push({ name: 'Users' })
     }
 
-    return { onSubmit, validationErrors, isLoggedIn, navigateUp, forgetPassword, userLoginData }
+    return { onSubmit, validationErrors, isLoggedIn, navigateUp, isPasswordForgotten, userLoginData }
   }
 }
 </script>
