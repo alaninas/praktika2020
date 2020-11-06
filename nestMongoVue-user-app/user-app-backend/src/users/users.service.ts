@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { Md5 } from 'ts-md5/dist/md5';
+import { sendMail } from './utilities/mail-user.utility';
 
 @Injectable()
 export class UsersService {
@@ -43,12 +44,23 @@ export class UsersService {
         return this.personModel.findOne({email: useremail});
     }
 
+    async mailUser(email: string, password: string): Promise<any> {
+        // sendMail().catch(console.error)
+        try {
+            sendMail(email, password)
+            return 'Success in sending mail...'
+        } catch (error) {
+            throw new HttpException(`Error in sending mail:`, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     async updatePasswordByEmail(useremail: string, pass: string): Promise<Person> {
         const userToUpdate = await this.personModel.findOne({email: useremail});
         if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
         const passwordDigest = Md5.hashStr(pass).toString();
         const passwordConfirm = passwordDigest
         const password = passwordDigest
+        await this.mailUser(useremail, pass)
         return await userToUpdate.updateOne({ password, passwordConfirm });
     }
     
