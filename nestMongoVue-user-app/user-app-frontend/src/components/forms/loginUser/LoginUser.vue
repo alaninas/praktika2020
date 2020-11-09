@@ -7,6 +7,7 @@
     <div v-show="!isLoggedIn">
       <input type="submit" value="Submit" :class="userLoginData.password.length < 4 ? 'disabled button bordered' : 'button primary responsive-padding responsive-margin'" />
     </div>
+    <div class="error">{{ httpErrorMessage.userLogin }}</div>
   </form>
   <div v-show="isLoggedIn">
     <label role="button" class="button primary" @click="navigateUp()">Next >></label>
@@ -17,11 +18,10 @@
 <script lang="ts">
 import validate from '@/directives/validate'
 import Login from '@/components/forms/loginUser/formRows/Login.vue'
-import { validationErrors } from '@/modules/states/formErrors'
+import { validationErrors, httpErrorMessage } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
 import router from '@/router'
 import { ref } from 'vue'
-// import { sendMail } from '@/modules/services/mail-service'
 
 export default {
   components: {
@@ -31,7 +31,7 @@ export default {
     validate: validate
   },
   async setup () {
-    const { userLoginData, loginUser, clearLoginData, isLoggedIn } = useLogin({ noDataReload: false })
+    const { userLoginData, loginUser, isLoggedIn } = useLogin({ noDataReload: false })
     const isPasswordForgotten = ref(false)
 
     function onSubmit (valErrs: never[]) {
@@ -42,7 +42,7 @@ export default {
       console.log(userLoginData.value)
       if (!validationErrorsCount && userLoginData.value.password.length > 3) {
         loginUser()
-        clearLoginData()
+        // clearLoginData()
         console.log(userLoginData.value)
       }
     }
@@ -53,7 +53,7 @@ export default {
     //   await sendMail()
     // }
 
-    return { onSubmit, validationErrors, isLoggedIn, navigateUp, isPasswordForgotten, userLoginData }
+    return { onSubmit, validationErrors, isLoggedIn, navigateUp, isPasswordForgotten, userLoginData, httpErrorMessage }
   }
 }
 </script>

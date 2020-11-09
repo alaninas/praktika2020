@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-lg-6 col-md-6 col-sm-12">
       <label for="emailInput">Email</label>
-      <input type="email" id="emailInput" name="email" v-model="userLoginData.email" required v-validate />
+      <input type="email" id="emailInput" name="email" :class="httpErrorMessage.pswdReset ? 'invalid' : ''" v-model="userLoginData.email" required v-validate />
       <div class="error">{{ validationErrors.email }}</div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
@@ -18,11 +18,12 @@
     @click="resetUsersPassword(isPasswordForgotten, validationErrors)">
       {{ isPasswordForgotten ? 'Check email for new password' : 'Forgot password ?' }}
   </label>
+  <div class="error">{{ httpErrorMessage.pswdReset }}</div>
 </template>
 
 <script lang="ts">
 import validate from '@/directives/validate'
-import { validationErrors } from '@/modules/states/formErrors'
+import { validationErrors, httpErrorMessage } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
 import { ref } from 'vue'
 
@@ -52,7 +53,7 @@ export default {
         isPasswordForgotten.value = true
       }
     }
-    return { userLoginData, validationErrors, isPasswordForgotten, resetUsersPassword, isLoggedIn }
+    return { userLoginData, validationErrors, isPasswordForgotten, resetUsersPassword, isLoggedIn, httpErrorMessage }
   }
 }
 </script>

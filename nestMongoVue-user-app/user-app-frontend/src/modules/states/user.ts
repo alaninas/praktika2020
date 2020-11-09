@@ -14,6 +14,10 @@ function getState () {
   return user
 }
 
+function getStateEmail () {
+  return user.value.email
+}
+
 function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: '', zipCode: '' } }: { inputAddress?: AddressInterface }): UserInterface {
   const { street, houseNumber, city, zipCode } = inputAddress
   user.value.street = street
@@ -65,5 +69,6 @@ export {
   setState,
   setStateAddress,
   loadState,
-  clearState
+  clearState,
+  getStateEmail
 }

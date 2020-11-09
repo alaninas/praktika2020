@@ -7,12 +7,12 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
   const isLoggedIn = ref(authCredentials.value.isAuthenticated)
   const token = ref(authCredentials.value.accessToken)
 
-  async function loginUser () {
-    loginStateUser(userLoginData.value).catch(err => console.log(err.message))
+  function loginUser () {
+    loginStateUser(userLoginData.value)
   }
 
-  async function resetPassword () {
-    resetStatePassword(userLoginData.value).catch(err => console.log(err.message))
+  function resetPassword () {
+    resetStatePassword(userLoginData.value)
   }
 
   function logoutUser () {
