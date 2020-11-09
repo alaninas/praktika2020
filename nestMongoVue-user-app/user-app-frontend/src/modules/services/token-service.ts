@@ -1,8 +1,4 @@
-interface TokenInterface {
-  access_token: string;
-  email: string;
-  id: string;
-}
+import TokenInterface from '@/modules/types/IToken'
 
 const TOKEN_KEY = 'accessToken'
 const NAME_KEY = 'username'

@@ -19,16 +19,8 @@ function setState ({ data = { password: '', email: '', _id: '' } }: {data?: Logi
   accessToken.value = tokenService.getAccessToken()
 }
 
-function getAuthUserId (): string {
-  return loginData.value._id
-}
-
-function getIsAuth (): boolean {
-  return isAuthenticated.value
-}
-
-function getToken (): string | null {
-  return accessToken.value
+function getAuthCredentials () {
+  return { userId: loginData.value._id, isAuthenticated: isAuthenticated.value, accessToken: accessToken.value }
 }
 
 function clearLoginState () {
@@ -67,17 +59,15 @@ watch(loginData, (loginData) => {
   history.push(loginData)
   console.log('>> from login state watcher')
   console.log(loginData)
-  console.log(getIsAuth())
-  console.log(getToken())
+  console.log(isAuthenticated.value)
+  console.log(accessToken.value)
   console.log(history.length)
 })
 
 export {
   loadLoginData,
   loginStateUser,
-  getIsAuth,
-  getToken,
-  getAuthUserId,
+  getAuthCredentials,
   clearLoginState,
   resetStatePassword,
   performLogout,
