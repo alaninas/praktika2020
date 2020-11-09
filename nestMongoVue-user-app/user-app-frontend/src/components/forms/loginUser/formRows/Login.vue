@@ -15,7 +15,7 @@
     v-show="!isLoggedIn"
     role="button"
     :class="isPasswordForgotten ? 'disabled button bordered' : 'responsive-padding responsive-margin tertiary'"
-    @click="performForgetPassword(isPasswordForgotten, validationErrors)">
+    @click="resetUsersPassword(isPasswordForgotten, validationErrors)">
       {{ isPasswordForgotten ? 'Check email for new password' : 'Forgot password ?' }}
   </label>
 </template>
@@ -38,9 +38,9 @@ export default {
   },
   async setup (props: Readonly<{forgot: boolean} & {}>) {
     const isPasswordForgotten = ref(props.forgot)
-    const { userLoginData, forgetUserPassword, isLoggedIn } = useLogin({})
+    const { userLoginData, resetPassword, isLoggedIn } = useLogin({})
 
-    function performForgetPassword (param: boolean, valErrs: never[]) {
+    function resetUsersPassword (param: boolean, valErrs: never[]) {
       validationErrors.value = valErrs
       const validationErrorsCount = Object.values(validationErrors.value).filter(el => !!el).length
       console.log('--> sending logIn to server')
@@ -48,11 +48,11 @@ export default {
       console.log(validationErrors.value)
       console.log(param)
       if (!validationErrorsCount && param === false) {
-        forgetUserPassword()
+        resetPassword()
         isPasswordForgotten.value = true
       }
     }
-    return { userLoginData, validationErrors, isPasswordForgotten, performForgetPassword, isLoggedIn }
+    return { userLoginData, validationErrors, isPasswordForgotten, resetUsersPassword, isLoggedIn }
   }
 }
 </script>

@@ -2,7 +2,8 @@ import LoginInterface from '@/modules/types/ILogin'
 import { ref, Ref, watch } from 'vue'
 import { resetValidationErrors } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
-import { forgetUsersStatePassword, loginUsersStateUser } from './users'
+import { resetUserPassword, loginUser } from '../utilities/login-utility'
+import { to } from '@/modules/utilities/index-utility'
 
 const loginData = ref({ password: '', email: tokenService.getUsername() || '', _id: tokenService.getUserId() || '' } as LoginInterface)
 const isAuthenticated = ref(tokenService.holdsAccessToken())
@@ -11,17 +12,11 @@ const accessToken = ref(tokenService.getAccessToken())
 const history = []
 history.push(loginData.value)
 
-function setState (data: LoginInterface) {
+function setState ({ data = { password: '', email: '', _id: '' } }: {data?: LoginInterface}) {
   console.log('--> my login SetState')
   loginData.value = data
   isAuthenticated.value = tokenService.holdsAccessToken()
   accessToken.value = tokenService.getAccessToken()
-}
-
-function getState (): Ref<LoginInterface> {
-  console.log('--> from loginGetState')
-  console.log(loginData.value)
-  return loginData
 }
 
 function getAuthUserId (): string {
@@ -36,13 +31,9 @@ function getToken (): string | null {
   return accessToken.value
 }
 
-function resetState () {
-  setState({ password: '', email: '', _id: '' } as LoginInterface)
-}
-
 function clearLoginState () {
   resetValidationErrors()
-  resetState()
+  setState({})
 }
 
 function performLogout () {
@@ -50,32 +41,25 @@ function performLogout () {
   clearLoginState()
 }
 
-function loadState (data: LoginInterface, noDataReload: boolean): Ref<LoginInterface> {
+function loadLoginData (data: LoginInterface, noDataReload: boolean): Ref<LoginInterface> {
   if (!noDataReload) {
     performLogout()
-    setState(data)
+    setState({ data })
   }
-  return getState()
+  return loginData
 }
 
-async function loginStateUser (data: LoginInterface): Promise<Ref<LoginInterface>> {
-  const response = await loginUsersStateUser(data)
-  resetState()
-  setState(response)
-  return getState()
+async function loginStateUser (userLogin: LoginInterface) {
+  const [error, result] = await to(loginUser(userLogin))
+  if (error) throw new Error(`Password incorrect for user: ${userLogin.email}`)
+  setState({ data: result })
 }
 
-async function forgetStatePassword (data: LoginInterface): Promise<Ref<LoginInterface>> {
-  console.log('inside forget')
-  const response = await forgetUsersStatePassword(data)
-  resetState()
-  setState(response)
-  return getState()
-}
-
-function logoutStateUser (): Ref<LoginInterface> {
-  performLogout()
-  return getState()
+async function resetStatePassword (userLogin: LoginInterface) {
+  userLogin.password = ''
+  const [error, result] = await to(resetUserPassword(userLogin))
+  if (error) throw error
+  setState({ data: result })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -89,14 +73,14 @@ watch(loginData, (loginData) => {
 })
 
 export {
-  loadState,
+  loadLoginData,
   loginStateUser,
-  logoutStateUser,
   getIsAuth,
   getToken,
   getAuthUserId,
   clearLoginState,
-  forgetStatePassword,
+  resetStatePassword,
+  performLogout,
   isAuthenticated,
   accessToken,
   loginData

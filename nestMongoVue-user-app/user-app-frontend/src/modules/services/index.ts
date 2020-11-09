@@ -2,21 +2,19 @@ import { server } from '@/backend-server'
 import axios, { AxiosResponse } from 'axios'
 import LoginInterface from '@/modules/types/ILogin'
 import UserInterface from '@/modules/types/IUser'
-import { TokenInterface, tokenService } from './token-service'
+import { tokenService } from './token-service'
 import { resetHeaders, reqInterceptor, resInterceptor } from './headers-service'
+import { to } from '@/modules/utilities/index-utility'
 
 resetHeaders()
 reqInterceptor()
 resInterceptor()
 
 async function postUserLogin (loginData: LoginInterface): Promise<object> {
-  try {
-    const response: AxiosResponse<TokenInterface> = await axios.post(`${server.baseURL}/users/auth/login`, loginData)
-    tokenService.login(response.data)
-    return response.data
-  } catch (err) {
-    return { statusCode: 401, message: 'Unauthorized' }
-  }
+  const [error, result] = await to(axios.post(`${server.baseURL}/users/auth/login`, loginData))
+  if (error) throw error.message
+  tokenService.login(result.data)
+  return result.data
 }
 
 async function getAllUsers (): Promise<AxiosResponse<UserInterface[]>> {
@@ -32,7 +30,9 @@ async function getOneUser (userId: string): Promise<AxiosResponse<UserInterface>
 }
 
 async function getOneUserByEmail (email: string): Promise<AxiosResponse<UserInterface>> {
-  return await axios.get(`${server.baseURL}/users/email/${email}`)
+  const [error, result] = await to(axios.get(`${server.baseURL}/users/email/${email}`))
+  if (error) throw error.message
+  return result
 }
 
 async function postNewUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
@@ -43,8 +43,10 @@ async function putUpdatedUser (newUser: UserInterface): Promise<AxiosResponse<Us
   return await axios.put(`${server.baseURL}/users`, newUser)
 }
 
-async function putUserTempPass (email: string, pass: string): Promise<AxiosResponse<UserInterface>> {
-  return await axios.put(`${server.baseURL}/users/email/${email}`, { sub: pass })
+async function putTemporaryPassword (email: string, pass: string): Promise<AxiosResponse<UserInterface>> {
+  const [error, result] = await to(axios.put(`${server.baseURL}/users/email/${email}`, { sub: pass }))
+  if (error) throw error.message
+  return result
 }
 
 async function deleteUser (userId: string): Promise<AxiosResponse<UserInterface>> {
@@ -60,5 +62,5 @@ export {
   putUpdatedUser,
   postUserLogin,
   getOneUserByEmail,
-  putUserTempPass
+  putTemporaryPassword
 }

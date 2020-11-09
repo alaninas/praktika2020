@@ -11,9 +11,6 @@
   <div v-show="isLoggedIn">
     <label role="button" class="button primary" @click="navigateUp()">Next >></label>
   </div>
-  <!-- <div>
-    <label role="button" class="button primary" @click="testMail()">TEST MAIL</label>
-  </div> -->
 </div>
 </template>
 
@@ -43,7 +40,7 @@ export default {
       console.log('--> sending logIn to server')
       console.log(validationErrors.value)
       console.log(userLoginData.value)
-      if (!validationErrorsCount && userLoginData.value.password.length > 4) {
+      if (!validationErrorsCount && userLoginData.value.password.length > 3) {
         loginUser()
         clearLoginData()
         console.log(userLoginData.value)

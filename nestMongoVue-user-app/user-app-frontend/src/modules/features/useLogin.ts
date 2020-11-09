@@ -1,23 +1,22 @@
 import { watch } from 'vue'
 import LoginInterface from '@/modules/types/ILogin'
-import { loadState, loginStateUser, logoutStateUser, clearLoginState, accessToken, isAuthenticated } from '@/modules/states/login'
-import { forgetUsersStatePassword } from '../states/users'
+import { loadLoginData, loginStateUser, clearLoginState, accessToken, isAuthenticated, performLogout, resetStatePassword } from '@/modules/states/login'
 
 export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' } as LoginInterface, noDataReload = true }: { userLoginInit?: LoginInterface; noDataReload?: boolean }) {
-  const userLoginData = loadState(userLoginInit, noDataReload)
+  const userLoginData = loadLoginData(userLoginInit, noDataReload)
   const isLoggedIn = isAuthenticated
   const token = accessToken
 
   async function loginUser () {
-    await loginStateUser(userLoginData.value)
+    loginStateUser(userLoginData.value).catch(err => console.log(err.message))
   }
 
-  async function forgetUserPassword () {
-    await forgetUsersStatePassword(userLoginData.value)
+  async function resetPassword () {
+    resetStatePassword(userLoginData.value).catch(err => console.log(err.message))
   }
 
   function logoutUser () {
-    logoutStateUser()
+    performLogout()
   }
 
   function clearLoginData () {
@@ -31,5 +30,5 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
     console.log(`token: ${token.value}`)
   })
 
-  return { userLoginData, isLoggedIn, token, loginUser, logoutUser, clearLoginData, forgetUserPassword }
+  return { userLoginData, isLoggedIn, token, loginUser, logoutUser, clearLoginData, resetPassword }
 }

@@ -1,7 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import { ref, Ref, watch } from 'vue'
-import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser, getOneUserByEmail, postUserLogin, putUserTempPass } from '@/modules/services'
-import LoginInterface from '@/modules/types/ILogin'
+import { getAllUsers, getAllUsersSorted, postNewUser, deleteUser, getOneUser, putUpdatedUser } from '@/modules/services'
 
 const users = ref([{} as UserInterface])
 const history = []
@@ -17,8 +16,7 @@ function getState (): Ref<UserInterface[]> {
 }
 
 async function loadUnsortedUsers (): Promise<Ref<UserInterface[]>> {
-  const response = await getAllUsers()
-  setState(response.data)
+  setState((await getAllUsers()).data)
   return getState()
 }
 
@@ -35,49 +33,20 @@ async function getUsersStateUser (id: string): Promise<UserInterface> {
 
 async function updateUsersStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
   await putUpdatedUser(newUser)
-  const allUsers = await getAllUsers()
-  setState(allUsers.data)
+  setState((await getAllUsers()).data)
   return getState()
 }
 
 async function addUsersStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
   await postNewUser(newUser)
-  const allUsers = await getAllUsers()
-  setState(allUsers.data)
+  setState((await getAllUsers()).data)
   return getState()
 }
 
 async function removeUsersStateUser (userId: string): Promise<Ref<UserInterface[]>> {
   await deleteUser(userId)
-  const allUsers = await getAllUsers()
-  setState(allUsers.data)
+  setState((await getAllUsers()).data)
   return getState()
-}
-
-async function getUserIdByEmail (email: string): Promise<string> {
-  return (await getOneUserByEmail(email)).data._id || ''
-}
-
-async function getUserPswdByEmail (email: string): Promise<string> {
-  return (await getOneUserByEmail(email)).data.password || ''
-}
-
-async function loginUsersStateUser (data: LoginInterface): Promise<LoginInterface> {
-  data._id = await getUserIdByEmail(data.email)
-  const token = await postUserLogin(data)
-  console.log('>>>>>> my login response')
-  console.log(token)
-  return data
-}
-
-async function forgetUsersStatePassword (data: LoginInterface): Promise<LoginInterface> {
-  const newp = (await getUserPswdByEmail(data.email)).substr(18)
-  data.password = ''
-  await putUserTempPass(data.email, newp)
-  console.log('>>>>>> forget password response')
-  console.log(data)
-  console.log(`>> new password: ${newp}`)
-  return data
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,7 +64,5 @@ export {
   addUsersStateUser,
   removeUsersStateUser,
   getUsersStateUser,
-  updateUsersStateUser,
-  loginUsersStateUser,
-  forgetUsersStatePassword
+  updateUsersStateUser
 }
