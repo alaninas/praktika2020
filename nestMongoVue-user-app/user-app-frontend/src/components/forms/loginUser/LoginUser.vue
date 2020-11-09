@@ -4,12 +4,12 @@
     <Suspense>
       <Login v-bind:forgot="isPasswordForgotten" />
     </Suspense>
-    <div v-show="!isLoggedIn">
+    <div v-show="!creds.isAuthenticated">
       <input type="submit" value="Submit" :class="userLoginData.password.length < 4 ? 'disabled button bordered' : 'button primary responsive-padding responsive-margin'" />
     </div>
     <div class="error">{{ httpErrorMessage.userLogin }}</div>
   </form>
-  <div v-show="isLoggedIn">
+  <div v-show="creds.isAuthenticated">
     <label role="button" class="button primary" @click="navigateUp()">Next >></label>
   </div>
 </div>
@@ -31,7 +31,7 @@ export default {
     validate: validate
   },
   async setup () {
-    const { userLoginData, loginUser, isLoggedIn } = useLogin({ noDataReload: false })
+    const { userLoginData, loginUser, creds } = useLogin({ noDataReload: false })
     const isPasswordForgotten = ref(false)
 
     function onSubmit (valErrs: never[]) {
@@ -53,7 +53,7 @@ export default {
     //   await sendMail()
     // }
 
-    return { onSubmit, validationErrors, isLoggedIn, navigateUp, isPasswordForgotten, userLoginData, httpErrorMessage }
+    return { onSubmit, validationErrors, creds, navigateUp, isPasswordForgotten, userLoginData, httpErrorMessage }
   }
 }
 </script>

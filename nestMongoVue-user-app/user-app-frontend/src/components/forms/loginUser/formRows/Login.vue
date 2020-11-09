@@ -12,7 +12,7 @@
     </div>
   </div>
   <label
-    v-show="!isLoggedIn"
+    v-show="!creds.isAuthenticated"
     role="button"
     :class="isPasswordForgotten ? 'disabled button bordered' : 'responsive-padding responsive-margin tertiary'"
     @click="resetUsersPassword(isPasswordForgotten, validationErrors)">
@@ -39,7 +39,7 @@ export default {
   },
   async setup (props: Readonly<{forgot: boolean} & {}>) {
     const isPasswordForgotten = ref(props.forgot)
-    const { userLoginData, resetPassword, isLoggedIn } = useLogin({})
+    const { userLoginData, resetPassword, creds } = useLogin({})
 
     function resetUsersPassword (param: boolean, valErrs: never[]) {
       validationErrors.value = valErrs
@@ -53,7 +53,7 @@ export default {
         isPasswordForgotten.value = true
       }
     }
-    return { userLoginData, validationErrors, isPasswordForgotten, resetUsersPassword, isLoggedIn, httpErrorMessage }
+    return { userLoginData, validationErrors, isPasswordForgotten, resetUsersPassword, creds, httpErrorMessage }
   }
 }
 </script>

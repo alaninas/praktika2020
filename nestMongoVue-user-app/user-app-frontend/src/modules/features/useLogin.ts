@@ -1,11 +1,10 @@
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import LoginInterface from '@/modules/types/ILogin'
 import { loadLoginData, loginStateUser, clearLoginState, authCredentials, performLogout, resetStatePassword } from '@/modules/states/login'
 
 export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' } as LoginInterface, noDataReload = true }: { userLoginInit?: LoginInterface; noDataReload?: boolean }) {
   const userLoginData = loadLoginData(userLoginInit, noDataReload)
-  const isLoggedIn = ref(authCredentials.value.isAuthenticated)
-  const token = ref(authCredentials.value.accessToken)
+  const creds = authCredentials
 
   function loginUser () {
     loginStateUser(userLoginData.value)
@@ -24,11 +23,10 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  watch(isLoggedIn, (isLoggedIn) => {
+  watch(creds, (creds) => {
     console.log('---> check logging.... ')
-    console.log(`is logged in: ${isLoggedIn}`)
-    console.log(`token: ${token.value}`)
+    console.log(creds)
   })
 
-  return { userLoginData, isLoggedIn, token, loginUser, logoutUser, clearLoginData, resetPassword }
+  return { userLoginData, creds, loginUser, logoutUser, clearLoginData, resetPassword }
 }

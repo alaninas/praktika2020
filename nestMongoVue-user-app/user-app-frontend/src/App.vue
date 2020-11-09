@@ -1,5 +1,5 @@
 <template>
-  <div id="nav" class="row" v-show="!isLoggedIn">
+  <div id="nav" class="row" v-show="!creds.isAuthenticated">
     <div class="col-lg-11 col-md-10 col-sm-7">
       <router-link to="/login">Login</router-link> |
       <router-link to="/register">Register</router-link> |
@@ -9,7 +9,7 @@
       <span>User: anonymous</span>
     </div>
   </div>
-  <div id="nav" class="row" v-show="isLoggedIn">
+  <div id="nav" class="row" v-show="creds.isAuthenticated">
     <div class="col-lg-10 col-md-10 col-sm-7">
       <router-link to="/users">All Users</router-link>
     </div>
@@ -26,8 +26,8 @@ import { useLogin } from './modules/features/useLogin'
 
 export default {
   setup () {
-    const { userLoginData, isLoggedIn, logoutUser } = useLogin({})
-    return { isLoggedIn, userLoginData, logoutUser }
+    const { userLoginData, creds, logoutUser } = useLogin({})
+    return { creds, userLoginData, logoutUser }
   }
 }
 </script>
