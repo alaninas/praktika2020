@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import { isAuthenticated } from '@/modules/states/login'
+import { authCredentials } from '@/modules/states/login'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -34,7 +34,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.name === 'Login' && isAuthenticated.value === true) {
+  if (to.name === 'Login' && authCredentials.value.isAuthenticated === true) {
     next({ name: 'Users' })
   } else {
     next()

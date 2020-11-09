@@ -1,11 +1,11 @@
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import LoginInterface from '@/modules/types/ILogin'
-import { loadLoginData, loginStateUser, clearLoginState, accessToken, isAuthenticated, performLogout, resetStatePassword } from '@/modules/states/login'
+import { loadLoginData, loginStateUser, clearLoginState, authCredentials, performLogout, resetStatePassword } from '@/modules/states/login'
 
 export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' } as LoginInterface, noDataReload = true }: { userLoginInit?: LoginInterface; noDataReload?: boolean }) {
   const userLoginData = loadLoginData(userLoginInit, noDataReload)
-  const isLoggedIn = isAuthenticated
-  const token = accessToken
+  const isLoggedIn = ref(authCredentials.value.isAuthenticated)
+  const token = ref(authCredentials.value.accessToken)
 
   async function loginUser () {
     loginStateUser(userLoginData.value).catch(err => console.log(err.message))

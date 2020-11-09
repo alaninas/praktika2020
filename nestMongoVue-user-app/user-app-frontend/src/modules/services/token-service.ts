@@ -1,4 +1,5 @@
 import TokenInterface from '@/modules/types/IToken'
+import { authCredentialsType } from '@/modules/types/ILogin'
 
 const TOKEN_KEY = 'accessToken'
 const NAME_KEY = 'username'
@@ -11,7 +12,7 @@ const tokenService = {
     localStorage.setItem(ID_KEY, token.id)
   },
   logout () {
-    if (!this.holdsAccessToken()) console.log('User Not logged in')
+    if (!this.getAccessToken()) console.log('User Not logged in')
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(NAME_KEY)
     localStorage.removeItem(ID_KEY)
@@ -25,8 +26,8 @@ const tokenService = {
   getAccessToken (): string | null {
     return localStorage.getItem(TOKEN_KEY) || null
   },
-  holdsAccessToken (): boolean {
-    return !!this.getAccessToken()
+  getAuthCredentials (): authCredentialsType {
+    return { userId: this.getUserId() || '', isAuthenticated: !!this.getAccessToken(), accessToken: this.getAccessToken() || '' }
   }
 }
 

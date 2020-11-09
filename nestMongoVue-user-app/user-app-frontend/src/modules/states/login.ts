@@ -1,4 +1,4 @@
-import LoginInterface from '@/modules/types/ILogin'
+import LoginInterface, { authCredentialsType } from '@/modules/types/ILogin'
 import { ref, Ref, watch } from 'vue'
 import { resetValidationErrors } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
@@ -6,8 +6,7 @@ import { resetUserPassword, loginUser } from '../utilities/login-utility'
 import { to } from '@/modules/utilities/index-utility'
 
 const loginData = ref({ password: '', email: tokenService.getUsername() || '', _id: tokenService.getUserId() || '' } as LoginInterface)
-const isAuthenticated = ref(tokenService.holdsAccessToken())
-const accessToken = ref(tokenService.getAccessToken())
+const authCredentials = ref(tokenService.getAuthCredentials())
 
 const history = []
 history.push(loginData.value)
@@ -15,12 +14,11 @@ history.push(loginData.value)
 function setState ({ data = { password: '', email: '', _id: '' } }: {data?: LoginInterface}) {
   console.log('--> my login SetState')
   loginData.value = data
-  isAuthenticated.value = tokenService.holdsAccessToken()
-  accessToken.value = tokenService.getAccessToken()
+  authCredentials.value = tokenService.getAuthCredentials()
 }
 
-function getAuthCredentials () {
-  return { userId: loginData.value._id, isAuthenticated: isAuthenticated.value, accessToken: accessToken.value }
+function getAuthCredentials (): authCredentialsType {
+  return authCredentials.value
 }
 
 function clearLoginState () {
@@ -59,8 +57,7 @@ watch(loginData, (loginData) => {
   history.push(loginData)
   console.log('>> from login state watcher')
   console.log(loginData)
-  console.log(isAuthenticated.value)
-  console.log(accessToken.value)
+  console.log(authCredentials.value)
   console.log(history.length)
 })
 
@@ -71,7 +68,6 @@ export {
   clearLoginState,
   resetStatePassword,
   performLogout,
-  isAuthenticated,
-  accessToken,
+  authCredentials,
   loginData
 }
