@@ -18,7 +18,6 @@ export function runAddressMatch (user: Ref<UserInterface>) {
   watchEffect(() => {
     matchedAddresses = computed(() => searchAddresses(user.value.address))
     matchedAddressesToString = computed(() => matchedAddresses.value.map<string>(el => Object.values(el).join(', ')))
-    // console.log(user.value.address)
   })
 
   return { matchedAddresses, matchedAddressesToString }

@@ -17,7 +17,6 @@ async function getUserPswdByEmail (email: string): Promise<string> {
 
 async function loginUser (data: LoginInterface): Promise<LoginInterface> {
   try {
-    console.log(data)
     data._id = await getUserIdByEmail(data.email)
     if (!data._id) throw new Error(`Can not find user: ${data.email}`)
     await postUserLogin(data)

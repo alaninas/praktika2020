@@ -32,8 +32,6 @@ function setState (inputUser: UserInterface): UserInterface {
   user.value = prepareUserProperties(inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
-  console.log('>> from user setState')
-  console.log(user.value)
   return user.value
 }
 

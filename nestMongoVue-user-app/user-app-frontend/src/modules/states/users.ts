@@ -7,7 +7,6 @@ const history = []
 history.push(users.value)
 
 function setState (data: UserInterface[]) {
-  console.log('from users setState')
   users.value = data
 }
 
