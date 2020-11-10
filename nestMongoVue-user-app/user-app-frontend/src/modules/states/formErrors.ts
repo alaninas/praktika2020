@@ -1,11 +1,7 @@
-import { ref } from 'vue'
 import UserInterface from '@/modules/types/IUser'
-
-const validationErrors = ref({})
-
-const userErrors = ref({ password: '', passwordConfirm: '' })
-
-const httpErrorMessage = ref({ userLogin: '', pswdReset: '' })
+import { userErrors, validationErrors, httpErrors } from '@/modules/types/IErors'
+import { LoginInterface } from '../types/ILogin'
+import { Ref } from 'vue'
 
 function setUserErrors (user: UserInterface) {
   const pswdMessagge = user.password === user.passwordConfirm ? '' : 'Passwords do not match.'
@@ -16,8 +12,22 @@ function setUserErrors (user: UserInterface) {
   return userErrors.value
 }
 
-function resetHttpErrorMessage () {
-  httpErrorMessage.value = { userLogin: '', pswdReset: '' }
+function setHttpErrorEmail ({ message = '' }: { message?: string }) {
+  httpErrors.value.email = message
+}
+
+function setHttpErrorPswd ({ message = '' }: { message?: string }) {
+  httpErrors.value.password = message
+}
+
+function setHttpErrors (loginData: Ref<LoginInterface>) {
+  if (loginData.value.email === '') setHttpErrorEmail({})
+  if (loginData.value.password === '') setHttpErrorPswd({})
+}
+
+function resetHttpErrors () {
+  setHttpErrorEmail({})
+  setHttpErrorPswd({})
 }
 
 function resetValidationErrors () {
@@ -31,15 +41,18 @@ function resetUserErrors () {
 function resetFormErrors () {
   resetValidationErrors()
   resetUserErrors()
-  resetHttpErrorMessage()
+  resetHttpErrors()
 }
 
 export {
   userErrors,
   validationErrors,
-  httpErrorMessage,
+  httpErrors,
   setUserErrors,
+  setHttpErrors,
   resetFormErrors,
   resetValidationErrors,
-  resetHttpErrorMessage
+  resetHttpErrors,
+  setHttpErrorPswd,
+  setHttpErrorEmail
 }

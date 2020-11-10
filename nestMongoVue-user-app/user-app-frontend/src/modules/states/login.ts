@@ -1,30 +1,27 @@
-import LoginInterface, { authCredentialsType } from '@/modules/types/ILogin'
-import { ref, Ref, watchEffect } from 'vue'
-import { resetHttpErrorMessage, resetValidationErrors, httpErrorMessage } from '@/modules/states/formErrors'
+import { LoginInterface, authCredentials, AuthCredentialsType, loginData } from '@/modules/types/ILogin'
+import { Ref, watchEffect } from 'vue'
+import { resetHttpErrors, resetValidationErrors, httpErrors, setHttpErrors, setHttpErrorEmail, setHttpErrorPswd } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
-import { resetUserPassword, loginUser } from '../utilities/login-utility'
+import { resetUserPassword, loginUser } from '@/modules/utilities/login-utility'
 import { to } from '@/modules/utilities/index-utility'
-
-const loginData = ref({ password: '', email: tokenService.getUsername() || '', _id: tokenService.getUserId() || '' } as LoginInterface)
-const authCredentials = ref(tokenService.getAuthCredentials())
 
 const history = []
 history.push(loginData.value)
 
-function setState ({ data = { password: '', email: '', _id: '' } }: {data?: LoginInterface}) {
+function setState ({ data = { password: '', email: '', _id: '' } }: {data?: LoginInterface}): Ref<LoginInterface> {
   loginData.value = data
   authCredentials.value = tokenService.getAuthCredentials()
-  if (loginData.value.email === '') httpErrorMessage.value.pswdReset = ''
-  if (loginData.value.password === '') httpErrorMessage.value.userLogin = ''
+  setHttpErrors(loginData)
+  return loginData
 }
 
-function getAuthCredentials (): authCredentialsType {
+function getAuthCredentials (): AuthCredentialsType {
   return authCredentials.value
 }
 
 function clearLoginState () {
   resetValidationErrors()
-  resetHttpErrorMessage()
+  resetHttpErrors()
   setState({})
 }
 
@@ -43,20 +40,30 @@ function loadLoginData (data: LoginInterface, noDataReload: boolean): Ref<LoginI
 
 async function loginStateUser (userLogin: LoginInterface) {
   const [error, result] = await to(loginUser(userLogin))
-  if (error) httpErrorMessage.value.userLogin = `Password incorrect for user: ${userLogin.email}`
-  if (result) setState({ data: result })
+  if (error) setHttpErrorEmail({ message: `Please check user ${userLogin.email} credentials` })
+  if (result) {
+    resetHttpErrors()
+    setState({ data: result })
+  }
 }
 
-async function resetStatePassword (userLogin: LoginInterface) {
+async function resetStatePassword (userLogin: LoginInterface, isPassowrdForgotten: boolean): Promise<boolean> {
   userLogin.password = ''
   const [error, result] = await to(resetUserPassword(userLogin))
-  if (error) httpErrorMessage.value.pswdReset = error.message
-  if (result) setState({ data: result })
+  if (error) setHttpErrorPswd({ message: error.message })
+  if (result) {
+    resetHttpErrors()
+    setState({ data: result })
+    isPassowrdForgotten = true
+  }
+  return isPassowrdForgotten
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 watchEffect(() => {
   setState({ data: loginData.value })
+  console.log('---> from login watcher ')
+  console.log(loginData.value)
+  console.log(httpErrors.value)
 })
 
 export {
@@ -66,6 +73,7 @@ export {
   clearLoginState,
   resetStatePassword,
   performLogout,
+  setState,
   authCredentials,
   loginData
 }
