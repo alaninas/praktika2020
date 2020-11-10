@@ -17,13 +17,10 @@ export class AuthService {
             const { password, ...result } = user;
             return result;
         }
-        // console.log(user)
         return null;
 	}
 	
 	async login(user: any) {
-        // console.log('---> inside login')
-        // console.log(user)
         const payload = { email: user.email, sub: user.password, _id: user._id };
 		return { 
             access_token: this.jwtService.sign(payload, {expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES}),

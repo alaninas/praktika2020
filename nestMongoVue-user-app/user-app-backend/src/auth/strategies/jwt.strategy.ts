@@ -18,8 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // do a database lookup in our validate() method to extract more information about the user, 
     // resulting in a more enriched user object being available in our Request
     async validate(payload: any) {
-        // console.log('----> inside validate')
-        // console.log(payload)
         return { password: payload.sub, email: payload.email, userId: payload._id };
     }
 }
