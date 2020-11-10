@@ -7,6 +7,7 @@ import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { Md5 } from 'ts-md5/dist/md5';
 import { sendMail } from './utilities/mail-user.utility';
+import { to } from './utilities/base-user.utility';
 
 @Injectable()
 export class UsersService {
@@ -21,11 +22,9 @@ export class UsersService {
 
     async getAllUsersSorted(column: string, direction: string): Promise<Person[]> {
         // TODO: add params -- offset/pageNr ($skip), limit ($limit)
-        try {
-            return await this.usersHelper.sortUsers(column, direction);
-        } catch (error) {
-            throw new HttpException(`Can not sort users by column: ${column} in order: ${direction}`, HttpStatus.BAD_REQUEST);
-        }
+        const [error, result] = await to(this.usersHelper.sortUsers(column, direction));
+        if (error) throw new HttpException(`Can not sort users by column: ${column} in order: ${direction}`, HttpStatus.BAD_REQUEST);
+        return result
     }
 
     async getOneUserById(id: ObjectID): Promise<Person> {
@@ -64,21 +63,17 @@ export class UsersService {
     }
     
     async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
-        try {
-            await this.usersHelper.updateFriends(uid, fid, '');
-            return {data: `User #${uid} friended #${fid}`};
-        } catch (error) {
-            throw new HttpException(`Can not add friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [error, result] = await to(this.usersHelper.updateFriends(uid, fid, ''));
+        if (error) throw new HttpException(`Can not add friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
+        return {data: `User #${uid} friended #${fid}`};
     }
 
     async removeUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
-        try {
-            await this.usersHelper.updateFriends(uid, fid, 'delete');
-            return {data: `User #${uid} unfriended #${fid}`};
-        } catch (error) {
-            throw new HttpException(`Can not remove friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [error, result] = await to(this.usersHelper.updateFriends(uid, fid, 'delete'));
+        if (error) throw new HttpException(`Can not remove friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
+        return {data: `User #${uid} unfriended #${fid}`};
     }
 
     async updateUser(user: UpdateUserDto): Promise<Person> {
