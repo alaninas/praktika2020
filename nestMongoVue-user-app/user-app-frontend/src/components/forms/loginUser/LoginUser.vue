@@ -46,8 +46,6 @@ export default {
       console.log(userLoginData.value)
       if (!validationErrorsCount && userLoginData.value.password.length > 3) {
         loginUser()
-        // clearLoginData()
-        console.log(userLoginData.value)
       }
     }
     async function navigateUp () {

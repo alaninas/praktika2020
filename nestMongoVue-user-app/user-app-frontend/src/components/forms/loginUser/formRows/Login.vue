@@ -61,8 +61,6 @@ export default {
       const valErrsCount = Object.values(validationErrors.value).filter(el => !!el).length
       if (!valErrsCount && !isPasswordReset.value) {
         isPasswordReset.value = await resetPassword(isPasswordResetFlag)
-        console.log('--> inside pswd reset')
-        console.log(isPasswordReset.value)
       }
     }
     return { userLoginData, validationErrors, isPasswordReset, resetUsersPassword, creds, httpErrors }
