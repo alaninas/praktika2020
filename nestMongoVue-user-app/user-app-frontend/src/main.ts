@@ -14,4 +14,8 @@ const app = createApp(App).use(store).use(router)
 //   console.log(`Warn: ${msg}\nTrace: ${trace}`)
 // }
 
+// roles
+// testavimas: unit, e2e, automated
+// fileupload: gallery(foto uploads <-- on user update)
+
 app.mount('#app')
