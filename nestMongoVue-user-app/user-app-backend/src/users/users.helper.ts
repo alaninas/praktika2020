@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { Person } from './schemas/user.schema';
 import { Movie } from '../movies/schemas/movie.schema'
 import { ObjectID } from 'mongodb';
+import { getDirection, getNewFriendsStages } from './utilities/base-user.utility';
 
 @Injectable()
 export class UsersHelper {
@@ -20,27 +21,12 @@ export class UsersHelper {
         return this.myPModel;
     }
 
-    async sortUsers(column: string, direction: string): Promise<Person[]> {
-        const directions = {
-            asc: 1,
-            dsc: -1
-        };
+    async sortUsers(column: string, dir: string): Promise<Person[]> {
+        const direction = getDirection(dir)
         const docs = await this.myPModel.aggregate([ 
-            column === 'id' ? {$sort: {_id: directions[direction]} } : {$sort: {[column]: directions[direction], _id: -1} }
+            column === 'id' ? {$sort: {_id: direction} } : {$sort: {[column]: direction, _id: -1} }
         ]);
         return docs
-    }
-
-    getNewFriendsStages(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Record<string, unknown> {
-        const matchDuplicate = !deleteItemFlag ? {friends: {$not: {$in: [uid, fid]}}} : {friends: {$in: [uid, fid]}};
-        const projectUtil = {
-            "friends": 1, addedFriends: {$cond: [{$eq: ["$_id", uid]}, fid, uid]}
-        };
-        const projectNew = {friends: !deleteItemFlag ?
-            {$concatArrays: ["$friends", {"$setDifference": [["$addedFriends"], "$friends"]}]}:
-            {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
-        };
-        return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
     }
 
     async getFriendsDetails(uid: ObjectID): Promise<any[]> {
@@ -58,7 +44,7 @@ export class UsersHelper {
     }
 
     async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Person]> {
-        const {matchIds, matchDuplicate, projectUtil, projectNew} = this.getNewFriendsStages(uid, fid, deleteItemFlag);
+        const {matchIds, matchDuplicate, projectUtil, projectNew} = getNewFriendsStages(uid, fid, deleteItemFlag);
         const newFriends = await this.myPModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
         return Promise.all([this.myPModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
                             this.myPModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})]);
