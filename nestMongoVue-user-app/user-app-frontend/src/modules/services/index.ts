@@ -1,6 +1,6 @@
 import { server } from '@/backend-server'
 import axios, { AxiosResponse } from 'axios'
-import LoginInterface from '@/modules/types/ILogin'
+import { LoginInterface } from '@/modules/types/ILogin'
 import UserInterface from '@/modules/types/IUser'
 import { tokenService } from './token-service'
 import { resetHeaders, reqInterceptor, resInterceptor } from './headers-service'

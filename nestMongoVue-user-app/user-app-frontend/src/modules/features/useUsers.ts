@@ -1,7 +1,7 @@
 import UserInterface from '@/modules/types/IUser'
 import { Ref } from 'vue'
 import { addUsersStateUser, getState, loadSortedUsers, loadUnsortedUsers, removeUsersStateUser, updateUsersStateUser } from '@/modules/states/users'
-import { getDirection } from '../utilities/useUsers-utility'
+import { getDirection } from '@/modules/utilities/users-utility'
 
 export async function useUsers () {
   function searchByEmail ({ pattern = '' }: { pattern?: string }): UserInterface[] {

@@ -1,5 +1,5 @@
 import TokenInterface from '@/modules/types/IToken'
-import { authCredentialsType } from '@/modules/types/ILogin'
+import { AuthCredentialsType } from '@/modules/types/ILogin'
 
 const TOKEN_KEY = 'accessToken'
 const NAME_KEY = 'username'
@@ -26,7 +26,7 @@ const tokenService = {
   getAccessToken (): string | null {
     return localStorage.getItem(TOKEN_KEY) || null
   },
-  getAuthCredentials (): authCredentialsType {
+  getAuthCredentials (): AuthCredentialsType {
     return { userId: this.getUserId() || '', isAuthenticated: !!this.getAccessToken(), accessToken: this.getAccessToken() || '' }
   }
 }

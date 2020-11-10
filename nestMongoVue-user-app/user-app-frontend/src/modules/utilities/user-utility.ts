@@ -1,7 +1,6 @@
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import PasswordInterface from '@/modules/types/IPassword'
-import LoginInterface from '@/modules/types/ILogin'
 
 function displayUserData (user: UserInterface): string {
   const { age, email, fullname, country, address } = user
@@ -27,13 +26,6 @@ function getPasswordFromUser (inputUser: UserInterface): PasswordInterface {
   return { password, passwordConfirm }
 }
 
-function getLoginFromUser (inputUser: UserInterface): LoginInterface {
-  const { password, email, _id } = {
-    password: inputUser.password || '', email: inputUser.email || '', _id: inputUser._id || ''
-  }
-  return { password, email, _id }
-}
-
 function prepareUserProperties (inputUser: UserInterface): UserInterface {
   const { firstname, lastname, passwordConfirm, password, email, _id, country, age } = inputUser
   inputUser.firstname = firstname || ''
@@ -52,6 +44,5 @@ export {
   displayUserData,
   getAddressFromUser,
   getPasswordFromUser,
-  getLoginFromUser,
   prepareUserProperties
 }
