@@ -1,44 +1,51 @@
-// import nodemailer from 'nodemailer'
-import * as nodemailer from 'nodemailer'
+import * as nodemailer from 'nodemailer';
+import * as ejs from 'ejs';
+import Mail from 'nodemailer/lib/mailer';
 
-// async..await is not allowed in global scope, must use a wrapper
-async function sendMail (useremail: string, password: string) {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  const testAccount = await nodemailer.createTestAccount()
-
-  // create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass // generated ethereal password
-    }
-  })
-
-  // send mail with defined transport object
-  const info = await transporter.sendMail({
-    from: '"UserApp Co 👻" <admin@user-app.com>', // sender address
-    to: `${useremail}`, // list of receivers
-    subject: 'Password update ✔', // Subject line
-    text: `Your new password ${password}`, // plain text body
-    html: `<b>Your new password ${password}</b>` // html body
-  })
-
-  console.log('Message sent: %s', info.messageId)
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  // Preview only available when sending through an Ethereal account
-  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
-  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-
-  // TODO: set return values as messageId and mailUrl
-  //       so as to return to frontend upon password reset completion
+async function createMailTransporter (): Promise<Mail> {
+  let transporter: Mail;
+  if (JSON.parse(process.env.USE_TEST_ACCOUNT)) {
+    const testAccount = await nodemailer.createTestAccount()
+    transporter = nodemailer.createTransport({
+      host: process.env.TESTACC_SMTP_CONNECTION_HOST,
+      port: parseInt(process.env.TESTACC_SMTP_CONNECTION_PORT),
+      secure: JSON.parse(process.env.TESTACC_SMTP_CONNECTION_SECURE),
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass
+      }
+    })
+  } else {
+    transporter = nodemailer.createTransport({ 
+      service: process.env.SMTP_TRANSPORT_SERVICE,
+      auth: {
+        user: process.env.SMTP_AUTH_USER,
+        pass: process.env.SMTP_AUTH_PASS
+      }
+    }); 
+  }
+  return transporter
 }
 
-// sendMail().catch(console.error)
+async function sendMail (useremail: string, password: string): Promise<string> {
+  const transporter = await createMailTransporter();
+  
+  const messageHtml = await ejs.renderFile('./src/users/utilities/password-mail.ejs', {
+    password: password, link: process.env.LINK_TO_LOGIN_PAGE
+  });
+  
+  const info = await transporter.sendMail({
+    from: process.env.SEND_EMAIL_FROM,
+    to: useremail, // list of receivers
+    subject: process.env.SEND_EMAIL_SUBJECT,
+    text: `Your new password: ${password}`,
+    html: messageHtml
+  })
+
+  const result = nodemailer.getTestMessageUrl(info)
+  console.log(result)
+  return result ? result : ''
+}
 
 export {
   sendMail

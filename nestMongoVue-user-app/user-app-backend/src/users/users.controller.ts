@@ -23,13 +23,6 @@ export class UsersController {
         return this.authService.login(user);
     }
 
-    // @UseGuards(JwtAuthGuard)
-    // @Get('profile')
-    // getProfile(@Request() req) {
-    //     console.log(req.user)
-    //     return req.user;
-    // }
-
     @Get()
     async getAllUsers(): Promise<Person[]> {
         return this.usersService.getAllUsers();
