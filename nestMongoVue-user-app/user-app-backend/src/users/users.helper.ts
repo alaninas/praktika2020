@@ -44,7 +44,7 @@ export class UsersHelper {
     }
 
     async updateFriends(uid: ObjectID, fid: ObjectID, deleteItemFlag: string | undefined): Promise<[Person, Person]> {
-        const {matchIds, matchDuplicate, projectUtil, projectNew} = getNewFriendsStages(uid, fid, deleteItemFlag);
+        const {matchIds, matchDuplicate, projectUtil, projectNew} = getNewFriendsStages({ uid, fid, deleteItemFlag });
         const newFriends = await this.myPModel.aggregate([{$match: matchIds}, {$project: projectUtil}, {$match: matchDuplicate}, {$project: projectNew}]);
         return Promise.all([this.myPModel.findByIdAndUpdate(newFriends[0]._id, {friends: newFriends[0].friends}),
                             this.myPModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})]);

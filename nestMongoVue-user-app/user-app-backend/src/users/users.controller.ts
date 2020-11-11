@@ -82,7 +82,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    async deleteUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<Person> {
+    async deleteUser(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<boolean> {
         return this.usersService.deleteUser(id);
     }
 }
