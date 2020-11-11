@@ -48,6 +48,11 @@ export class UpdateUserDto {
     lastname?: string
 
     @IsOptional()
+    @IsString({each: true})
+    // @Matches(/\.(png)|(jpg)|(jpeg)$/, {message: 'file extension not in: .png .jpg ...'})
+    images?: string[];
+
+    @IsOptional()
     @IsString()
     street?: string;
 

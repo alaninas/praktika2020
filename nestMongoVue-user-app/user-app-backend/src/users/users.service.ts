@@ -7,6 +7,8 @@ import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
 import { sendMail } from './utilities/mail-user.utility';
 import { to, getMd5Hash, createUserPassword, updateUserPassword } from './utilities/base-user.utility';
+import IFile from './types/IFile';
+import { prepareFileUpdate } from './utilities/file-upload.utility';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +21,7 @@ export class UsersService {
         return await this.personModel.find();
     }
 
-    async getAllUsersSorted(column: string, direction: string): Promise<Person[]> {
+    async getAllUsersSorted({ column, direction }: { column: string; direction: string; }): Promise<Person[]> {
         // TODO: add params -- offset/pageNr ($skip), limit ($limit)
         const [error, result] = await to(this.usersHelper.sortUsers(column, direction));
         if (error) throw new HttpException(`Can not sort users by column: ${column} in order: ${direction}`, HttpStatus.BAD_REQUEST);
@@ -42,11 +44,21 @@ export class UsersService {
         return this.personModel.findOne({email: useremail});
     }
 
-    async updatePasswordByEmail(email: string, newPass: string): Promise<[Person, string]> {
+    async getUserFiles(id: ObjectID): Promise<string[]> {
+        const user = await this.personModel.findById(id);
+        return user.images
+    }
+
+    async updatePasswordByEmail({ email, newPass }: { email: string; newPass: string; }): Promise<[Person, string]> {
         const userToUpdate = await this.personModel.findOne({email});
         if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
         const passwordDigest = getMd5Hash(newPass);
         return Promise.all([userToUpdate.updateOne({ password: passwordDigest, passwordConfirm: passwordDigest }), sendMail(email, newPass)]);
+    }
+
+    async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
+        const userToUpdate = await this.personModel.findOne({ _id: id });
+        return await userToUpdate.updateOne(prepareFileUpdate({ files, oldFiles: userToUpdate.images }));
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {
@@ -55,14 +67,14 @@ export class UsersService {
         return await this.personModel.create(createUserPassword(user));
     }
     
-    async addUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
+    async addUserFriends({ uid, fid }: { uid: ObjectID; fid: ObjectID; }): Promise<Record<string, unknown>> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [error, result] = await to(this.usersHelper.updateFriends(uid, fid, ''));
         if (error) throw new HttpException(`Can not add friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
         return {data: `User #${uid} friended #${fid}`};
     }
 
-    async removeUserFriends(uid: ObjectID, fid: ObjectID): Promise<Record<string, unknown>> {
+    async removeUserFriends({ uid, fid }: { uid: ObjectID; fid: ObjectID; }): Promise<Record<string, unknown>> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [error, result] = await to(this.usersHelper.updateFriends(uid, fid, 'delete'));
         if (error) throw new HttpException(`Can not remove friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);

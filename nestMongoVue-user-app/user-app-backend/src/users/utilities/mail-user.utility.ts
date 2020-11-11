@@ -30,7 +30,7 @@ async function createMailTransporter (): Promise<Mail> {
 async function sendMail (useremail: string, password: string): Promise<string> {
   const transporter = await createMailTransporter();
   
-  const messageHtml = await ejs.renderFile('./src/users/utilities/password-mail.ejs', {
+  const messageHtml = await ejs.renderFile('./src/users/utilities/mail.ejs', {
     password: password, link: process.env.LINK_TO_LOGIN_PAGE
   });
   

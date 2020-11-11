@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MoviesModule } from './movies/movies.module';
 import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
+// import { ServeStaticModule } from '@nestjs/serve-static';
+// import { join } from 'path';
 
 @Module({
   imports: [
@@ -12,7 +15,6 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       expandVariables: true,
     }),
-    // AuthModule,
     UsersModule, 
     MoviesModule, 
     MongooseModule.forRoot(
@@ -22,7 +24,13 @@ import { ConfigModule } from '@nestjs/config';
         useUnifiedTopology: JSON.parse(process.env.DB_USE_UNIFIED_TOPOLOGY), 
         useFindAndModify: JSON.parse(process.env.DB_USE_FIND_AND_MODIFY)
       }
-    )
+    ),
+    MulterModule.register({
+      dest: './uploads',
+    })
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'),
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

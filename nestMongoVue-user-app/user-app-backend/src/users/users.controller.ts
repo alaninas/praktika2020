@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, HttpException, Catch, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Person } from './schemas/user.schema';
@@ -10,6 +10,10 @@ import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { editFileName, imageFileFilter, editDestination, editFullPath } from './utilities/file-upload.utility';
+import IFile from './types/IFile';
 
 @Catch(HttpException)
 @Controller('users')
@@ -31,7 +35,7 @@ export class UsersController {
     @Get('sort/:column/:direction')
     async getAllUsersSorted(@Param('column') column: string, @Param('direction') direction: string): Promise<Person[]> {
         console.log(`calls sorted users by column: ${column} in order: ${direction}`)
-        return this.usersService.getAllUsersSorted(column, direction);
+        return this.usersService.getAllUsersSorted({ column, direction });
     }
     
     @Get('email/:email')
@@ -41,7 +45,7 @@ export class UsersController {
 
     @Put('email/:email')
     async updatePasswordByEmail(@Param('email') email: string, @Body('sub') sub: string): Promise<[Person, string]> {
-        return this.usersService.updatePasswordByEmail(email, sub);
+        return this.usersService.updatePasswordByEmail({ email, newPass: sub });
     }
 
     @Get(':id')
@@ -58,6 +62,27 @@ export class UsersController {
     async getUserMovies(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         return this.usersService.getUserMovies(id);
     }
+
+    @Get('gallery/:id')
+    async getUserFiles(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<string[]> {
+      return this.usersService.getUserFiles(id);
+    }
+
+    @Put('uploads/:iid')
+    @UseInterceptors(
+      FilesInterceptor('image', 20, {
+        storage: diskStorage({
+          destination: editDestination,
+          filename: editFileName,
+          path: editFullPath
+        }),
+        fileFilter: imageFileFilter,
+      }),
+    )
+    async uploadMultipleFiles(@Body('id') id: string, @UploadedFiles() files: IFile[], @Param('iid') iid: string): Promise<Person> {
+        const cid = ObjectID.createFromHexString(iid)
+        return this.usersService.uploadMultipleFiles({ id: cid, files });
+    }
     
     @Post()
     async createUser(@Body() user: CreateUserDto): Promise<Person> {
@@ -66,12 +91,12 @@ export class UsersController {
 
     @Post('friends/add')
     async addUserFriends(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('friend', ParseObjectIdPipe) fid: ObjectID): Promise<Record<string, unknown>> {
-        return this.usersService.addUserFriends(uid, fid);
+        return this.usersService.addUserFriends({ uid, fid });
     }
 
     @Post('friends/remove')
     async removeUserFriends(@Body('id', ParseObjectIdPipe) uid: ObjectID, @Body('friend', ParseObjectIdPipe) fid: ObjectID): Promise<Record<string, unknown>> {
-        return this.usersService.removeUserFriends(uid, fid);
+        return this.usersService.removeUserFriends({ uid, fid });
     }
 
     @UseGuards(JwtAuthGuard)
