@@ -69,7 +69,7 @@ export class UsersController {
 
     @Put('uploads/:id')
     @UseInterceptors(
-      FilesInterceptor('image', parseInt(process.env.FILES_INTERCEPTOR_MAXCOUNT), {
+      FilesInterceptor('image', 20, {
         storage: diskStorage({
           destination: editDestination,
           filename: editFileName
@@ -78,7 +78,7 @@ export class UsersController {
       }),
     )
     async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string): Promise<Person> {
-        const oid = ObjectID.createFromHexString(id)
+        const oid = ObjectID.createFromHexString(id);
         return this.usersService.uploadMultipleFiles({ id: oid, files });
     }
     

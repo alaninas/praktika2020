@@ -24,7 +24,7 @@ import { MulterModule } from '@nestjs/platform-express';
       }
     ),
     MulterModule.register({
-      dest: './uploads',
+      dest: `./${process.env.MULTER_OPTIONS_DESTINATION}`,
     })
   ],
   controllers: [AppController],

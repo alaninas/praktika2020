@@ -5,6 +5,7 @@ import { Person } from './schemas/user.schema';
 import { Movie } from '../movies/schemas/movie.schema'
 import { ObjectID } from 'mongodb';
 import { getDirection, getNewFriendsStages } from './utilities/base-user.utility';
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersHelper {
@@ -50,7 +51,7 @@ export class UsersHelper {
                             this.myPModel.findByIdAndUpdate(newFriends[1]._id, {friends: newFriends[1].friends})]);
     }
     
-    async purgeUsersRecords(uid: ObjectID): Promise<Person[]> {
+    async cleanUsersRecords(uid: ObjectID): Promise<Person[]> {
         const allUsers = await this.myPModel.find();
         try {
             for (const user of allUsers) {
@@ -66,7 +67,7 @@ export class UsersHelper {
         }
     }
 
-    async purgeMoviesRecords(uid: ObjectID): Promise<Movie[]> {
+    async cleanMoviesRecords(uid: ObjectID): Promise<Movie[]> {
         const allMovies = await this.myMModel.find();
         // console.log(allMovies);
         try {
@@ -81,5 +82,15 @@ export class UsersHelper {
         } catch (error) {
             throw new HttpException(`Error: ${error.message}`, HttpStatus.NOT_FOUND);
         }
+    }
+
+    async purgeOneUser(uid: ObjectID): Promise<Person> {
+        const imageDir = `./${process.env.MULTER_OPTIONS_DESTINATION}/${uid}`;
+        try {
+            fs.rmdirSync(imageDir, { recursive: true });
+        } catch (err) {
+            console.error(`Error while deleting ${imageDir}.`);
+        }
+        return await this.personModel.findOneAndDelete({_id: uid})
     }
 }

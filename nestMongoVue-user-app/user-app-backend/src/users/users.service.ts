@@ -52,13 +52,6 @@ export class UsersService {
         const userToUpdate = await this.personModel.findOne({ _id: id });
         return await userToUpdate.updateOne(prepareFileUpdate({ files, oldFiles: userToUpdate.images }));
     }
-
-    async updatePasswordByEmail({ email, newPass }: { email: string; newPass: string; }): Promise<[Person, string]> {
-        const userToUpdate = await this.personModel.findOne({email});
-        if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
-        const passwordDigest = getMd5Hash(newPass);
-        return Promise.all([userToUpdate.updateOne({ password: passwordDigest, passwordConfirm: passwordDigest }), sendMail(email, newPass)]);
-    }
     
     async createUser(user: CreateUserDto): Promise<Person> {
         const duplicate = await this.personModel.findOne({ email: user.email });
@@ -85,11 +78,18 @@ export class UsersService {
         const userToUpdate = await this.personModel.findOne({ _id: _id });
         return await userToUpdate.updateOne(updateUserPassword({ args, userToUpdate }));
     }
+
+    async updatePasswordByEmail({ email, newPass }: { email: string; newPass: string; }): Promise<[Person, string]> {
+        const userToUpdate = await this.personModel.findOne({email});
+        if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
+        const passwordDigest = getMd5Hash(newPass);
+        return Promise.all([userToUpdate.updateOne({ password: passwordDigest, passwordConfirm: passwordDigest }), sendMail(email, newPass)]);
+    }
     
     // delete files from system on user delete
     async deleteUser(id: ObjectID): Promise<boolean> {
         try {
-            Promise.all([ this.usersHelper.purgeUsersRecords(id), this.usersHelper.purgeMoviesRecords(id), this.personModel.findOneAndDelete({_id: id}) ]);
+            Promise.all([ this.usersHelper.cleanUsersRecords(id), this.usersHelper.cleanMoviesRecords(id), this.usersHelper.purgeOneUser(id) ]);
             return true;
         } catch (error) {
             throw new HttpException(`Error: ${error.message}`, HttpStatus.NOT_FOUND);
