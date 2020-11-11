@@ -8,7 +8,7 @@ import { ObjectID } from 'mongodb';
 import { sendMail } from './utilities/mail.utility';
 import { to, getMd5Hash, createUserPassword, updateUserPassword } from './utilities/base-user.utility';
 import IFile from './types/IFile';
-import { prepareFileUpdate } from './utilities/file-upload.utility';
+import { deleteOneImage, prepareFileUpdate } from './utilities/file-upload.utility';
 
 @Injectable()
 export class UsersService {
@@ -44,13 +44,17 @@ export class UsersService {
         return this.personModel.findOne({email: useremail});
     }
 
-    async getUserFiles(id: ObjectID): Promise<string[]> {
+    async getUserImages(id: ObjectID): Promise<string[]> {
         return (await this.personModel.findById(id)).images
     }
 
     async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
         const userToUpdate = await this.personModel.findOne({ _id: id });
-        return await userToUpdate.updateOne(prepareFileUpdate({ files, oldFiles: userToUpdate.images }));
+        return await userToUpdate.updateOne(prepareFileUpdate({ files, oldImages: userToUpdate.images }));
+    }
+
+    async deleteUserImage(path: string): Promise<boolean> {
+        return deleteOneImage(path);
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {
@@ -86,7 +90,6 @@ export class UsersService {
         return Promise.all([userToUpdate.updateOne({ password: passwordDigest, passwordConfirm: passwordDigest }), sendMail(email, newPass)]);
     }
     
-    // delete files from system on user delete
     async deleteUser(id: ObjectID): Promise<boolean> {
         try {
             Promise.all([ this.usersHelper.cleanUsersRecords(id), this.usersHelper.cleanMoviesRecords(id), this.usersHelper.purgeOneUser(id) ]);

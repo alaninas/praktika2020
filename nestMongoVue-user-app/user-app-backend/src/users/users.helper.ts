@@ -69,7 +69,6 @@ export class UsersHelper {
 
     async cleanMoviesRecords(uid: ObjectID): Promise<Movie[]> {
         const allMovies = await this.myMModel.find();
-        // console.log(allMovies);
         try {
             for (const movie of allMovies) {
                 const index = movie.directors.indexOf(uid);
@@ -89,7 +88,7 @@ export class UsersHelper {
         try {
             fs.rmdirSync(imageDir, { recursive: true });
         } catch (err) {
-            console.error(`Error while deleting ${imageDir}.`);
+            console.error(`Error while deleting image directory: ${imageDir}`);
         }
         return await this.personModel.findOneAndDelete({_id: uid})
     }
