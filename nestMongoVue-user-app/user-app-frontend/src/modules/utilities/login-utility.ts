@@ -31,7 +31,8 @@ async function resetUserPassword (data: LoginInterface): Promise<LoginInterface>
     const newp = (await getUserPswdByEmail(data.email)).substr(18)
     if (!newp) throw new Error(`Can not find user: ${data.email}`)
     console.log(`---> New pass: ${newp}`)
-    await putTemporaryPassword(data.email, newp)
+    const r = (await putTemporaryPassword(data.email, newp)).data
+    console.log(`>>> Link: ${r[1]}`)
     return data
   } catch (err) {
     throw err

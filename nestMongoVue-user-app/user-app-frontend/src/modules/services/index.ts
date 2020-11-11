@@ -43,7 +43,7 @@ async function putUpdatedUser (newUser: UserInterface): Promise<AxiosResponse<Us
   return await axios.put(`${server.baseURL}/users`, newUser)
 }
 
-async function putTemporaryPassword (email: string, pass: string): Promise<AxiosResponse<UserInterface>> {
+async function putTemporaryPassword (email: string, pass: string): Promise<AxiosResponse<[UserInterface, string]>> {
   const [error, result] = await to(axios.put(`${server.baseURL}/users/email/${email}`, { sub: pass }))
   if (error) throw error.message
   return result
