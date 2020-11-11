@@ -43,7 +43,7 @@ async function sendMail (useremail: string, password: string): Promise<string> {
   })
 
   const result = nodemailer.getTestMessageUrl(info)
-  console.log(result)
+  // console.log(result)
   return result ? result : ''
 }
 

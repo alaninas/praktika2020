@@ -40,7 +40,7 @@ export class UsersController {
     }
 
     @Put('email/:email')
-    async updatePasswordByEmail(@Param('email') email: string, @Body('sub') sub: string): Promise<Person> {
+    async updatePasswordByEmail(@Param('email') email: string, @Body('sub') sub: string): Promise<[Person, string]> {
         return this.usersService.updatePasswordByEmail(email, sub);
     }
 

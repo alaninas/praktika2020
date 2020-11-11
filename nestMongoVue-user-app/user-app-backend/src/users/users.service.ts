@@ -43,14 +43,13 @@ export class UsersService {
         return this.personModel.findOne({email: useremail});
     }
 
-    async updatePasswordByEmail(email: string, pass: string): Promise<Person> {
+    async updatePasswordByEmail(email: string, pass: string): Promise<[Person, string]> {
         const userToUpdate = await this.personModel.findOne({email});
         if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
         const passwordDigest = Md5.hashStr(pass).toString();
         const passwordConfirm = passwordDigest
         const password = passwordDigest
-        await sendMail(email, password)
-        return await userToUpdate.updateOne({ password, passwordConfirm });
+        return Promise.all([userToUpdate.updateOne({ password, passwordConfirm }), sendMail(email, password)]);
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {
