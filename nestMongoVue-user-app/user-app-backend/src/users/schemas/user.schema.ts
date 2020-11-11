@@ -34,10 +34,10 @@ export class Person extends Document {
   houseNumber?: number;​
 
   @Prop()
-  lastname?: string;
+  images?: string[];
 
   @Prop()
-  images?: string[];
+  lastname?: string;
 
   @Prop()
   street?: string;

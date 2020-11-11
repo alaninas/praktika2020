@@ -2,6 +2,8 @@ import * as nodemailer from 'nodemailer';
 import * as ejs from 'ejs';
 import Mail from 'nodemailer/lib/mailer';
 
+const templateFile = './src/users/views/mail.ejs';
+
 async function createMailTransporter (): Promise<Mail> {
   let transporter: Mail;
   if (JSON.parse(process.env.USE_TEST_ACCOUNT)) {
@@ -30,7 +32,7 @@ async function createMailTransporter (): Promise<Mail> {
 async function sendMail (useremail: string, password: string): Promise<string> {
   const transporter = await createMailTransporter();
   
-  const messageHtml = await ejs.renderFile('./src/users/utilities/mail.ejs', {
+  const messageHtml = await ejs.renderFile(templateFile, {
     password: password, link: process.env.LINK_TO_LOGIN_PAGE
   });
   

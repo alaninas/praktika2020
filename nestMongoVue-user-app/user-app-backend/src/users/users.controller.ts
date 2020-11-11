@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter, editDestination, editFullPath } from './utilities/file-upload.utility';
+import { editFileName, imageFileFilter, editDestination } from './utilities/files-interceptor.utility';
 import IFile from './types/IFile';
 
 @Catch(HttpException)
@@ -34,7 +34,6 @@ export class UsersController {
 
     @Get('sort/:column/:direction')
     async getAllUsersSorted(@Param('column') column: string, @Param('direction') direction: string): Promise<Person[]> {
-        console.log(`calls sorted users by column: ${column} in order: ${direction}`)
         return this.usersService.getAllUsersSorted({ column, direction });
     }
     
@@ -68,20 +67,19 @@ export class UsersController {
       return this.usersService.getUserFiles(id);
     }
 
-    @Put('uploads/:iid')
+    @Put('uploads/:id')
     @UseInterceptors(
-      FilesInterceptor('image', 20, {
+      FilesInterceptor('image', parseInt(process.env.FILES_INTERCEPTOR_MAXCOUNT), {
         storage: diskStorage({
           destination: editDestination,
-          filename: editFileName,
-          path: editFullPath
+          filename: editFileName
         }),
         fileFilter: imageFileFilter,
       }),
     )
-    async uploadMultipleFiles(@Body('id') id: string, @UploadedFiles() files: IFile[], @Param('iid') iid: string): Promise<Person> {
-        const cid = ObjectID.createFromHexString(iid)
-        return this.usersService.uploadMultipleFiles({ id: cid, files });
+    async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string): Promise<Person> {
+        const oid = ObjectID.createFromHexString(id)
+        return this.usersService.uploadMultipleFiles({ id: oid, files });
     }
     
     @Post()

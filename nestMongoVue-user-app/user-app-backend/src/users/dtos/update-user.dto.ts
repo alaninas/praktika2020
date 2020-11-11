@@ -1,4 +1,4 @@
-import { IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import { IsEqualTo } from "../decorators/IsEqualTo";
 
 export class UpdateUserDto {
@@ -44,13 +44,13 @@ export class UpdateUserDto {
     houseNumber?: number;​
 
     @IsOptional()
-    @IsString()
-    lastname?: string
+    @IsString({each: true})
+    @Matches(/\.(png|jpg|jpeg|png|gif)$/, {message: 'file extension not a picture'})
+    images?: string[];
 
     @IsOptional()
-    @IsString({each: true})
-    // @Matches(/\.(png)|(jpg)|(jpeg)$/, {message: 'file extension not in: .png .jpg ...'})
-    images?: string[];
+    @IsString()
+    lastname?: string
 
     @IsOptional()
     @IsString()

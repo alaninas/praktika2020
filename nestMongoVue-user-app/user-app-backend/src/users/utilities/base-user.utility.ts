@@ -5,6 +5,17 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { Person } from '../schemas/user.schema';
 
+function to(promise: Promise<any>, improved?: any) {
+  return promise
+    .then((data: any) => [null, data])
+    .catch((err: any) => {
+      if (improved) {
+        Object.assign(err, improved)
+      }
+      return [err] // which is same as [err, undefined];
+    })
+}
+
 function getDirection(direction: string): number {
   const directions = {
     asc: 1,
@@ -23,17 +34,6 @@ function getNewFriendsStages({ uid, fid, deleteItemFlag }: { uid: ObjectID; fid:
       {$filter: {input: "$friends", as: "friend", cond: {$ne: ["$$friend", "$addedFriends"]}}}
   };
   return {matchIds: {_id: {$in: [uid, fid]}}, matchDuplicate, projectUtil, projectNew};
-}
-
-function to(promise: Promise<any>, improved?: any) {
-  return promise
-    .then((data: any) => [null, data])
-    .catch((err: any) => {
-      if (improved) {
-        Object.assign(err, improved)
-      }
-      return [err] // which is same as [err, undefined];
-    })
 }
 
 function getMd5Hash(inp: string): string {

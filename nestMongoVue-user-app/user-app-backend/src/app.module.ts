@@ -6,8 +6,6 @@ import { UsersModule } from './users/users.module';
 import { MoviesModule } from './movies/movies.module';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
-// import { ServeStaticModule } from '@nestjs/serve-static';
-// import { join } from 'path';
 
 @Module({
   imports: [
@@ -28,9 +26,6 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: './uploads',
     })
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads'),
-    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

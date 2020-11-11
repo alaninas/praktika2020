@@ -5,7 +5,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersHelper } from './users.helper';
 import { ObjectID } from 'mongodb';
-import { sendMail } from './utilities/mail-user.utility';
+import { sendMail } from './utilities/mail.utility';
 import { to, getMd5Hash, createUserPassword, updateUserPassword } from './utilities/base-user.utility';
 import IFile from './types/IFile';
 import { prepareFileUpdate } from './utilities/file-upload.utility';
@@ -45,8 +45,12 @@ export class UsersService {
     }
 
     async getUserFiles(id: ObjectID): Promise<string[]> {
-        const user = await this.personModel.findById(id);
-        return user.images
+        return (await this.personModel.findById(id)).images
+    }
+
+    async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
+        const userToUpdate = await this.personModel.findOne({ _id: id });
+        return await userToUpdate.updateOne(prepareFileUpdate({ files, oldFiles: userToUpdate.images }));
     }
 
     async updatePasswordByEmail({ email, newPass }: { email: string; newPass: string; }): Promise<[Person, string]> {
@@ -54,11 +58,6 @@ export class UsersService {
         if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
         const passwordDigest = getMd5Hash(newPass);
         return Promise.all([userToUpdate.updateOne({ password: passwordDigest, passwordConfirm: passwordDigest }), sendMail(email, newPass)]);
-    }
-
-    async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
-        const userToUpdate = await this.personModel.findOne({ _id: id });
-        return await userToUpdate.updateOne(prepareFileUpdate({ files, oldFiles: userToUpdate.images }));
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {
@@ -87,6 +86,7 @@ export class UsersService {
         return await userToUpdate.updateOne(updateUserPassword({ args, userToUpdate }));
     }
     
+    // delete files from system on user delete
     async deleteUser(id: ObjectID): Promise<boolean> {
         try {
             Promise.all([ this.usersHelper.purgeUsersRecords(id), this.usersHelper.purgeMoviesRecords(id), this.personModel.findOneAndDelete({_id: id}) ]);
