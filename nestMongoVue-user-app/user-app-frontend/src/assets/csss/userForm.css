@@ -60,3 +60,8 @@ label.disabled,
 input.disabled {
   color: #f8f8f8;
 }
+/* Login action buttons row */
+.row.login-buttons {
+  align-items: center;
+  justify-content: center;
+}
