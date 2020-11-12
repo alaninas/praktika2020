@@ -40,7 +40,10 @@ function loadLoginData (data: LoginInterface, noDataReload: boolean): Ref<LoginI
 
 async function loginStateUser (userLogin: LoginInterface) {
   const [error, result] = await to(loginUser(userLogin))
-  if (error) setHttpErrorEmail({ message: `Please check user ${userLogin.email} credentials` })
+  if (error) {
+    setHttpErrorEmail({ message: `Please check user ${userLogin.email} credentials` })
+    setHttpErrorPswd({ message: 'Please check your password' })
+  }
   if (result) {
     resetHttpErrors()
     setState({ data: result })
@@ -50,7 +53,7 @@ async function loginStateUser (userLogin: LoginInterface) {
 async function resetStatePassword (userLogin: LoginInterface, isPassowrdForgotten: boolean): Promise<boolean> {
   userLogin.password = ''
   const [error, result] = await to(resetUserPassword(userLogin))
-  if (error) setHttpErrorPswd({ message: error.message })
+  if (error) setHttpErrorEmail({ message: error.message })
   if (result) {
     resetHttpErrors()
     setState({ data: result })
