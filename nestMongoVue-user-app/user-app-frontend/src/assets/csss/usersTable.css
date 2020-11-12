@@ -44,6 +44,11 @@ span.arrow:hover {
   --button-back-color: #7d7d7d;
   pointer-events: none;
 }
+/* Colors for authorised users row */
+tr.is-authorised,
+tr.is-authorised > td {
+  background: #90caf90a;
+}
 /* Disabled links */
 table a.disabled,
 a.disabled {
