@@ -1,5 +1,5 @@
 <template>
-  <tr v-for="user in users" :key="user">
+  <tr v-for="user in users" :key="user" :class="isGivenUserAuthorised(user._id) ? 'is-authorised' : ''">
     <td data-label="Id" :title="user._id">
       <router-link
         :to="{ name: 'Edit', params: { id: user._id } }"
@@ -11,6 +11,7 @@
     </td>
     <td data-label="Full Name">{{ user.password }}</td>
     <td data-label="Age">{{ user.age }}</td>
+    <td data-label="Website">{{ user.website }}</td>
     <td data-label="Email">{{ user.email }}</td>
     <td data-label="Fullname">{{ user.fullname }}</td>
     <td data-label="Country">{{ user.country }}</td>

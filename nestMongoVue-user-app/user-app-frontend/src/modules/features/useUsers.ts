@@ -14,6 +14,10 @@ export async function useUsers () {
     return await loadUnsortedUsers()
   }
 
+  async function sortByWebsite (reverse: boolean): Promise<Ref<UserInterface[]>> {
+    return await loadSortedUsers('website', getDirection(reverse))
+  }
+
   async function sortByEmail (reverse: boolean): Promise<Ref<UserInterface[]>> {
     return await loadSortedUsers('email', getDirection(reverse))
   }
@@ -53,5 +57,5 @@ export async function useUsers () {
   async function editUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
     return await updateUsersStateUser(newUser)
   }
-  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser, sortByCountry, editUser }
+  return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, searchByEmail, removeUser, addUser, sortByCountry, editUser, sortByWebsite }
 }

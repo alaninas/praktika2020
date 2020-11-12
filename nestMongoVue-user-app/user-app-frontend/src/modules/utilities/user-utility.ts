@@ -3,8 +3,8 @@ import AddressInterface from '@/modules/types/IAddress'
 import PasswordInterface from '@/modules/types/IPassword'
 
 function displayUserData (user: UserInterface): string {
-  const { age, email, fullname, country, address } = user
-  const init = [age, email, fullname, country, address]
+  const { age, email, fullname, country, address, website } = user
+  const init = [age, email, fullname, country, address, website]
   const arr: (string | number)[] = []
   init.forEach(element => {
     if (element) arr.push(element)
