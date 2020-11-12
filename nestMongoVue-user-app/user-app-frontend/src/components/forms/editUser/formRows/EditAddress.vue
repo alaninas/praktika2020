@@ -1,6 +1,6 @@
 <template>
 <div class="row">
-  <div class="col-lg-3 col-md-4 col-sm-12">
+  <div class="col-lg-3 col-md-12 col-sm-12">
   <label for="addressInput">Address</label>
   <input
     class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
@@ -17,7 +17,7 @@
     </li>
   </ul>
   </div>
-  <div class="autofilled-address col-lg-9 col-md-8 col-sm-12">
+  <div class="autofilled-address col-lg-9 col-md-12 col-sm-12">
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-12">
         <label for="streetInput">Street</label>

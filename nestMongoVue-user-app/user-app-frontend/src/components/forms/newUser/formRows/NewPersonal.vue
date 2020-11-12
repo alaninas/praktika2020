@@ -10,12 +10,12 @@
       <input type="text" id="lastnameInput" name="lastname" v-model="user.lastname" required v-validate />
       <div class="error">{{ validationErrors.lastname }}</div>
     </div>
-    <div class="col-lg-2 col-md-5 col-sm-12">
+    <div class="col-lg-3 col-md-6 col-sm-12">
       <label for="ageInput">Age</label>
       <input type="number" id="ageInput" name="age" v-model="user.age" min="18" max="100" v-validate />
       <div class="error">{{ validationErrors.age }}</div>
     </div>
-    <div id="countries" class="col-lg-4 col-md-7 col-sm-12">
+    <div id="countries" class="col-lg-3 col-md-6 col-sm-12">
       <label for="countryInput">Country</label>
       <select id="countryInput" v-model="user.country" name="country" required v-validate >
         <option disabled value="">Please select a country</option>
