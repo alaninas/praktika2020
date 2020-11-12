@@ -7,7 +7,7 @@
       <label role="button" class="responsive-padding responsive-margin bordered" @click="isDeleteApproved = !isDeleteApproved">Cancel delete</label>
     </p>
   </div>
-  <label role="button" class="responsive-padding responsive-margin secondary" @click="routerRedirect('Users')">Back to All Users</label>
+  <label role="button" class="responsive-padding responsive-margin secondary" @click="routerRedirect('Users')">Cancel profile update</label>
   <label role="button" class="responsive-padding responsive-margin tertiary" @click="passwordUpdate(isPswdUpdated)">{{ isPswdUpdated ? 'Choose old password' : 'Set new password' }}</label>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
