@@ -29,6 +29,7 @@ function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: 
 }
 
 function setState (inputUser: UserInterface): UserInterface {
+  resetFormErrors()
   user.value = prepareUserProperties(inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
