@@ -58,6 +58,10 @@ export class UpdateUserDto {
     street?: string;
 
     @IsOptional()
+    @IsString()
+    website?: string;
+
+    @IsOptional()
     @IsInt()
     zipCode?: number;​
 }

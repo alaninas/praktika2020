@@ -57,6 +57,10 @@ export class CreateUserDto {
     street?: string;
 
     @IsOptional()
+    @IsString()
+    website?: string;
+
+    @IsOptional()
     @IsInt()
     zipCode?: number;​
     // type string is not assignable to Type 'string[]' is not assignable to type '{ generationTime: number; equals: {}; getTimestamp: {}; toHexString: {}; }[]'

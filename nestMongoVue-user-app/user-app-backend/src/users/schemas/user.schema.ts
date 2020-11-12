@@ -43,6 +43,9 @@ export class Person extends Document {
   street?: string;
 
   @Prop()
+  website?: string;​
+
+  @Prop()
   zipCode?: number;​
 
   @Prop()
