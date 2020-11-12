@@ -1,9 +1,11 @@
+/* Alignment */
 table tr {
   text-align: left;
 }
 table:not(.horizontal) {
   max-height: 100%;
 }
+/* Sorting arrows */
 .arrow {
   width: 0;
   height: 0;
@@ -29,6 +31,7 @@ span.arrow:hover {
 .sort-arrows span ~ span {
   margin-left: .0125rem;
 }
+/* Inactive colors for edit form */
 .users-saved-inactive table td,
 .users-saved-inactive table th,
 .users-saved-inactive table td a:link {
@@ -39,5 +42,11 @@ span.arrow:hover {
 }
 .users-saved-inactive table td [role="button"].inverse {
   --button-back-color: #7d7d7d;
+  pointer-events: none;
+}
+/* Disabled links */
+table a.disabled,
+a.disabled {
+  color: inherit;
   pointer-events: none;
 }
