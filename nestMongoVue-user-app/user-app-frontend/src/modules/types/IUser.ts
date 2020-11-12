@@ -17,4 +17,5 @@ export default interface UserInterface {
     movies?: Array<string>;
     _id?: string;
     website?: string;
+    images?: Array<string>;
 }

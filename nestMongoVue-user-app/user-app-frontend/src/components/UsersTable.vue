@@ -8,11 +8,8 @@
             <span class="arrow down" @click="sortById(true)"></span>
           </div>
         </th>
-        <th>Password
-          <div class="sort-arrows">
-            <span class="arrow" @click="sortByPassword(false)"></span>
-            <span class="arrow down" @click="sortByPassword(true)"></span>
-          </div>
+        <th>
+          Gallery
         </th>
         <th>Age
           <div class="sort-arrows">

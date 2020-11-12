@@ -27,7 +27,7 @@ function getPasswordFromUser (inputUser: UserInterface): PasswordInterface {
 }
 
 function prepareUserProperties (inputUser: UserInterface): UserInterface {
-  const { firstname, lastname, passwordConfirm, password, email, _id, country, age } = inputUser
+  const { firstname, lastname, passwordConfirm, password, email, _id, country, age, images } = inputUser
   inputUser.firstname = firstname || ''
   inputUser.lastname = lastname || ''
   inputUser.fullname = firstname && lastname ? [firstname, lastname].join(' ') : ''
@@ -35,6 +35,7 @@ function prepareUserProperties (inputUser: UserInterface): UserInterface {
   inputUser.passwordConfirm = passwordConfirm
   inputUser.email = email
   inputUser._id = _id
+  inputUser.images = images
   inputUser.country = country || ''
   if (age) inputUser.age = parseInt(age.toString())
   return inputUser
