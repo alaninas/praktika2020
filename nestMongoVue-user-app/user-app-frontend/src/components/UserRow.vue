@@ -1,8 +1,13 @@
 <template>
   <tr v-for="user in users" :key="user">
     <td data-label="Id" :title="user._id">
-      <!-- TODO: remove links on unauthenticated users -->
-      <router-link :to="{name: 'Edit', params: {id: user._id}}" @click="clickUserEdit(user._id, $route.params.id !== user._id)">{{ user._id.substr(18) }}</router-link>
+      <router-link
+        :to="{ name: 'Edit', params: { id: user._id } }"
+        @click="loadUserEdit(user._id, $route.params.id !== user._id)"
+        :class="isGivenUserAuthorised(user._id) ? '' : 'disabled'"
+      >
+          {{ user._id.substr(18) }}
+      </router-link>
     </td>
     <td data-label="Full Name">{{ user.password }}</td>
     <td data-label="Age">{{ user.age }}</td>
@@ -16,17 +21,19 @@
 <script lang="ts">
 import { useUsers } from '@/modules/features/useUsers'
 import { useUser } from '@/modules/features/useUser'
+import { useLogin } from '@/modules/features/useLogin'
 
 export default {
   async setup () {
     const { unsorted } = await useUsers()
     const users = await unsorted()
+    const { isGivenUserAuthorised } = useLogin({})
 
-    async function clickUserEdit (id: string, onFirstLoad: boolean) {
+    async function loadUserEdit (id: string, onFirstLoad: boolean) {
       if (onFirstLoad) await useUser({ userId: id, noDataReload: false })
     }
 
-    return { users, clickUserEdit }
+    return { users, loadUserEdit, isGivenUserAuthorised }
   }
 }
 </script>

@@ -21,5 +21,9 @@ export function useLogin ({ userLoginInit = { email: '', password: '', _id: '' }
     return await resetStatePassword(userLoginData.value, isPasswordForgotten)
   }
 
-  return { userLoginData, creds, loginUser, logoutUser, clearLoginData, resetPassword }
+  function isGivenUserAuthorised (id: string): boolean {
+    return creds.value.isAuthenticated && id === creds.value.userId
+  }
+
+  return { userLoginData, creds, loginUser, logoutUser, clearLoginData, resetPassword, isGivenUserAuthorised }
 }

@@ -9,9 +9,15 @@
   <div class="section" v-if="userSearchResults.data.length">
     <ul>
       <li v-for="(user, i) in userSearchResults.data" :key="user">
-        <b>Index:</b> {{i}} |
-        <b>Data:</b> {{ displayUserData(user) }} |
-        <b>Link:</b> <router-link :to="{name: 'Edit', params: {id: user._id}}">{{ user._id }}</router-link>
+        <b>Index: </b>{{i}} |
+        <b>Data: </b>{{ displayUserData(user) }} |
+        <b>Edit profile: </b>
+          <router-link
+            :to="{ name: 'Edit', params: { id: user._id } }"
+            :class="isGivenUserAuthorised(user._id) ? '' : 'disabled'"
+          >
+            {{ user._id }}
+          </router-link>
       </li>
     </ul>
   </div>
@@ -22,12 +28,14 @@ import { reactive, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import { useUsers } from '@/modules/features/useUsers'
 import { displayUserData } from '@/modules/utilities/user-utility'
+import { useLogin } from '@/modules/features/useLogin'
 
 export default {
   async setup () {
     const pattern = reactive({ data: '' })
     const { searchByEmail } = await useUsers()
     const userSearchResults: {data: UserInterface[] | []} = reactive({ data: [] })
+    const { isGivenUserAuthorised } = useLogin({})
 
     function userSearch (pattern?: string): UserInterface[] {
       userSearchResults.data = searchByEmail({ pattern })
@@ -38,7 +46,7 @@ export default {
     })
     stopHandle()
 
-    return { pattern, userSearch, userSearchResults, displayUserData }
+    return { pattern, userSearch, userSearchResults, displayUserData, isGivenUserAuthorised }
   }
 }
 </script>
