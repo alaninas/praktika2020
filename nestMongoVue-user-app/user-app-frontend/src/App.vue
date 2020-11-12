@@ -1,13 +1,10 @@
 <template>
   <div id="nav" class="row" v-show="!creds.isAuthenticated">
-    <div class="col-lg-11 col-md-10 col-sm-7">
-      <!-- <router-link to="/login">Login</router-link> |
-      <router-link to="/register">Register</router-link> | -->
+    <div class="col-lg-11 col-md-10 col-sm-9">
       <router-link to="/users">All Users</router-link>
     </div>
-    <div class="col-lg-1 col-md-2 col-sm-5">
-      <router-link to="/login">Login</router-link> |
-      <span>anonymous</span>
+    <div class="col-lg-1 col-md-2 col-sm-3">
+      <router-link to="/login">Login</router-link>
     </div>
   </div>
   <div id="nav" class="row" v-show="creds.isAuthenticated">

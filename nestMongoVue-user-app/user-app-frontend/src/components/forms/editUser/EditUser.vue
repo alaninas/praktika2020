@@ -76,7 +76,7 @@ export default {
       clearUserData()
     }
 
-    return { user, onSubmit, validationErrors, userErrors, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved }
+    return { user, onSubmit, validationErrors, userErrors, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved, routerRedirect }
   }
 }
 </script>
