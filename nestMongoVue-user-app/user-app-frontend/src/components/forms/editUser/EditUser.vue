@@ -7,7 +7,7 @@
       <label role="button" class="responsive-padding responsive-margin bordered" @click="isDeleteApproved = !isDeleteApproved">Cancel delete</label>
     </p>
   </div>
-  <label role="button" class="responsive-padding responsive-margin secondary" @click="navigateUp()">Back to All Users</label>
+  <label role="button" class="responsive-padding responsive-margin secondary" @click="routerRedirect('Users')">Back to All Users</label>
   <label role="button" class="responsive-padding responsive-margin tertiary" @click="passwordUpdate(isPswdUpdated)">{{ isPswdUpdated ? 'Choose old password' : 'Set new password' }}</label>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
@@ -33,9 +33,9 @@ import { useUser } from '@/modules/features/useUser'
 import { useUsers } from '@/modules/features/useUsers'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
-import router from '@/router'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
+import { routerRedirect } from '@/modules/utilities/router-utility'
 
 export default {
   components: {
@@ -65,10 +65,6 @@ export default {
         // clearUserData()
       }
     }
-    async function navigateUp () {
-      await router.push({ name: 'Users' })
-      clearUserData()
-    }
     function passwordUpdate (updateFlag: boolean) {
       isPswdUpdated.value = !updateFlag
       updateUserPassword(isPswdUpdated.value)
@@ -76,10 +72,11 @@ export default {
     async function deleteProfile (param: string) {
       await removeUser(param)
       logoutUser()
-      navigateUp()
+      routerRedirect('Users')
+      clearUserData()
     }
 
-    return { user, onSubmit, validationErrors, userErrors, navigateUp, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved }
+    return { user, onSubmit, validationErrors, userErrors, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved }
   }
 }
 </script>

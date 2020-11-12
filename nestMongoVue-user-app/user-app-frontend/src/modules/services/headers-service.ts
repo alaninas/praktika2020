@@ -1,12 +1,8 @@
 import axios from 'axios'
-import router from '@/router'
 import { getAuthCredentials } from '@/modules/states/login'
+import { routerRedirect } from '@/modules/utilities/router-utility'
 
 const editFormUrl = /(http:\/\/localhost:3000\/users\/)([^/]{24})/
-
-function routerRedirect (param: object) {
-  router.push(param)
-}
 
 function resetHeaders () {
   axios.defaults.headers.common.Authorization = null
@@ -18,10 +14,10 @@ function reqInterceptor () {
     req.headers.common.Authorization = accessToken ? `Bearer ${accessToken}` : null
     const userEditForm = req.url?.match(editFormUrl)
     if (userEditForm && !isAuthenticated) {
-      routerRedirect({ name: 'Login' })
+      routerRedirect('Login')
     }
     if (userEditForm && isAuthenticated && userEditForm[2] !== userId) {
-      routerRedirect({ name: 'Users' })
+      routerRedirect('Users')
     }
     return req
   })
@@ -30,7 +26,7 @@ function reqInterceptor () {
 function resInterceptor () {
   axios.interceptors.response.use(res => {
     if (res.status === 401) {
-      routerRedirect({ name: 'Login' })
+      routerRedirect('Login')
     }
     return res
   })

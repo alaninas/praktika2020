@@ -14,7 +14,7 @@
     <div class="error">{{ httpErrors.password }}</div>
   </form>
   <div v-show="creds.isAuthenticated">
-    <label role="button" class="button primary" @click="navigateUp()">Next >></label>
+    <label role="button" class="button primary" @click="routerRedirect('Users')">Next >></label>
   </div>
 </div>
 </template>
@@ -24,8 +24,8 @@ import validate from '@/directives/validate'
 import Login from '@/components/forms/loginUser/formRows/Login.vue'
 import { validationErrors, httpErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
-import router from '@/router'
 import { ref } from 'vue'
+import { routerRedirect } from '@/modules/utilities/router-utility'
 
 export default {
   components: {
@@ -48,11 +48,8 @@ export default {
         loginUser()
       }
     }
-    async function navigateUp () {
-      await router.push({ name: 'Users' })
-    }
 
-    return { onSubmit, validationErrors, creds, navigateUp, isPasswordForgotten, userLoginData, httpErrors }
+    return { onSubmit, validationErrors, creds, isPasswordForgotten, userLoginData, httpErrors, routerRedirect }
   }
 }
 </script>

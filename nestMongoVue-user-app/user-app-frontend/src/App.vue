@@ -1,12 +1,13 @@
 <template>
   <div id="nav" class="row" v-show="!creds.isAuthenticated">
     <div class="col-lg-11 col-md-10 col-sm-7">
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/register">Register</router-link> |
+      <!-- <router-link to="/login">Login</router-link> |
+      <router-link to="/register">Register</router-link> | -->
       <router-link to="/users">All Users</router-link>
     </div>
     <div class="col-lg-1 col-md-2 col-sm-5">
-      <span>User: anonymous</span>
+      <router-link to="/login">Login</router-link> |
+      <span>anonymous</span>
     </div>
   </div>
   <div id="nav" class="row" v-show="creds.isAuthenticated">
@@ -15,7 +16,9 @@
     </div>
     <div class="col-lg-2 col-md-2 col-sm-5">
       <router-link to="/login" @click="logoutUser()">Logout</router-link> |
-      <span>{{userLoginData.email}}</span>
+      <router-link :to="{ name: 'Edit', params: { id: userLoginData._id || '#' } }">
+        {{userLoginData.email}}
+      </router-link>
     </div>
   </div>
   <router-view/>
