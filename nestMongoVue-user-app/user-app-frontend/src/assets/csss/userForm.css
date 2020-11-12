@@ -10,7 +10,8 @@ input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid.inva
 input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus:invalid.invalid,
 select:invalid.invalid,
 select:focus:invalid.invalid {
-  background-color: #ffeeee4f;
+  /* background-color: #ffeeee4f; */
+  background-color: var(--input-back-color);
   border-color: var(--input-invalid-color);
 }
 input:not([type="button"]):not([type="submit"]):not([type="reset"]).invalid,
