@@ -53,8 +53,12 @@ export class UsersService {
         return await userToUpdate.updateOne(prepareFileUpdate({ files, oldImages: userToUpdate.images }));
     }
 
-    async deleteUserImage(path: string): Promise<boolean> {
-        return deleteOneImage(path);
+    async deleteUserImage(id: ObjectID, image: string): Promise<string[]> {
+        const user = await this.personModel.findOne({ _id: id });
+        const newImages = await deleteOneImage(user, image);
+        console.log(newImages)
+        await user.updateOne({ images: newImages });
+        return newImages;
     }
     
     async createUser(user: CreateUserDto): Promise<Person> {

@@ -99,8 +99,8 @@ export class UsersController {
         return this.usersService.deleteUser(id);
     }
     // TODO: add guards
-    @Delete('gallery/:path')
-    async deleteImage(@Param('path') path: string): Promise<boolean> {
-        return this.usersService.deleteUserImage(path);
+    @Delete('gallery/:id/:image')
+    async deleteImage(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string[]> {
+        return this.usersService.deleteUserImage(id, image);
     }
 }

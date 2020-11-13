@@ -20,7 +20,7 @@ const editFileName = (req, file, callback) => {
 };
 
 const editDestination = (req, file, callback) => {
-  const path = `./${process.env.MULTER_OPTIONS_DESTINATION}/${req.params.id}`;
+  const path = `${process.env.MULTER_OPTIONS_DESTINATION}/${req.params.id}`;
   let stat = null;
   try {
     stat = fs.statSync(path);
