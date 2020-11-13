@@ -31,7 +31,7 @@ span.arrow:hover {
 .sort-arrows span ~ span {
   margin-left: .0125rem;
 }
-/* Inactive colors for edit form */
+/* Inactive colors for edit form page table */
 .users-saved-inactive table td,
 .users-saved-inactive table th,
 .users-saved-inactive table td a:link {

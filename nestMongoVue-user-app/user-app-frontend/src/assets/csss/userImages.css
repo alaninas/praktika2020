@@ -1,0 +1,28 @@
+ul.gallery {
+  list-style: none;
+  padding-left: 0;
+}
+ul.gallery figcaption {
+  color: #f8f8f8;
+}
+ul.gallery label[role="button"] {
+  margin: 0 !important;
+  --button-back-color: #21212100;
+  border: 1px solid;
+}
+ul.gallery label[role="button"]:hover {
+  border: calc(var(--universal-border-radius) / 2) solid #212121;
+}
+/* List elemenets styles */
+.gallery > li {
+  padding-bottom: calc(var(--universal-padding) / 2);
+}
+.gallery > li figure {
+  background: #515151d6;
+  margin: 0;
+  padding: var(--universal-padding) calc(var(--universal-padding) / 1.5);
+  border: calc(var(--universal-border-radius) / 2) solid #f8f8f8;
+}
+.gallery > li figure:hover {
+  border: calc(var(--universal-border-radius) / 2) solid #212121;
+}
