@@ -66,8 +66,8 @@ export default {
     UserRow
   },
   async setup () {
-    const { sortByEmail, sortByAge, sortByAddress, sortByFullname, sortByPassword, sortById, sortByCountry, sortByWebsite } = await useUsers()
-    return { sortById, sortByAge, sortByAddress, sortByFullname, sortByEmail, sortByPassword, sortByCountry, sortByWebsite }
+    const { sortByEmail, sortByAge, sortByAddress, sortByFullname, sortById, sortByCountry, sortByWebsite } = await useUsers()
+    return { sortById, sortByAge, sortByAddress, sortByFullname, sortByEmail, sortByCountry, sortByWebsite }
   }
 }
 </script>
