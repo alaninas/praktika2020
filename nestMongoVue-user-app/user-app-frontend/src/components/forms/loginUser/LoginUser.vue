@@ -8,7 +8,7 @@
       <label
         v-show="!creds.isAuthenticated"
         role="button"
-        :class="isPasswordReset ? 'disabled button bordered' : 'responsive-padding responsive-margin bordered'"
+        :class="isPasswordForgotten ? 'disabled button bordered' : 'responsive-padding responsive-margin bordered'"
         @click="resetUsersPassword(isPasswordForgotten, validationErrors)">
           {{ isPasswordForgotten ? 'Check email for new password' : 'Forgot password ?' }}
       </label>
