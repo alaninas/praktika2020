@@ -1,10 +1,13 @@
 <template>
   <ul class="row gallery">
     <li class="col-lg-3 col-md-6 col-sm-12" v-for="image in user.images" :key="image">
-      <figure>
-        <!-- <label role="button" class="responsive-padding responsive-margin inverse">Delete</label> -->
-        <img :src="require(`@/assets/uploads/${$route.params.id}/${image}`)" />
+      <!-- {{ image }} -->
+      <!-- <label role="button" class="responsive-padding responsive-margin inverse" @click="deleteI(image)">Delete</label> -->
+      <figure v-show="image.length > 0">
         <figcaption>{{ image }}</figcaption>
+        <img :src="getGalleryLinkText(image, $route.params.id)" />
+        <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="deleteI(image)">Delete</label>
+        <!-- <img :src="require(`@/assets/uploads/${$route.params.id}/${image}`)" /> -->
       </figure>
     </li>
   </ul>
@@ -14,29 +17,27 @@
 import { useUser } from '@/modules/features/useUser'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
+import { useLogin } from '@/modules/features/useLogin'
 
 export default {
   async setup () {
     const route = useRoute()
     const userId = ref(route.params.id?.toString())
-    const { user } = await useUser(userId.value ? { userId: userId.value, noDataReload: false } : {})
-    return { user }
+    const { user, deleteImage } = await useUser({ userId: userId.value, noDataReload: false })
+    const { isGivenUserAuthorised } = useLogin({})
+
+    async function deleteI (im: string) {
+      await deleteImage(im)
+    }
+    function getGalleryLinkText (image: string | undefined, id: string): string {
+      const length = image?.length
+      console.log(image)
+      return length ? require(`@/assets/uploads/${id}/${image}`) : '#'
+    }
+    return { user, deleteI, getGalleryLinkText, isGivenUserAuthorised }
   }
 }
 </script>
 
-<style scoped lang="scss">
-ul.gallery {
-  list-style: none;
-  padding-left: 0;
-}
-.gallery > li {
-  padding-bottom: calc(var(--universal-padding) / 2);
-}
-.gallery > li figure {
-  background: lightgrey;
-  margin: 0;
-  padding: calc(var(--universal-padding) / 2) calc(var(--universal-padding) / 1.5);
-  border: calc(var(--universal-border-radius) / 2) solid #f8f8f8;
-}
+<style scoped lang="css" src="@/assets/csss/userImages.css">
 </style>

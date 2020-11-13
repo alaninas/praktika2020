@@ -30,9 +30,13 @@ function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: 
 
 function setState (inputUser: UserInterface): UserInterface {
   resetFormErrors()
+  console.log('---> images before set')
+  console.log(inputUser.images)
   user.value = prepareUserProperties(inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
+  console.log('---> images after set')
+  console.log(user.value.images)
   return user.value
 }
 
@@ -52,7 +56,6 @@ async function loadState (userId: string, noDataReload: boolean): Promise<Ref<Us
   return getState()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 watchEffect(() => {
   setState(user.value)
   // TODO: debug prints to remove

@@ -9,6 +9,7 @@
   </div>
   <label role="button" class="responsive-padding responsive-margin secondary" @click="routerRedirect('Users')">Cancel profile update</label>
   <label role="button" class="responsive-padding responsive-margin tertiary" @click="passwordUpdate(isPswdUpdated)">{{ isPswdUpdated ? 'Choose old password' : 'Set new password' }}</label>
+  <label role="button" class="responsive-padding responsive-margin bordered" @click="routerRedirectWId('Gallery', $route.params.id)">Go to gallery</label>
   <form @submit.prevent="onSubmit(validationErrors)" onkeydown="return event.key != 'Enter';" id="userForm">
     <Suspense>
       <EditLogin v-bind:isPswdUpdated="isPswdUpdated" />
@@ -35,7 +36,7 @@ import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
-import { routerRedirect } from '@/modules/utilities/router-utility'
+import { routerRedirect, routerRedirectWId } from '@/modules/utilities/router-utility'
 
 export default {
   components: {
@@ -76,7 +77,7 @@ export default {
       clearUserData()
     }
 
-    return { user, onSubmit, validationErrors, userErrors, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved, routerRedirect }
+    return { user, onSubmit, validationErrors, userErrors, isPswdUpdated, passwordUpdate, deleteProfile, isDeleteApproved, routerRedirect, routerRedirectWId }
   }
 }
 </script>

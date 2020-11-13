@@ -25,7 +25,7 @@
     </div>
   </form>
   <div v-show="creds.isAuthenticated">
-    <label role="button" class="responsive-padding responsive-margin bordered" @click="routerRedirect('Users')">Next >></label>
+    <label role="button" class="responsive-padding responsive-margin bordered" @click="routerRedirect('Users')">Next &gt;&gt;</label>
   </div>
 </div>
 </template>

@@ -1,12 +1,21 @@
 import { setState, loadState, clearState } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
+import { deleteOneImage } from '../utilities/images-utility'
 
 export async function useUser ({ userId = '', noDataReload = true }: { userId?: string; noDataReload?: boolean }) {
   const user = await loadState(userId, noDataReload)
 
   function clearUserData () {
     clearState()
+  }
+
+  async function deleteImage (image: string): Promise<string[] | undefined> {
+    if (user.value._id && image && image.length > 0) {
+      deleteOneImage(user.value._id, image)
+        .catch(error => console.log(error.message))
+    }
+    return (await loadState(user.value._id || '', false)).value.images
   }
 
   function preparePasswordForServer (forgetPassword: boolean) {
@@ -23,5 +32,5 @@ export async function useUser ({ userId = '', noDataReload = true }: { userId?: 
     setState(user.value)
   }
 
-  return { user, clearUserData, updateUserPassword, preparePasswordForServer }
+  return { user, clearUserData, updateUserPassword, preparePasswordForServer, deleteImage }
 }
