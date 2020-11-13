@@ -9,7 +9,9 @@
           {{ user._id.substr(18) }}
       </router-link>
     </td>
-    <td data-label="Gallery">{{ setGalleryLink(user.images) }}</td>
+    <td data-label="Gallery">
+      <span v-html="getGalleryLinkText(user.images, user._id)" />
+    </td>
     <td data-label="Age">{{ user.age }}</td>
     <td data-label="Website">{{ user.website }}</td>
     <td data-label="Email">{{ user.email }}</td>
@@ -33,12 +35,12 @@ export default {
     async function loadUserEdit (id: string, onFirstLoad: boolean) {
       if (onFirstLoad) await useUser({ userId: id, noDataReload: false })
     }
-    function setGalleryLink (images: string[]): string {
-      const length = images.length
-      return length ? 'some images' : 'no images'
+    function getGalleryLinkText (images: string[] | undefined, id: string): string {
+      const length = images?.length
+      return length ? `<a href="#/users/gallery/${id}">${length} image${length > 1 ? 's' : ''}</a>` : ''
     }
 
-    return { users, loadUserEdit, isGivenUserAuthorised, setGalleryLink }
+    return { users, loadUserEdit, isGivenUserAuthorised, getGalleryLinkText }
   }
 }
 </script>
