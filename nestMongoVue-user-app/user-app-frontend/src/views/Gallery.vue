@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
       <Suspense>
-        <UserImages />
+        <UserGallery />
       </Suspense>
       </div>
     </div>
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import UserImages from '@/components/UserImages.vue'
+import UserGallery from '@/components/UserGallery.vue'
 import { useLogin } from '@/modules/features/useLogin'
 // import NewUser from '@/components/forms/newUser/NewUser.vue'
 import { routerRedirect } from '@/modules/utilities/router-utility'
@@ -27,7 +27,7 @@ import { routerRedirect } from '@/modules/utilities/router-utility'
 export default {
   components: {
     // NewUser,
-    UserImages
+    UserGallery
   },
   setup () {
     const { isGivenUserAuthorised } = useLogin({})
