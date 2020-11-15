@@ -1,17 +1,11 @@
-.autocomplete-active,
-li:hover,
-li:focus-within {
-  background-color: var(--table-body-hover-back-color);
-  color: #f8f8f8;
-}
 .address-input {
   width: 100%;
   margin: 0;
   margin-top: calc(0.5 * var(--universal-margin));
-  /* margin-bottom: calc(0.5 * var(--universal-margin)); */
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Drop down styles */
 ul,
 li {
   width: auto;
@@ -25,16 +19,29 @@ li {
 ul {
   list-style: none;
   padding-left: 0;
+  border: .0625rem solid lightgrey;
+  border-top: transparent;
+  height: auto;
+  max-height: 10rem;
+  overflow: auto;
+  scrollbar-color: lightgrey rgb(248, 248, 248);
 }
 li {
   display: block;
-  padding: var(--universal-padding);
+  padding: calc(var(--universal-padding) / 2);
   position: relative;
 }
 li:hover,
 li:focus-within {
   cursor: pointer;
 }
+.autocomplete-active,
+li:hover,
+li:focus-within {
+  background-color: var(--table-body-hover-back-color);
+  color: #f8f8f8;
+}
+/* Generated address fields */
 .autofilled-address input,
 .autofilled-address input:hover,
 .autofilled-address input:focus,
