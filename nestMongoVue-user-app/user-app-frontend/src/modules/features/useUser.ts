@@ -1,21 +1,26 @@
 import { setState, loadState, clearState } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
-import { deleteOneImage } from '../utilities/images-utility'
+import { deleteOneImage } from '@/modules/utilities/gallery/gallery-utility'
+import { setHttpErrorImage } from '../states/formErrors'
+import { to } from '../utilities/index-utility'
 
-export async function useUser ({ userId = '', noDataReload = true }: { userId?: string; noDataReload?: boolean }) {
-  const user = await loadState(userId, noDataReload)
+export async function useUser ({ userId = '', noDataReload = true, createGallery = false }: { userId?: string; noDataReload?: boolean; createGallery?: boolean }) {
+  const user = await loadState({ userId, noDataReload, createGallery })
 
   function clearUserData () {
     clearState()
   }
 
-  async function deleteImage (image: string): Promise<string[] | undefined> {
+  async function deletePictureInGallery (image: string): Promise<string[] | undefined> {
     if (user.value._id && image && image.length > 0) {
-      deleteOneImage(user.value._id, image)
-        .catch(error => console.log(error.message))
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [error, result] = await to(deleteOneImage(user.value._id, image))
+      if (error) setHttpErrorImage({ message: `Can not delete image: ${image}` })
     }
-    return (await loadState(user.value._id || '', false)).value.images
+    console.log('>>>> image deleted')
+    console.log(image)
+    return (await loadState({ userId: user.value._id || '', noDataReload: false, createGallery: true })).value.images
   }
 
   function preparePasswordForServer (forgetPassword: boolean) {
@@ -32,5 +37,5 @@ export async function useUser ({ userId = '', noDataReload = true }: { userId?: 
     setState(user.value)
   }
 
-  return { user, clearUserData, updateUserPassword, preparePasswordForServer, deleteImage }
+  return { user, clearUserData, updateUserPassword, preparePasswordForServer, deletePictureInGallery }
 }
