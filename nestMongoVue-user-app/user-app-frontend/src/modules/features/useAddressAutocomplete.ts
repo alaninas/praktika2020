@@ -5,7 +5,7 @@ import { addressAutocomplete } from '@/modules/types/IAddressAutocomplete'
 import { runAddressMatch } from '@/modules/states/address'
 
 export function useAddressAutocomplete (user: Ref<UserInterface>) {
-  const { matchedAddresses, matchedAddressesToString } = runAddressMatch(user)
+  const { matchedAddresses, matchedStringAddresses } = runAddressMatch(user)
 
   function setOpenDropDown (dropdown: boolean) {
     addressAutocomplete.value.openDropDown = dropdown
@@ -24,19 +24,31 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
     setAutocomplete({ dropdown, idx: 0 })
   }
 
-  function openMatches (matchedAddressesToStringArray: string[]) {
-    const newVal = user.value.address !== undefined && user.value.address !== '' && matchedAddressesToStringArray.length !== 0 && addressAutocomplete.value.openDropDown === true
+  function openMatches (matchedStringAddressesArray: string[]) {
+    const newVal = user.value.address !== undefined && user.value.address !== '' && matchedStringAddressesArray.length !== 0 && addressAutocomplete.value.openDropDown === true
     setOpenDropDown(newVal)
+  }
+
+  function createAddressId (idx: number): string {
+    return `address-${idx}`
+  }
+
+  function scrollIntoViewActiveAddress () {
+    const elTag = createAddressId(addressAutocomplete.value.currentIdx)
+    const el = document.getElementById(elTag)
+    if (el) el.scrollIntoView(false)
   }
 
   function up () {
     const i = addressAutocomplete.value.currentIdx
     if (i > 0 && addressAutocomplete.value.openDropDown) setCurrentIdx(i - 1)
+    scrollIntoViewActiveAddress()
   }
 
   function down () {
     const i = addressAutocomplete.value.currentIdx
-    if (i < matchedAddressesToString.value.length - 1 && addressAutocomplete.value.openDropDown) setCurrentIdx(i + 1)
+    if (i < matchedStringAddresses.value.length - 1 && addressAutocomplete.value.openDropDown) setCurrentIdx(i + 1)
+    scrollIntoViewActiveAddress()
   }
 
   function inputChange () {
@@ -54,9 +66,13 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
     resetDropDown(false)
   }
 
+  function isIndexActive (idx: number): boolean {
+    return idx === addressAutocomplete.value.currentIdx
+  }
+
   watchEffect(() => {
-    openMatches(matchedAddressesToString.value)
+    openMatches(matchedStringAddresses.value)
   })
 
-  return { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedAddressesToString, matchedAddresses }
+  return { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedStringAddresses, matchedAddresses, isIndexActive, createAddressId }
 }

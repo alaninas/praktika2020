@@ -1,5 +1,5 @@
 import AddressInterface, { addresses } from '@/modules/types/IAddress'
-import { matchAddress } from '@/modules/utilities/matchAddress/matchAddress'
+import { matchAddress } from '@/modules/utilities/matchAddress/matchAddress-utility'
 import { parseSearchString } from '@/modules/utilities/matchAddress/parseString'
 import { computed, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
@@ -13,12 +13,12 @@ export function runAddressMatch (user: Ref<UserInterface>) {
   }
 
   let matchedAddresses = computed(() => searchAddresses(user.value.address))
-  let matchedAddressesToString = computed(() => matchedAddresses.value.map<string>(el => Object.values(el).join(', ')))
+  let matchedStringAddresses = computed(() => matchedAddresses.value.map<string>(el => Object.values(el).join(', ')))
 
   watchEffect(() => {
     matchedAddresses = computed(() => searchAddresses(user.value.address))
-    matchedAddressesToString = computed(() => matchedAddresses.value.map<string>(el => Object.values(el).join(', ')))
+    matchedStringAddresses = computed(() => matchedAddresses.value.map<string>(el => Object.values(el).join(', ')))
   })
 
-  return { matchedAddresses, matchedAddressesToString }
+  return { matchedAddresses, matchedStringAddresses }
 }

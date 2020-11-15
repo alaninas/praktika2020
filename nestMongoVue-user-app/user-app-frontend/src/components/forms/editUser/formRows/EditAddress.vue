@@ -1,21 +1,21 @@
 <template>
 <div class="row">
   <div class="col-lg-3 col-md-12 col-sm-12">
-  <label for="addressInput">Address</label>
-  <input
-    class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
-    @keydown.enter="enter()"
-    @keydown.down="down()"
-    @keydown.up="up()"
-    @input="inputChange()"
-    @click="enter()"
-  />
-  <div v-show="!addressAutocomplete.openDropDown" class="error">{{ validationErrors.address }}</div>
-  <ul class="dropdown-menu" v-show="addressAutocomplete.openDropDown">
-    <li v-for="(match, i) in matchedAddressesToString" :key="i" v-bind:class="{'autocomplete-active': i === addressAutocomplete.currentIdx}" @click="matchesClick(i)">
-      {{ match }}
-    </li>
-  </ul>
+    <label for="addressInput">Address</label>
+    <input
+      class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
+      @keydown.enter="enter()"
+      @keydown.down="down()"
+      @keydown.up="up()"
+      @input="inputChange()"
+      @click="enter()"
+    />
+    <div v-show="!addressAutocomplete.openDropDown" class="error">{{ validationErrors.address }}</div>
+    <ul class="dropdown-menu" v-show="addressAutocomplete.openDropDown">
+      <li :id="createAddressId(i)" v-for="(match, i) in matchedStringAddresses" :key="i" :class="{'autocomplete-active': isIndexActive(i)}" @click="matchesClick(i)">
+        {{ match }}
+      </li>
+    </ul>
   </div>
   <div class="autofilled-address col-lg-9 col-md-12 col-sm-12">
     <div class="row">
@@ -52,8 +52,21 @@ export default {
   },
   async setup () {
     const { user } = await useUser({})
-    const { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedAddressesToString, matchedAddresses } = useAddressAutocomplete(user)
-    return { enter, up, down, inputChange, matchesClick, matchedAddressesToString, matchedAddresses, validationErrors, user, addressAutocomplete }
+    const { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedStringAddresses, matchedAddresses, isIndexActive, createAddressId } = useAddressAutocomplete(user)
+    return {
+      enter,
+      up,
+      down,
+      inputChange,
+      matchesClick,
+      addressAutocomplete,
+      isIndexActive,
+      matchedStringAddresses,
+      matchedAddresses,
+      validationErrors,
+      user,
+      createAddressId
+    }
   }
 }
 </script>

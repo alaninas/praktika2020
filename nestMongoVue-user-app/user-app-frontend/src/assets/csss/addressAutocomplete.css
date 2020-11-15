@@ -22,7 +22,7 @@ ul {
   border: .0625rem solid lightgrey;
   border-top: transparent;
   height: auto;
-  max-height: 10rem;
+  max-height: 8rem;
   overflow: auto;
   scrollbar-color: lightgrey rgb(248, 248, 248);
 }
