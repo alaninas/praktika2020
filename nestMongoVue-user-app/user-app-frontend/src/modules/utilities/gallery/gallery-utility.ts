@@ -14,7 +14,13 @@ async function deleteOneImage (id: string, image: string): Promise<string[]> {
   return result.data
 }
 
+function getGalleryLinkText (images: string[] | undefined, id: string): string {
+  const length = images?.length
+  return length ? `<a href="#/users/gallery/${id}">${length} image${length > 1 ? 's' : ''}</a>` : ''
+}
+
 export {
   deleteOneImage,
-  getImageUrl
+  getImageUrl,
+  getGalleryLinkText
 }

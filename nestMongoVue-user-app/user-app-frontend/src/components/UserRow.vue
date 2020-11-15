@@ -25,6 +25,7 @@
 import { useUsers } from '@/modules/features/useUsers'
 import { useUser } from '@/modules/features/useUser'
 import { useLogin } from '@/modules/features/useLogin'
+import { getGalleryLinkText } from '@/modules/utilities/gallery/gallery-utility'
 
 export default {
   async setup () {
@@ -34,10 +35,6 @@ export default {
 
     async function loadUserEdit (id: string, onFirstLoad: boolean) {
       if (onFirstLoad) await useUser({ userId: id, noDataReload: false })
-    }
-    function getGalleryLinkText (images: string[] | undefined, id: string): string {
-      const length = images?.length
-      return length ? `<a href="#/users/gallery/${id}">${length} image${length > 1 ? 's' : ''}</a>` : ''
     }
 
     return { users, loadUserEdit, isGivenUserAuthorised, getGalleryLinkText }

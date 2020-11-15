@@ -11,6 +11,8 @@
       <li v-for="(user, i) in userSearchResults.data" :key="user">
         <b>Index: </b>{{i}} |
         <b>Data: </b>{{ displayUserData(user) }} |
+        <b>Gallery: </b>
+          <span v-html="getGalleryLinkText(user.images, user._id) || 'no images'" /> |
         <b>Edit profile: </b>
           <router-link
             :to="{ name: 'Edit', params: { id: user._id } }"
@@ -29,6 +31,7 @@ import UserInterface from '@/modules/types/IUser'
 import { useUsers } from '@/modules/features/useUsers'
 import { displayUserData } from '@/modules/utilities/user-utility'
 import { useLogin } from '@/modules/features/useLogin'
+import { getGalleryLinkText } from '@/modules/utilities/gallery/gallery-utility'
 
 export default {
   async setup () {
@@ -46,7 +49,7 @@ export default {
     })
     stopHandle()
 
-    return { pattern, userSearch, userSearchResults, displayUserData, isGivenUserAuthorised }
+    return { pattern, userSearch, userSearchResults, displayUserData, isGivenUserAuthorised, getGalleryLinkText }
   }
 }
 </script>
