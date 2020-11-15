@@ -1,5 +1,5 @@
 export default interface IFile { 
-    originalname: any; 
-    filename: any; 
-    path: any
+    originalname: string; 
+    filename: string; 
+    path: string;
 }
