@@ -2,6 +2,7 @@ ul.gallery {
   list-style: none;
   padding-left: 0;
 }
+/* Delete button and caption */
 ul.gallery figcaption {
   color: #f8f8f8;
 }
@@ -12,8 +13,9 @@ ul.gallery label[role="button"] {
 }
 ul.gallery label[role="button"]:hover {
   border: calc(var(--universal-border-radius) / 2) solid #212121;
+  --button-hover-back-color: #4444446b;
 }
-/* List elemenets styles */
+/* List elements styles */
 .gallery > li {
   padding-bottom: calc(var(--universal-padding) / 2);
 }
@@ -21,8 +23,23 @@ ul.gallery label[role="button"]:hover {
   background: #515151d6;
   margin: 0;
   padding: var(--universal-padding) calc(var(--universal-padding) / 1.5);
-  border: calc(var(--universal-border-radius) / 2) solid #f8f8f8;
+  border: var(--universal-border-radius) solid #f8f8f8;
 }
 .gallery > li figure:hover {
   border: calc(var(--universal-border-radius) / 2) solid #212121;
+}
+.gallery > li img {
+  max-width: 100%;
+  height: calc(100vh / 2);
+  object-fit: cover;
+}
+@media screen and (max-width: 1279px) {
+  .gallery > li img {
+    height: calc(100vh / 1.5);
+  }
+}
+@media screen and (max-width: 767px) {
+  .gallery > li img {
+    height: 100%;
+  }
 }
