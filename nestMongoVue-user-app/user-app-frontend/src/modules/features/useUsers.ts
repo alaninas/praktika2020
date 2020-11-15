@@ -2,6 +2,8 @@ import UserInterface from '@/modules/types/IUser'
 import { Ref } from 'vue'
 import { addUsersStateUser, getState, loadSortedUsers, loadUnsortedUsers, removeUsersStateUser, updateUsersStateUser } from '@/modules/states/users'
 import { getDirection } from '@/modules/utilities/users-utility'
+import { to } from '../utilities/index-utility'
+import { userErrors } from '../states/formErrors'
 
 export async function useUsers () {
   function searchByEmail ({ pattern = '' }: { pattern?: string }): UserInterface[] {
@@ -43,7 +45,9 @@ export async function useUsers () {
   }
 
   async function addUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
-    return await addUsersStateUser(newUser)
+    const [error, result] = await to(addUsersStateUser(newUser))
+    if (error) userErrors.value.age = error.message
+    return result
   }
 
   async function removeUser (userId: string): Promise<Ref<UserInterface[]>> {
