@@ -6,6 +6,7 @@ import { Movie } from '../movies/schemas/movie.schema'
 import { ObjectID } from 'mongodb';
 import { getDirection, getNewFriendsStages } from './utilities/base-user.utility';
 import * as fs from 'fs';
+import { deleteOneImage } from './utilities/file-upload.utility';
 
 @Injectable()
 export class UsersHelper {
@@ -91,5 +92,12 @@ export class UsersHelper {
             console.error(`Error while deleting image directory: ${imageDir}`);
         }
         return await this.personModel.findOneAndDelete({_id: uid})
+    }
+
+    async deleteUserImage(id: ObjectID, image: string): Promise<string[]> {
+        const user = await this.personModel.findOne({ _id: id });
+        const newImages = await deleteOneImage(user, image);
+        await user.updateOne({ images: newImages });
+        return newImages
     }
 }

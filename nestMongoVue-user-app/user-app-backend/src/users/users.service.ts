@@ -8,7 +8,7 @@ import { ObjectID } from 'mongodb';
 import { sendMail } from './utilities/mail.utility';
 import { to, getMd5Hash, createUserPassword, updateUserPassword } from './utilities/base-user.utility';
 import IFile from './types/IFile';
-import { deleteOneImage, prepareFileUpdate } from './utilities/file-upload.utility';
+import { addUserFiles, readImageFile } from './utilities/file-upload.utility';
 
 @Injectable()
 export class UsersService {
@@ -20,26 +20,21 @@ export class UsersService {
     async getAllUsers(): Promise<Person[]> {
         return await this.personModel.find();
     }
-
+    // TODO: add params -- offset/pageNr ($skip), limit ($limit)
     async getAllUsersSorted({ column, direction }: { column: string; direction: string; }): Promise<Person[]> {
-        // TODO: add params -- offset/pageNr ($skip), limit ($limit)
         const [error, result] = await to(this.usersHelper.sortUsers(column, direction));
         if (error) throw new HttpException(`Can not sort users by column: ${column} in order: ${direction}`, HttpStatus.BAD_REQUEST);
         return result
     }
-
     async getOneUserById(id: ObjectID): Promise<Person> {
         return await this.personModel.findById(id);
     }
-
     async getUserFriends(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         return await this.usersHelper.getFriendsDetails(id);
     }
-
     async getUserMovies(id: ObjectID): Promise<mongoose.Types.ObjectId[]> {
         return await this.usersHelper.getMoviesDetails(id);
     }
-
     async getOneUserByEmail(useremail: string): Promise<Person> {
         return this.personModel.findOne({email: useremail});
     }
@@ -47,33 +42,23 @@ export class UsersService {
     async getUserImages(id: ObjectID): Promise<string[]> {
         return (await this.personModel.findById(id)).images
     }
-
+    async readUserImage(id: ObjectID, image: string): Promise<string> {
+        return readImageFile(id, image);
+    }
     async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
         const userToUpdate = await this.personModel.findOne({ _id: id });
-        return await userToUpdate.updateOne(prepareFileUpdate({ files, oldImages: userToUpdate.images }));
+        return await userToUpdate.updateOne(addUserFiles({ files, oldImages: userToUpdate.images }));
     }
-
     async deleteUserImage(id: ObjectID, image: string): Promise<string[]> {
-        const user = await this.personModel.findOne({ _id: id });
-        const newImages = await deleteOneImage(user, image);
-        console.log(newImages)
-        await user.updateOne({ images: newImages });
-        return newImages;
+        return this.usersHelper.deleteUserImage(id, image);
     }
-    
-    async createUser(user: CreateUserDto): Promise<Person> {
-        const duplicate = await this.personModel.findOne({ email: user.email });
-        if (duplicate) throw new HttpException(`Email already in use #${user.email}`, HttpStatus.BAD_REQUEST);
-        return await this.personModel.create(createUserPassword(user));
-    }
-    
+     
     async addUserFriends({ uid, fid }: { uid: ObjectID; fid: ObjectID; }): Promise<Record<string, unknown>> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [error, result] = await to(this.usersHelper.updateFriends(uid, fid, ''));
         if (error) throw new HttpException(`Can not add friends: user #${uid}, friend #${fid}`, HttpStatus.BAD_REQUEST);
         return {data: `User #${uid} friended #${fid}`};
     }
-
     async removeUserFriends({ uid, fid }: { uid: ObjectID; fid: ObjectID; }): Promise<Record<string, unknown>> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [error, result] = await to(this.usersHelper.updateFriends(uid, fid, 'delete'));
@@ -81,19 +66,22 @@ export class UsersService {
         return {data: `User #${uid} unfriended #${fid}`};
     }
 
+    async createUser(user: CreateUserDto): Promise<Person> {
+        const duplicate = await this.personModel.findOne({ email: user.email });
+        if (duplicate) throw new HttpException(`Email already in use #${user.email}`, HttpStatus.BAD_REQUEST);
+        return await this.personModel.create(createUserPassword(user));
+    }
     async updateUser(user: UpdateUserDto): Promise<Person> {
         const { _id, ...args } = user
         const userToUpdate = await this.personModel.findOne({ _id: _id });
         return await userToUpdate.updateOne(updateUserPassword({ args, userToUpdate }));
     }
-
     async updatePasswordByEmail({ email, newPass }: { email: string; newPass: string; }): Promise<[Person, string]> {
         const userToUpdate = await this.personModel.findOne({email});
         if (!userToUpdate) throw new HttpException(`No such user in DB #${userToUpdate}`, HttpStatus.NOT_FOUND);
         const passwordDigest = getMd5Hash(newPass);
         return Promise.all([userToUpdate.updateOne({ password: passwordDigest, passwordConfirm: passwordDigest }), sendMail(email, newPass)]);
     }
-    
     async deleteUser(id: ObjectID): Promise<boolean> {
         try {
             Promise.all([ this.usersHelper.cleanUsersRecords(id), this.usersHelper.cleanMoviesRecords(id), this.usersHelper.purgeOneUser(id) ]);

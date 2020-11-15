@@ -49,6 +49,11 @@ export class UsersController {
     async getUserImages(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<string[]> {
       return this.usersService.getUserImages(id);
     }
+    @Get('uploads/:id/:image')
+    // @Header('Content-Type', 'image/*')
+    async getUserImage(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string> {
+        return this.usersService.readUserImage(id, image);
+    }
     
     @UseGuards(LocalAuthGuard)
     @Post('auth/login')
