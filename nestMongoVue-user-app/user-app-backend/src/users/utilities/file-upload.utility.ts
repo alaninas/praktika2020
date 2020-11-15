@@ -27,12 +27,8 @@ async function deleteOneImage(user: Person, image: string): Promise<string[] | u
   try {
     fs.unlinkSync(`${process.env.MULTER_OPTIONS_DESTINATION}/${user._id}/${image}`)
     //file removed
-    console.log('images before splice')
-    console.log(oldImages)
     const index = oldImages.findIndex(el => el === image)
     oldImages.splice(index, 1)
-    console.log('after splice')
-    console.log(oldImages)
     return !!oldImages ? oldImages : [] 
   } catch(err) {
     throw new HttpException(`Can not delete an image: ${user._id}/${image}`, HttpStatus.BAD_REQUEST);
