@@ -12,6 +12,10 @@ function setUserErrors (user: UserInterface) {
   return userErrors.value
 }
 
+function setHttpErrorImage ({ message = '' }: { message?: string }) {
+  httpErrors.value.image = message
+}
+
 function setHttpErrorEmail ({ message = '' }: { message?: string }) {
   httpErrors.value.email = message
 }
@@ -28,6 +32,7 @@ function setHttpErrors (loginData: Ref<LoginInterface>) {
 function resetHttpErrors () {
   setHttpErrorEmail({})
   setHttpErrorPswd({})
+  setHttpErrorImage({})
 }
 
 function resetValidationErrors () {
@@ -54,5 +59,6 @@ export {
   resetValidationErrors,
   resetHttpErrors,
   setHttpErrorPswd,
-  setHttpErrorEmail
+  setHttpErrorEmail,
+  setHttpErrorImage
 }

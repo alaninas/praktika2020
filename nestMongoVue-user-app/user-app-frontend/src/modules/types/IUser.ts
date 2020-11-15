@@ -1,3 +1,10 @@
+export interface GalleryInterface {
+    name: string;
+    link: string;
+    caption: string;
+    file: string;
+}
+
 export default interface UserInterface {
     firstname?: string | undefined;
     lastname?: string | undefined;
@@ -18,4 +25,5 @@ export default interface UserInterface {
     _id?: string;
     website?: string;
     images?: Array<string>;
+    gallery?: Array<GalleryInterface>;
 }
