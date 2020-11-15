@@ -1,7 +1,7 @@
-import { ref, Ref, watchEffect } from 'vue'
+import { ref, Ref, watch, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
-import { getAddressFromUser, prepareUserProperties } from '@/modules/utilities/user-utility'
+import { createGallery, getAddressFromUser, prepareAddressProperties, prepareBasicProperties } from '@/modules/utilities/user-utility'
 import { resetFormErrors, setUserErrors } from './formErrors'
 import { getUsersStateUser } from './users'
 
@@ -19,24 +19,23 @@ function getStateEmail () {
 }
 
 function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: '', zipCode: '' } }: { inputAddress?: AddressInterface }): UserInterface {
-  const { street, houseNumber, city, zipCode } = inputAddress
-  user.value.street = street
-  user.value.houseNumber = parseInt(houseNumber)
-  user.value.zipCode = parseInt(zipCode)
-  user.value.city = city
-  if (street && houseNumber && city && zipCode) user.value.address = Object.values(inputAddress).join(', ')
+  prepareAddressProperties(user.value, inputAddress)
   return user.value
+}
+
+async function initGallery (inputUser: UserInterface) {
+  await createGallery(inputUser)
+}
+
+function emptyGallery () {
+  user.value.gallery = []
 }
 
 function setState (inputUser: UserInterface): UserInterface {
   resetFormErrors()
-  console.log('---> images before set')
-  console.log(inputUser.images)
-  user.value = prepareUserProperties(inputUser)
+  user.value = prepareBasicProperties(inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
-  console.log('---> images after set')
-  console.log(user.value.images)
   return user.value
 }
 
@@ -45,11 +44,15 @@ function clearState () {
   resetFormErrors()
 }
 
-async function loadState (userId: string, noDataReload: boolean): Promise<Ref<UserInterface>> {
+async function loadState ({ userId, noDataReload, createGallery }: { userId: string; noDataReload: boolean; createGallery: boolean }): Promise<Ref<UserInterface>> {
   const myUser = userId ? await getUsersStateUser(userId) : {} as UserInterface
   if (!noDataReload) {
     if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
       clearState()
+      if (createGallery && myUser.images) {
+        console.log('>>>>>>> got gallery !')
+        await initGallery(myUser)
+      }
       setState(myUser)
     }
   }
@@ -72,5 +75,7 @@ export {
   setStateAddress,
   loadState,
   clearState,
-  getStateEmail
+  getStateEmail,
+  initGallery,
+  emptyGallery
 }

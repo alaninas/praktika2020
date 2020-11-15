@@ -10,9 +10,9 @@ resetHeaders()
 reqInterceptor()
 resInterceptor()
 
-// async function getUserImages (userId: string): Promise<AxiosResponse<UserInterface>> {
-//   return await axios.get(`${server.baseURL}/users/gallery/${userId}`)
-// }
+async function getUserImageString (userId: string, image: string): Promise<AxiosResponse<Blob>> {
+  return await axios.get(`${server.baseURL}/users/uploads/${userId}/${image}`)
+}
 
 async function deleteUserImage (id: string, image: string): Promise<AxiosResponse<string[]>> {
   return await axios.delete(`${server.baseURL}/users/gallery/${id}/${image}`)
@@ -72,5 +72,6 @@ export {
   getOneUserByEmail,
   putTemporaryPassword,
   // getUserImages,
-  deleteUserImage
+  deleteUserImage,
+  getUserImageString
 }
