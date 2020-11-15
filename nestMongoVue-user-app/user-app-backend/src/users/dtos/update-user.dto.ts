@@ -46,7 +46,7 @@ export class UpdateUserDto {
     @IsOptional()
     @IsArray()
     @IsString({each: true})
-    @Matches(/\.(png|jpg|jpeg|png|gif)$/, {each: true, message: 'file extension not a picture'})
+    @Matches(/\.(jpg|jpeg|png|gif)$/, {each: true, message: 'file extension not a picture'})
     images?: string[];
 
     @IsOptional()
