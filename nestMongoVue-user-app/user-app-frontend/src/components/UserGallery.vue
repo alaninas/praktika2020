@@ -5,7 +5,9 @@
         <figcaption>{{ pic.file }}</figcaption>
         <img :src="pic.link" :alt="pic.name"/>
         <br />
-        <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="deletePic(pic.file)">Delete</label>
+        <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="deletePic(pic.file)">
+          Delete
+        </label>
       </figure>
       <div class="error">{{ httpErrors.image }}</div>
     </li>

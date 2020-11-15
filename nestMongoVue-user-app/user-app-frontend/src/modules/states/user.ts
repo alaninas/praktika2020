@@ -1,7 +1,7 @@
-import { ref, Ref, watch, watchEffect } from 'vue'
+import { ref, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
-import { createGallery, getAddressFromUser, prepareAddressProperties, prepareBasicProperties } from '@/modules/utilities/user-utility'
+import { createGallery, getAddressFromUser, setAddressProperties, setBasicProperties } from '@/modules/utilities/user-utility'
 import { resetFormErrors, setUserErrors } from './formErrors'
 import { getUsersStateUser } from './users'
 
@@ -19,21 +19,13 @@ function getStateEmail () {
 }
 
 function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: '', zipCode: '' } }: { inputAddress?: AddressInterface }): UserInterface {
-  prepareAddressProperties(user.value, inputAddress)
+  setAddressProperties(user.value, inputAddress)
   return user.value
-}
-
-async function initGallery (inputUser: UserInterface) {
-  await createGallery(inputUser)
-}
-
-function emptyGallery () {
-  user.value.gallery = []
 }
 
 function setState (inputUser: UserInterface): UserInterface {
   resetFormErrors()
-  user.value = prepareBasicProperties(inputUser)
+  setBasicProperties(user.value, inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrors(user.value)
   return user.value
@@ -44,13 +36,21 @@ function clearState () {
   resetFormErrors()
 }
 
+async function initGallery (inputUser: UserInterface) {
+  await createGallery(inputUser)
+}
+
+function emptyGallery () {
+  user.value.gallery = []
+}
+
 async function loadState ({ userId, noDataReload, createGallery }: { userId: string; noDataReload: boolean; createGallery: boolean }): Promise<Ref<UserInterface>> {
   const myUser = userId ? await getUsersStateUser(userId) : {} as UserInterface
   if (!noDataReload) {
     if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
       clearState()
       if (createGallery && myUser.images) {
-        console.log('>>>>>>> got gallery !')
+        console.log('>>>>>>> got gallery images!')
         await initGallery(myUser)
       }
       setState(myUser)
