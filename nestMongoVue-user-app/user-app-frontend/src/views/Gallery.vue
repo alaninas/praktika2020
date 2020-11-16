@@ -2,7 +2,9 @@
   <div v-show="isGivenUserAuthorised($route.params.id)" id="myUsers" class="card fluid"><p class="section">Add New Image</p>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
-        <p>File upload placeholder</p>
+        <Suspense>
+          <FileUpload />
+        </Suspense>
       </div>
     </div>
   </div>
@@ -20,13 +22,13 @@
 
 <script lang="ts">
 import UserGallery from '@/components/UserGallery.vue'
+import FileUpload from '@/components/forms/fileUpload/FileUpload.vue'
 import { useLogin } from '@/modules/features/useLogin'
-// import NewUser from '@/components/forms/newUser/NewUser.vue'
 import { routerRedirect } from '@/modules/utilities/router-utility'
 
 export default {
   components: {
-    // NewUser,
+    FileUpload,
     UserGallery
   },
   setup () {
