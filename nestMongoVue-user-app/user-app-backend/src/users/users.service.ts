@@ -8,7 +8,7 @@ import { ObjectID } from 'mongodb';
 import { sendMail } from './utilities/mail.utility';
 import { to, getMd5Hash, createUserPassword, updateUserPassword } from './utilities/base-user.utility';
 import IFile from './types/IFile';
-import { addUserFiles, readImageFile } from './utilities/file-upload.utility';
+import { getAugmentedUserImages, readFile } from './utilities/file-upload.utility';
 
 @Injectable()
 export class UsersService {
@@ -43,11 +43,11 @@ export class UsersService {
         return (await this.personModel.findById(id)).images
     }
     async readUserImage(id: ObjectID, image: string): Promise<string> {
-        return readImageFile(id, image);
+        return readFile(id, image);
     }
     async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
         const userToUpdate = await this.personModel.findOne({ _id: id });
-        return await userToUpdate.updateOne(addUserFiles({ files, oldImages: userToUpdate.images }));
+        return await userToUpdate.updateOne(getAugmentedUserImages({ files, oldImages: userToUpdate.images }));
     }
     async deleteUserImage(id: ObjectID, image: string): Promise<string[]> {
         return this.usersHelper.deleteUserImage(id, image);

@@ -5,7 +5,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { Person } from '../schemas/user.schema';
 import { ObjectID } from 'mongodb';
 
-function addUserFiles({ files, oldImages }: { files: IFile[]; oldImages: string[]; }): IImages {
+function getAugmentedUserImages({ files, oldImages }: { files: IFile[]; oldImages: string[]; }): IImages {
   const response = oldImages;
   files.forEach((file: IFile) => {
     response.push(file.filename);
@@ -13,7 +13,7 @@ function addUserFiles({ files, oldImages }: { files: IFile[]; oldImages: string[
   return { images: response };
 }
 
-function readImageFile (id: ObjectID, image: string): string {
+function readFile (id: ObjectID, image: string): string {
   try {
     return fs.readFileSync(`uploads/${id}/${image}`, 'base64')
   } catch (err) {
@@ -36,7 +36,7 @@ async function deleteOneImage(user: Person, image: string): Promise<string[] | u
 }
 
 export {
-  addUserFiles,
+  getAugmentedUserImages,
   deleteOneImage,
-  readImageFile
+  readFile
 }
