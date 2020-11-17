@@ -6,6 +6,7 @@
   color: #2c3e50;
 }
 
+// Nav panel
 #nav {
   background-color: #e1e1e1;
   padding: .625rem;
@@ -16,7 +17,7 @@
   a,
   span {
     font-variant-caps: all-small-caps;
-    font-size: larger;
+    font-size: 1.6rem;
     color: #2c3e50;
   }
   a {
@@ -35,6 +36,3 @@
 	--card-back-color: #ffca2826;
 	--card-border-color: #e8b825;
 }
-// .auth-status {
-//   float: right !important;
-// }
