@@ -18,6 +18,12 @@ async function deleteUserImage (id: string, image: string): Promise<AxiosRespons
   return await axios.delete(`${server.baseURL}/users/gallery/${id}/${image}`)
 }
 
+// async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string): Promise<Person>
+// @Put('uploads/:id')
+async function putUserNewImages (myformData: FormData, id: string): Promise<AxiosResponse<UserInterface>> {
+  return await axios.put(`${server.baseURL}/users/uploads/${id}`, myformData)
+}
+
 async function postUserLogin (loginData: LoginInterface): Promise<object> {
   const [error, result] = await to(axios.post(`${server.baseURL}/users/auth/login`, loginData))
   if (error) throw error.message
@@ -73,5 +79,6 @@ export {
   putTemporaryPassword,
   // getUserImages,
   deleteUserImage,
-  getUserImageString
+  getUserImageString,
+  putUserNewImages
 }
