@@ -2,7 +2,7 @@ import { setState, loadState, clearState } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
 import { deleteOneImage } from '@/modules/utilities/gallery/gallery-utility'
-import { setHttpErrorImage } from '../states/formErrors'
+import { setHttpErrorsField } from '../states/formErrors'
 import { to } from '../utilities/index-utility'
 
 export async function useUser ({ userId = '', noDataReload = true, createGallery = false }: { userId?: string; noDataReload?: boolean; createGallery?: boolean }) {
@@ -16,7 +16,7 @@ export async function useUser ({ userId = '', noDataReload = true, createGallery
     if (user.value._id && image && image.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [error, result] = await to(deleteOneImage(user.value._id, image))
-      if (error) setHttpErrorImage({ message: `Can not delete image: ${image}` })
+      if (error) setHttpErrorsField({ field: 'image', message: `Can not delete image: ${image}` })
     }
     console.log('>>>> image deleted')
     console.log(image)

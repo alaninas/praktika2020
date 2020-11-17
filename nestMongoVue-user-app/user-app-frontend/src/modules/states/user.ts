@@ -2,7 +2,7 @@ import { ref, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { createGallery, getAddressFromUser, setAddressProperties, setBasicProperties } from '@/modules/utilities/user-utility'
-import { resetFormErrors, setUserErrors } from './formErrors'
+import { resetFormErrors, setUserErrorsPassword } from './formErrors'
 import { getUsersStateUser } from './users'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
@@ -27,7 +27,7 @@ function setState (inputUser: UserInterface): UserInterface {
   resetFormErrors()
   setBasicProperties(user.value, inputUser)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
-  setUserErrors(user.value)
+  setUserErrorsPassword(user.value)
   return user.value
 }
 
@@ -46,15 +46,14 @@ function emptyGallery () {
 
 async function loadState ({ userId, noDataReload, createGallery }: { userId: string; noDataReload: boolean; createGallery: boolean }): Promise<Ref<UserInterface>> {
   const myUser = userId ? await getUsersStateUser(userId) : {} as UserInterface
-  if (!noDataReload) {
-    if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
-      clearState()
-      if (createGallery && myUser.images) {
-        console.log('>>>>>>> got gallery images!')
-        await initGallery(myUser)
-      }
-      setState(myUser)
+  if (noDataReload) return getState()
+  if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
+    clearState()
+    if (createGallery && myUser.images) {
+      console.log('>>>>>>> got gallery images!')
+      await initGallery(myUser)
     }
+    setState(myUser)
   }
   return getState()
 }

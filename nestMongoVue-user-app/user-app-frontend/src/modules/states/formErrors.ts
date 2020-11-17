@@ -1,9 +1,9 @@
 import UserInterface from '@/modules/types/IUser'
-import { userErrors, validationErrors, httpErrors } from '@/modules/types/IErors'
+import { userErrors, validationErrors, httpErrors, HttpErrorsFieldTypes, UserErrorsFieldTypes } from '@/modules/types/IErors'
 import { LoginInterface } from '../types/ILogin'
 import { Ref } from 'vue'
 
-function setUserErrors (user: UserInterface) {
+function setUserErrorsPassword (user: UserInterface) {
   const pswdMessagge = user.password === user.passwordConfirm ? '' : 'Passwords do not match.'
   userErrors.value = Object.assign({}, userErrors.value, {
     password: pswdMessagge,
@@ -12,27 +12,21 @@ function setUserErrors (user: UserInterface) {
   return userErrors.value
 }
 
-function setHttpErrorImage ({ message = '' }: { message?: string }) {
-  httpErrors.value.image = message
+// function setUserErrorsField ({ field, message = '' }: { field: UserErrorsFieldTypes; message?: string }) {
+//   userErrors.value[field] = message
+// }
+
+function setHttpErrorsField ({ field, message = '' }: { field: HttpErrorsFieldTypes; message?: string }) {
+  httpErrors.value[field] = message
 }
 
-function setHttpErrorEmail ({ message = '' }: { message?: string }) {
-  httpErrors.value.email = message
-}
-
-function setHttpErrorPswd ({ message = '' }: { message?: string }) {
-  httpErrors.value.password = message
-}
-
-function setHttpErrors (loginData: Ref<LoginInterface>) {
-  if (loginData.value.email === '') setHttpErrorEmail({})
-  if (loginData.value.password === '') setHttpErrorPswd({})
+function clearHttpErrorsLogin (loginData: Ref<LoginInterface>) {
+  if (loginData.value.email === '') setHttpErrorsField({ field: 'email' })
+  if (loginData.value.password === '') setHttpErrorsField({ field: 'password' })
 }
 
 function resetHttpErrors () {
-  setHttpErrorEmail({})
-  setHttpErrorPswd({})
-  setHttpErrorImage({})
+  httpErrors.value = { email: '', password: '', image: '' }
 }
 
 function resetValidationErrors () {
@@ -53,12 +47,11 @@ export {
   userErrors,
   validationErrors,
   httpErrors,
-  setUserErrors,
-  setHttpErrors,
+  setUserErrorsPassword,
+  clearHttpErrorsLogin,
   resetFormErrors,
   resetValidationErrors,
   resetHttpErrors,
-  setHttpErrorPswd,
-  setHttpErrorEmail,
-  setHttpErrorImage
+  setHttpErrorsField
+  // setUserErrorsField
 }

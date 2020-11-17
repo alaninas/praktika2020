@@ -1,6 +1,6 @@
 import { LoginInterface, authCredentials, AuthCredentialsType, loginData } from '@/modules/types/ILogin'
 import { Ref, watchEffect } from 'vue'
-import { resetHttpErrors, resetValidationErrors, httpErrors, setHttpErrors, setHttpErrorEmail, setHttpErrorPswd } from '@/modules/states/formErrors'
+import { resetHttpErrors, resetValidationErrors, httpErrors, clearHttpErrorsLogin, setHttpErrorsField } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
 import { resetUserPassword, loginUser } from '@/modules/utilities/login-utility'
 import { to } from '@/modules/utilities/index-utility'
@@ -11,7 +11,7 @@ history.push(loginData.value)
 function setState ({ data = { password: '', email: '', _id: '' } }: {data?: LoginInterface}): Ref<LoginInterface> {
   loginData.value = data
   authCredentials.value = tokenService.getAuthCredentials()
-  setHttpErrors(loginData)
+  clearHttpErrorsLogin(loginData)
   return loginData
 }
 
@@ -41,8 +41,8 @@ function loadLoginData (data: LoginInterface, noDataReload: boolean): Ref<LoginI
 async function loginStateUser (userLogin: LoginInterface) {
   const [error, result] = await to(loginUser(userLogin))
   if (error) {
-    setHttpErrorEmail({ message: `Please check user ${userLogin.email} credentials` })
-    setHttpErrorPswd({ message: 'Please check your password' })
+    setHttpErrorsField({ field: 'email', message: `Please check user ${userLogin.email} credentials` })
+    setHttpErrorsField({ field: 'password', message: 'Please check your password' })
   }
   if (result) {
     resetHttpErrors()
@@ -53,7 +53,7 @@ async function loginStateUser (userLogin: LoginInterface) {
 async function resetStatePassword (userLogin: LoginInterface, isPassowrdForgotten: boolean): Promise<boolean> {
   userLogin.password = ''
   const [error, result] = await to(resetUserPassword(userLogin))
-  if (error) setHttpErrorEmail({ message: error.message })
+  if (error) setHttpErrorsField({ field: 'email', message: error.message })
   if (result) {
     resetHttpErrors()
     setState({ data: result })
