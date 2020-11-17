@@ -11,8 +11,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter, editDestination } from './utilities/files-interceptor.utility';
+import { localOptions } from './utilities/files-interceptor.utility';
 import IFile from './types/IFile';
 
 @Catch(HttpException)
@@ -51,7 +50,7 @@ export class UsersController {
     }
     @Get('uploads/:id/:image')
     // @Header('Content-Type', 'image/*')
-    async getUserImage(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string> {
+    async getUserFileData(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string> {
         return this.usersService.readUserImage(id, image);
     }
     
@@ -84,16 +83,9 @@ export class UsersController {
     }
     // TODO: add guards
     @Put('uploads/:id')
-    @UseInterceptors(
-      FilesInterceptor('image', 20, {
-        storage: diskStorage({
-          destination: editDestination,
-          filename: editFileName
-        }),
-        fileFilter: imageFileFilter,
-      }),
-    )
-    async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string): Promise<Person> {
+    @UseInterceptors(FilesInterceptor('image', 20, localOptions))
+    async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string,  @Body('imagecaption') imagecaption: string): Promise<Person> {
+        console.error(`--> calls file upload: user id ${id}, files count: ${files.length}, first file: ${files[0]}, caption: ${imagecaption}`)
         const oid = ObjectID.createFromHexString(id);
         return this.usersService.uploadMultipleFiles({ id: oid, files });
     }

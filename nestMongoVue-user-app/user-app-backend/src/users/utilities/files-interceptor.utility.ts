@@ -1,6 +1,8 @@
 import { extname } from 'path';
 import * as fs from 'fs';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { diskStorage } from 'multer';
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import IFile from '../types/IFile';
 
 const imageFileFilter = (_req: any, file: IFile, callback: (arg0: HttpException, arg1: boolean) => void) => {
@@ -34,8 +36,14 @@ const editDestination = (req: { params: { id: string; }; }, _file: IFile, callba
   callback(null, path);
 };
 
+const localOptions: MulterOptions = {
+  storage: diskStorage({
+    destination: editDestination,
+    filename: editFileName
+  }),
+  fileFilter: imageFileFilter,
+}
+
 export {
-  imageFileFilter,
-  editFileName,
-  editDestination
+  localOptions
 }
