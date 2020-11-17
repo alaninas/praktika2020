@@ -1,5 +1,6 @@
 <template>
-  <div id="myUserEdit" class="card fluid"><p class="section">Update User #{{ $route.params.id }}</p>
+  <div id="myUserEdit" class="card fluid">
+    <h4 class="section">Update User #{{ $route.params.id }}</h4>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
@@ -8,7 +9,8 @@
       </div>
     </div>
   </div>
-  <div class="card fluid users-saved-inactive"><p class="section">Users Saved</p>
+  <div class="card fluid users-saved-inactive">
+    <h4 class="section">Users Saved</h4>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
       <Suspense>
@@ -34,8 +36,5 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-div.card.fluid > p {
-  font-variant-caps: all-small-caps;
-}
+<style scoped lang="css" src="@/assets/csss/baseUser.css">
 </style>

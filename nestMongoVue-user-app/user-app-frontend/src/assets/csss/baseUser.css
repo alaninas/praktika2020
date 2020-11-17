@@ -1,0 +1,6 @@
+div.card.fluid > p,
+div.card.fluid > h5,
+div.card.fluid > h4,
+div.card.fluid > h3 {
+  font-variant-caps: all-small-caps;
+}

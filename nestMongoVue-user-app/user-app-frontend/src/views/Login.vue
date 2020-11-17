@@ -1,5 +1,6 @@
 <template>
-  <div id="myUserLogin" class="card fluid"><p class="section">Login</p>
+  <div id="myUserLogin" class="card fluid">
+    <h4 class="section">Login</h4>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
@@ -23,8 +24,5 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-div.card.fluid > p {
-  font-variant-caps: all-small-caps;
-}
+<style scoped lang="sss" src="@/assets/csss/baseUser.css">
 </style>

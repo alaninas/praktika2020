@@ -1,5 +1,6 @@
 <template>
-  <div v-show="isGivenUserAuthorised($route.params.id)" id="myUsers" class="card fluid"><p class="section">Add New Image</p>
+  <div v-show="isGivenUserAuthorised($route.params.id)" id="myUsers" class="card fluid">
+    <h4 class="section">Add New Images</h4>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
@@ -8,7 +9,8 @@
       </div>
     </div>
   </div>
-  <div class="card fluid"><p class="section">Gallery #{{ $route.params.id }}</p>
+  <div class="card fluid">
+    <h4 class="section">Gallery #{{ $route.params.id }}</h4>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
       <Suspense>
@@ -38,8 +40,5 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-div.card.fluid > p {
-  font-variant-caps: all-small-caps;
-}
+<style scoped lang="css" src="@/assets/csss/baseUser.css">
 </style>

@@ -1,5 +1,6 @@
 <template>
-  <div id="myUsers" class="card fluid"><p class="section">Add New User</p>
+  <div id="myUsers" class="card fluid">
+    <h4 class="section">Add New User</h4>
     <div class="row" id="userInput">
       <div class="col-lg-12 col-md-12 col-sm-12">
         <Suspense>
@@ -8,12 +9,14 @@
       </div>
     </div>
   </div>
-  <div class="card fluid"><p class="section">Search</p>
+  <div class="card fluid">
+    <h4 class="section">Search</h4>
     <Suspense>
       <UsersSearch />
     </Suspense>
   </div>
-  <div class="card fluid"><p class="section">Users Saved</p>
+  <div class="card fluid">
+    <h4 class="section">Users Saved</h4>
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12">
       <Suspense>
@@ -41,8 +44,5 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-div.card.fluid > p {
-  font-variant-caps: all-small-caps;
-}
+<style scoped lang="css" src="@/assets/csss/baseUser.css">
 </style>
