@@ -10,7 +10,6 @@ input:not([type="button"]):not([type="submit"]):not([type="reset"]):invalid.inva
 input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus:invalid.invalid,
 select:invalid.invalid,
 select:focus:invalid.invalid {
-  /* background-color: #ffeeee4f; */
   background-color: var(--input-back-color);
   border-color: var(--input-invalid-color);
 }
@@ -24,7 +23,6 @@ select:focus:invalid.invalid {
 /* Align input */
 form div.row > div {
   text-align: left;
-  /* margin-left: 0; */
 }
 form .row label {
   display: block;
@@ -64,4 +62,59 @@ input.disabled {
 .row.login-buttons {
   align-items: center;
   justify-content: center;
+}
+/* TODO: move to separate file */
+/* File upload */
+/* Align form elements */
+form.uploadsForm .row {
+  align-items: center;
+  justify-content: center;
+}
+/* Drag n drop styles */
+.fileinput-outer-container input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 0;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  cursor: inherit;
+}
+.fileinput-outer-container a.remove-file {
+  /* float: right; */
+  color: var(--input-invalid-color);
+  cursor: pointer;
+}
+.fileinput-inner-container {
+  position: relative;
+  overflow: hidden;
+  /* color: #333; */
+  /* background-color: #fff; */
+  border-color: #ccc;
+  width: 100%;
+  display: inline-block;
+  background: #add8e69c
+}
+.fileinput-inner-container:hover {
+  background: #f080809c
+}
+.fileinput-inner-container .dropzone {
+  /* height: 5rem; */
+  text-align: center !important;
+  line-height: 13rem;
+}
+.fileinput-inner-container .dropzone span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+.fileinput-inner-container .browse-files {
+  position: relative;
+}
+.browse-files label {
+	display: inherit;
+	padding-left: 0;
 }
