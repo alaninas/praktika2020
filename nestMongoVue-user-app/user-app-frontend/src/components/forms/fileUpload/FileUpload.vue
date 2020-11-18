@@ -63,7 +63,8 @@
               </div>
               <div class="col-lg-1 col-md-12 col-sm-12">
                 <a v-show="percentCompleted < 100" class="remove-file" @click="removeFile(i)">Remove</a>
-                <a v-show="percentCompleted === 100" class="successful-upload" @click="removeFile(i)">Success</a>
+                <a v-show="percentCompleted === 100 && !httpErrors.imagesresponse" class="successful-upload" @click="removeFile(i)">Success</a>
+                <a v-show="percentCompleted === 100 && httpErrors.imagesresponse" class="unsuccessful-upload" @click="reuploadFile(i)">Reupload</a>
               </div>
             </div>
           </li>
@@ -81,10 +82,11 @@
 
 <script lang="ts">
 import validate from '@/directives/validate'
-import { validationErrors, httpErrors, userErrors } from '@/modules/states/formErrors'
+import { validationErrors, httpErrors, userErrors, setHttpErrorsField } from '@/modules/states/formErrors'
 import { onMounted, Ref, ref } from 'vue'
 import { putUserNewImages } from '@/modules/services'
 import { AxiosRequestConfig } from 'axios'
+import { to } from '@/modules/utilities/index-utility'
 
 // STATE
 // create UploadFiles interface:
@@ -178,8 +180,17 @@ export default {
             percentCompleted.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           }
         }
-        await putUserNewImages(myformData, id, config)
+        const [error, result] = await to(putUserNewImages(myformData, id, config))
+        if (error) {
+          console.log(`----> Server error response: ${error.message}`)
+          setHttpErrorsField({ field: 'imagesresponse', message: error.message })
+          console.log(httpErrors.value)
+        }
+        // await putUserNewImages(myformData, id, config)
       }
+    }
+    function reuploadFile (index: number) {
+      console.log(`reuploads file at indes: ${index}`)
     }
     // Drag n drop handlers
     function handleDragStart (event: DragEvent) {
@@ -210,7 +221,7 @@ export default {
         if (event.target) (event.target as HTMLElement).innerHTML = 'Drag files here...'
       }
     }
-    return { validationErrors, httpErrors, userErrors, percentCompleted, images, imagecaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, handleDrop, handleDragOver, handleDragLeave, handleDragStart }
+    return { validationErrors, httpErrors, userErrors, percentCompleted, images, imagecaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile, handleDrop, handleDragOver, handleDragLeave, handleDragStart }
   }
 }
 </script>
