@@ -64,12 +64,12 @@
               <div class="col-lg-1 col-md-12 col-sm-12">
                 <a v-show="percentCompleted < 100" class="remove-file" @click="removeFile(i)">Remove</a>
                 <a v-show="percentCompleted === 100 && !httpErrors.imagesresponse" class="successful-upload" @click="removeFile(i)">Success</a>
-                <a v-show="percentCompleted === 100 && httpErrors.imagesresponse" class="unsuccessful-upload" @click="reuploadFile(i)">Reupload</a>
+                <a v-show="httpErrors.imagesresponse" class="unsuccessful-upload" @click="reuploadFile(i)">Reupload</a>
               </div>
             </div>
           </li>
         </ul>
-        <progress v-show="percentCompleted < 100" max="100" :value.prop="percentCompleted"></progress>
+        <progress v-show="percentCompleted < 100 || httpErrors.imagesresponse" max="100" :value.prop="percentCompleted"></progress>
         <div class="error">{{ validationErrors.images }}</div>
       </div>
       <!-- end child component -->
@@ -173,7 +173,8 @@ export default {
         myformData.append('imagecaption', imagecaption.value.value)
         console.log(myformData.get('imagecaption'))
         console.log(imagecaption.value.value)
-        // TODO
+        // TODO: drop input form data
+        // TODO: move to function
         // foreach file run: put, set progress, set error
         const config: AxiosRequestConfig = {
           onUploadProgress: function (progressEvent) {
@@ -192,6 +193,7 @@ export default {
     function reuploadFile (index: number) {
       console.log(`reuploads file at indes: ${index}`)
     }
+    // TODO: move out
     // Drag n drop handlers
     function handleDragStart (event: DragEvent) {
       console.log('---> drag start')
@@ -215,7 +217,6 @@ export default {
           files.value.push(event.dataTransfer.files[i])
         // getImagePreviews()
         }
-        // dropzone.value.style.background = ''
         if (event.target) (event.target as HTMLElement).style.background = ''
         if (event.target) (event.target as HTMLElement).style.opacity = ''
         if (event.target) (event.target as HTMLElement).innerHTML = 'Drag files here...'
