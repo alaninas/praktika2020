@@ -62,12 +62,13 @@
                 {{ file.name }}
               </div>
               <div class="col-lg-1 col-md-12 col-sm-12">
-                <a class="remove-file" @click="removeFile(i)">Remove</a>
+                <a v-show="percentCompleted < 100" class="remove-file" @click="removeFile(i)">Remove</a>
+                <a v-show="percentCompleted === 100" class="successful-upload" @click="removeFile(i)">Success</a>
               </div>
             </div>
           </li>
         </ul>
-        <progress max="100" :value.prop="percentCompleted"></progress>
+        <progress v-show="percentCompleted < 100" max="100" :value.prop="percentCompleted"></progress>
         <div class="error">{{ validationErrors.images }}</div>
       </div>
       <!-- end child component -->
@@ -180,6 +181,7 @@ export default {
         await putUserNewImages(myformData, id, config)
       }
     }
+    // Drag n drop handlers
     function handleDragStart (event: DragEvent) {
       console.log('---> drag start')
       if (event.target && (event.target as HTMLElement).style) (event.target as HTMLElement).style.opacity = '0.75'

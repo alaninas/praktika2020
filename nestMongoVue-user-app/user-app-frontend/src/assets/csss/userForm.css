@@ -83,10 +83,14 @@ form.uploadsForm .row {
   opacity: 0;
   cursor: inherit;
 }
-.fileinput-outer-container a.remove-file {
-  /* float: right; */
-  color: var(--input-invalid-color);
+.fileinput-outer-container a {
   cursor: pointer;
+}
+.fileinput-outer-container a.remove-file {
+  color: var(--input-invalid-color);
+}
+.fileinput-outer-container a.successful-upload {
+  color: #4caf50
 }
 .fileinput-inner-container {
   position: relative;
