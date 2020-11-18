@@ -1,4 +1,4 @@
-import { setState, loadState, clearState } from '@/modules/states/user'
+import { setState, loadState, clearState, loadGallery } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
 import { deleteOneImage } from '@/modules/utilities/gallery/gallery-utility'
@@ -20,7 +20,8 @@ export async function useUser ({ userId = '', noDataReload = true, createGallery
     }
     console.log('>>>> image deleted')
     console.log(image)
-    return (await loadState({ userId: user.value._id || '', noDataReload: false, createGallery: true })).value.images
+    // return (await loadState({ userId: user.value._id || '', noDataReload: false, createGallery: true })).value.images
+    return (await loadGallery(user.value._id)).value.images
   }
 
   function preparePasswordForServer (forgetPassword: boolean) {

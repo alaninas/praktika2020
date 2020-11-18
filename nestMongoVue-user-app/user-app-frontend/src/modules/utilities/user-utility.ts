@@ -53,6 +53,12 @@ function setBasicProperties (user: UserInterface, inputUser: UserInterface): Use
   return user
 }
 
+function setGallery (user: UserInterface, inputUser: UserInterface): UserInterface {
+  const { gallery } = inputUser
+  user.gallery = gallery
+  return user
+}
+
 async function createGallery (user: UserInterface): Promise<UserInterface> {
   const { _id, images } = user
   user.gallery = []
@@ -77,5 +83,6 @@ export {
   getPasswordFromUser,
   setBasicProperties,
   createGallery,
-  setAddressProperties
+  setAddressProperties,
+  setGallery
 }
