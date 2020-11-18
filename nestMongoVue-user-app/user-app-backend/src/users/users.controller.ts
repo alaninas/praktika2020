@@ -83,7 +83,7 @@ export class UsersController {
     }
     // TODO: add guards
     @Put('uploads/:id')
-    @UseInterceptors(FilesInterceptor('image', 20, localOptions))
+    @UseInterceptors(FilesInterceptor('images', 20, localOptions))
     async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string,  @Body('imagecaption') imagecaption: string): Promise<Person> {
         console.error(`--> calls file upload: user id ${id}, files count: ${files.length}, first file: ${files[0]}, caption: ${imagecaption}`)
         const oid = ObjectID.createFromHexString(id);
