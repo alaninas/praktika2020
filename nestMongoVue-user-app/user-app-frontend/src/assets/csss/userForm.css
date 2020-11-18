@@ -90,7 +90,10 @@ form.uploadsForm .row {
   color: var(--input-invalid-color);
 }
 .fileinput-outer-container a.successful-upload {
-  color: #4caf50
+  color: #4caf50;
+}
+.fileinput-outer-container a.unsuccessful-upload {
+  color: var(--a-link-color);
 }
 .fileinput-inner-container {
   position: relative;
