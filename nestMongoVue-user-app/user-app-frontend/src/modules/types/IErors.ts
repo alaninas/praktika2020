@@ -6,26 +6,28 @@ interface UserErrorsInterface {
   age?: string;
 }
 
-interface FilesErrorsInterface {
-  format: string;
-  size: string;
-  count: string;
+interface FileErrorsInterface {
+  format?: string;
+  size?: string;
+  httpresponse?: string;
 }
 
 interface HttpErrorsInterface {
   email: string;
   password: string;
-  image?: string;
+  imagesresponse?: string;
+  imagescount?: string;
 }
 
 type UserErrorsFieldTypes = 'password' | 'passwordConfirm' | 'age'
-type FilesErrorsFieldTypes = 'format' | 'size' | 'count'
-type HttpErrorsFieldTypes = 'email' | 'password' | 'image'
+type FileErrorsFieldTypes = 'format' | 'size' | 'httpresponse'
+type HttpErrorsFieldTypes = 'email' | 'password' | 'imagesresponse' | 'imagescount'
 
 const validationErrors = ref({})
 const userErrors = ref({ password: '', passwordConfirm: '' } as UserErrorsInterface)
-const filesErrors = ref({ format: '', size: '', count: '' } as FilesErrorsInterface)
-const httpErrors = ref({ email: '', password: '', image: '' } as HttpErrorsInterface)
+const fileErrors = ref([{} as FileErrorsInterface])
+// TODO: move imagesscount to httpErr: it's a global upload error property set on the file upload batch as a whole
+const httpErrors = ref({ email: '', password: '' } as HttpErrorsInterface)
 
 export {
   UserErrorsInterface,

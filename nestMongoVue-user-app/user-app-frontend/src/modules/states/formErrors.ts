@@ -26,7 +26,7 @@ function clearHttpErrorsLogin (loginData: Ref<LoginInterface>) {
 }
 
 function resetHttpErrors () {
-  httpErrors.value = { email: '', password: '', image: '' }
+  httpErrors.value = { email: '', password: '' }
 }
 
 function resetValidationErrors () {

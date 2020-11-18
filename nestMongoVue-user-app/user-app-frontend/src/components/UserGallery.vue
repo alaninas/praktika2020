@@ -9,7 +9,7 @@
           Delete
         </label>
       </figure>
-      <div class="error">{{ httpErrors.image }}</div>
+      <div class="error">{{ httpErrors.imagesresponse }}</div>
     </li>
   </ul>
 </template>

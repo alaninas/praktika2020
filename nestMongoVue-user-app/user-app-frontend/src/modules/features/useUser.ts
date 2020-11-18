@@ -16,7 +16,7 @@ export async function useUser ({ userId = '', noDataReload = true, createGallery
     if (user.value._id && image && image.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [error, result] = await to(deleteOneImage(user.value._id, image))
-      if (error) setHttpErrorsField({ field: 'image', message: `Can not delete image: ${image}` })
+      if (error) setHttpErrorsField({ field: 'imagesresponse', message: `Can not delete image: ${image}` })
     }
     console.log('>>>> image deleted')
     console.log(image)
