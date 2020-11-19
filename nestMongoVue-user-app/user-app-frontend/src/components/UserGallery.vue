@@ -1,4 +1,5 @@
 <template>
+  <div class="error">{{ httpErrors.imagesresponse }}</div>
   <ul class="row gallery">
     <li class="col-lg-3 col-md-6 col-sm-12" v-for="pic in user.gallery" :key="pic">
       <figure>
@@ -9,7 +10,6 @@
           Delete
         </label>
       </figure>
-      <div class="error">{{ httpErrors.imagesresponse }}</div>
     </li>
   </ul>
 </template>

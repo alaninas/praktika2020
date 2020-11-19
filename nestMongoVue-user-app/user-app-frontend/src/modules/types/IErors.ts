@@ -32,8 +32,10 @@ const httpErrors = ref({ email: '', password: '' } as HttpErrorsInterface)
 export {
   UserErrorsInterface,
   HttpErrorsInterface,
+  FileErrorsInterface,
   HttpErrorsFieldTypes,
   UserErrorsFieldTypes,
+  FileErrorsFieldTypes,
   validationErrors,
   userErrors,
   httpErrors
