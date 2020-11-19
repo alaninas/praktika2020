@@ -1,7 +1,7 @@
-import UserInterface from '@/modules/types/IUser'
+import UserInterface, { GalleryInterface } from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import PasswordInterface from '@/modules/types/IPassword'
-import { getImageUrl } from '@/modules/utilities/gallery/gallery-utility'
+import { createImageUrl } from '@/modules/utilities/gallery/gallery-utility'
 
 function displayUserData (user: UserInterface): string {
   const { age, email, fullname, country, address, website } = user
@@ -37,8 +37,20 @@ function setAddressProperties (user: UserInterface, inputAddress: AddressInterfa
   return user
 }
 
+function setImages (user: UserInterface, images: string[] | undefined): UserInterface {
+  // const { gallery } = inputUser
+  user.images = images
+  return user
+}
+
+function setGallery (user: UserInterface, gallery: GalleryInterface[] | undefined): UserInterface {
+  // const { gallery } = inputUser
+  user.gallery = gallery
+  return user
+}
+
 function setBasicProperties (user: UserInterface, inputUser: UserInterface): UserInterface {
-  const { firstname, lastname, passwordConfirm, password, email, _id, country, age, images, gallery } = inputUser
+  const { firstname, lastname, passwordConfirm, password, email, _id, country, age } = inputUser
   user.firstname = firstname || ''
   user.lastname = lastname || ''
   user.fullname = firstname && lastname ? [firstname, lastname].join(' ') : ''
@@ -46,16 +58,10 @@ function setBasicProperties (user: UserInterface, inputUser: UserInterface): Use
   user.passwordConfirm = passwordConfirm
   user.email = email
   user._id = _id
-  user.images = images
-  user.gallery = gallery
+  // user.images = images
+  // user.gallery = gallery
   user.country = country || ''
   if (age) user.age = parseInt(age.toString())
-  return user
-}
-
-function setGallery (user: UserInterface, inputUser: UserInterface): UserInterface {
-  const { gallery } = inputUser
-  user.gallery = gallery
   return user
 }
 
@@ -67,7 +73,7 @@ async function createGallery (user: UserInterface): Promise<UserInterface> {
     const image = images[i]
     if (image && image.length > 0) {
       user.gallery.push({
-        link: await getImageUrl(_id, image),
+        link: await createImageUrl(_id, image),
         name: `User ${_id} image #${i}`,
         caption: 'No caption provided',
         file: image
@@ -84,5 +90,6 @@ export {
   setBasicProperties,
   createGallery,
   setAddressProperties,
-  setGallery
+  setGallery,
+  setImages
 }

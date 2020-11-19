@@ -1,9 +1,6 @@
-import { setState, loadState, clearState, loadGallery } from '@/modules/states/user'
+import { setState, loadState, clearState, deleteUserPicture } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
-import { deleteOneImage } from '@/modules/utilities/gallery/gallery-utility'
-import { setHttpErrorsField } from '../states/formErrors'
-import { to } from '../utilities/index-utility'
 
 export async function useUser ({ userId = '', noDataReload = true, createGallery = false }: { userId?: string; noDataReload?: boolean; createGallery?: boolean }) {
   const user = await loadState({ userId, noDataReload, createGallery })
@@ -13,15 +10,7 @@ export async function useUser ({ userId = '', noDataReload = true, createGallery
   }
 
   async function deletePictureInGallery (image: string): Promise<string[] | undefined> {
-    if (user.value._id && image && image.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [error, result] = await to(deleteOneImage(user.value._id, image))
-      if (error) setHttpErrorsField({ field: 'imagesresponse', message: `Can not delete image: ${image}` })
-    }
-    console.log('>>>> image deleted')
-    console.log(image)
-    // return (await loadState({ userId: user.value._id || '', noDataReload: false, createGallery: true })).value.images
-    return (await loadGallery(user.value._id)).value.images
+    return await deleteUserPicture({ inputUser: user.value, image })
   }
 
   function preparePasswordForServer (forgetPassword: boolean) {
