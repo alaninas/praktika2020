@@ -25,8 +25,6 @@ type HttpErrorsFieldTypes = 'email' | 'password' | 'imagesresponse' | 'imagescou
 
 const validationErrors = ref({})
 const userErrors = ref({ password: '', passwordConfirm: '' } as UserErrorsInterface)
-const fileErrors = ref([{} as FileErrorsInterface])
-// TODO: move imagesscount to httpErr: it's a global upload error property set on the file upload batch as a whole
 const httpErrors = ref({ email: '', password: '' } as HttpErrorsInterface)
 
 export {
