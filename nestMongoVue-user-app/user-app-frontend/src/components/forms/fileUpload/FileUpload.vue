@@ -9,15 +9,15 @@
   >
     <div class="row">
       <div class="caption-input col-lg-6 col-md-12 col-sm-12">
-        <label for="imagecaption">Caption for the upload:</label>
+        <label for="imcaption">Caption for the upload:</label>
         <input
           type="text"
-          id="imagecaption"
-          name="imagecaption"
-          ref="imagecaption"
+          id="imcaption"
+          name="imcaption"
+          ref="imcaption"
           v-validate
         >
-        <div class="error">{{ validationErrors.imagecaption }}</div>
+        <div class="error">{{ validationErrors.imcaption }}</div>
       </div>
       <!-- TODO: move to the child component -->
       <div class="fileinput-outer-container col-lg-6 col-md-12 col-sm-12" ref="fileinput">
@@ -28,12 +28,12 @@
               id="dropzone"
               ref="dropzone"
               class="dropzone col-lg-10 col-md-10 col-sm-12"
-              @dragover="handleDragOver($event)"
-              @dragleave="handleDragLeave($event)"
-              @dragend="handleDragLeave($event)"
-              @dragstart="handleDragStart($event)"
-              @dragenter="handleDragStart($event)"
-              @drop="handleDrop($event)"
+              @dragover="dragEventHandler.dragOver($event)"
+              @dragleave="dragEventHandler.dragLeave($event)"
+              @dragend="dragEventHandler.dragLeave($event)"
+              @dragstart="dragEventHandler.dragStart($event)"
+              @dragenter="dragEventHandler.dragStart($event)"
+              @drop="dragEventHandler.drop($event)"
             >
               Drag files here...
             </div>
@@ -58,19 +58,23 @@
         <ul class="fileList">
           <li v-for="(file, i) in files" :key="file">
             <div class="row">
-              <div class="col-lg-11 col-md-12 col-sm-12">
-                {{ file.name }}
+              <div class="col-lg-9 col-md-12 col-sm-12">
+                {{ file.data.name }}
               </div>
-              <div class="col-lg-1 col-md-12 col-sm-12">
-                <a v-show="percentCompleted < 100" class="remove-file" @click="removeFile(i)">Remove</a>
-                <a v-show="percentCompleted === 100 && !httpErrors.imagesresponse" class="successful-upload" @click="removeFile(i)">Success</a>
-                <a v-show="httpErrors.imagesresponse" class="unsuccessful-upload" @click="reuploadFile(i)">Reupload</a>
+              <div class="col-lg-2 col-md-10 col-sm-9">
+                <progress v-show="file.progress && file.progress < 100" max="100" :value.prop="file.progress || 0"></progress>
+              </div>
+              <div class="col-lg-1 col-md-2 col-sm-3">
+                <!-- TODO: switch to v-if else -->
+                <!-- the default statement will generate Remove link, the other two stay as is -->
+                <a v-show="(file.progress < 100 || !file.progress) && (!file.errors || (file.errors && (file.errors.size || file.errors.format)))" class="remove-file" @click="removeFile(i)">Remove</a>
+                <a v-show="file.progress === 100 && !file.errors" class="successful-upload" @click="removeFile(i)">Success</a>
+                <a v-show="file.errors && file.errors.httpresponse" class="unsuccessful-upload" @click="reuploadFile($route.params.id, i)">Reupload</a>
               </div>
             </div>
+            <div class="error" v-html="getFileErrorText(i)" />
           </li>
         </ul>
-        <progress v-show="percentCompleted < 100 || httpErrors.imagesresponse" max="100" :value.prop="percentCompleted"></progress>
-        <div class="error">{{ validationErrors.images }}</div>
       </div>
       <!-- end child component -->
     </div>
@@ -87,6 +91,10 @@ import { onMounted, Ref, ref } from 'vue'
 import { putUserNewImages } from '@/modules/services'
 import { AxiosRequestConfig } from 'axios'
 import { to } from '@/modules/utilities/index-utility'
+import { UploadFileInterface } from '@/modules/types/IUploadFile'
+import { useUser } from '@/modules/features/useUser'
+import { loadGallery } from '@/modules/states/user'
+import { setEventTargetDisplay, setTargetStyleField } from '@/modules/utilities/fileUpload/targetSetters'
 
 // STATE
 // create UploadFiles interface:
@@ -112,14 +120,10 @@ export default {
   async setup () {
     const uploadsForm: Ref<HTMLFormElement> = ref(document.createElement('form'))
     const images: Ref<HTMLInputElement> = ref(document.createElement('input'))
-    const imagecaption: Ref<HTMLInputElement> = ref(document.createElement('input'))
-    const files: Ref<File[]> = ref([])
-    const myformData = new FormData()
+    const imcaption: Ref<HTMLInputElement> = ref(document.createElement('input'))
 
     const dropzone: Ref<HTMLElement> = ref(document.createElement('div'))
     const fileinput: Ref<HTMLElement> = ref(document.createElement('div'))
-
-    const percentCompleted = ref(0)
 
     onMounted(() => {
       dropzone.value.style.background = 'violet'
@@ -133,96 +137,128 @@ export default {
       })
     })
 
-    function handleFilesUpload () {
-      console.log('handle files input')
-      const c = images.value.files
-      console.log(`>> input files count: ${c?.length}`)
-      console.log(c)
-      if (c) {
-        for (let i = 0; i < c.length; i++) {
-          const f = c[i]
-          files.value.push(f)
+    // TODO: files state
+    const files: Ref<UploadFileInterface[]> = ref([])
+    const { user } = await useUser({})
+
+    // >>>> Exportable
+    function addFilesFromInputFileList (inputImages: FileList | null) {
+      if (inputImages) {
+        for (let i = 0; i < inputImages.length; i++) {
+          const f = inputImages[i]
+          files.value.push({ data: f } as UploadFileInterface)
         }
       }
       console.log('-- updated files array')
       console.log(files.value)
     }
+    // <<<< export end
+    function handleFilesUpload () {
+      console.log('handle files input')
+      const inputImages = images.value.files
+      console.log(`>> input files count: ${inputImages?.length}`)
+      console.log(inputImages)
+      addFilesFromInputFileList(inputImages)
+    }
+    // >>>> Exportable
+    function getFileErrorText (index: number): string {
+      try {
+        const f = files.value[index]
+        const err = f.errors
+        if (!err) return ''
+        const length = err.httpresponse?.length
+        return length ? ` Error: ${err.httpresponse}. Upload progress: ${f.progress}` : ''
+      } catch (error) {
+        return ''
+      }
+    }
     function removeFile (index: number) {
       console.log('removes files from form')
       files.value.splice(index, 1)
-      myformData.delete('images')
-      for (let i = 0; i < files.value.length; i++) {
-        const f = files.value[i]
-        myformData.append('images', f)
-      }
-      console.log(myformData.getAll('images'))
+      console.log('-- updated files array')
+      console.log(files.value)
     }
+    function setCaption ({ i, imagecaption }: { i: number; imagecaption: string }) {
+      files.value[i].caption = imagecaption
+    }
+    function setProgress ({ i, progress }: { i: number; progress: number }) {
+      files.value[i].progress = progress
+    }
+    function getUploadConfig (i: number): AxiosRequestConfig {
+      const config: AxiosRequestConfig = {
+        onUploadProgress: (progressEvent) => {
+          setProgress({ i, progress: Math.round((progressEvent.loaded * 100) / progressEvent.total) })
+        }
+      }
+      return config
+    }
+    // <<<< inside useFilesUpload
+    async function sendFileToServer ({ id, i, config }: { id: string; i: number; config: AxiosRequestConfig }) {
+      const f = files.value[i]
+      const formData = new FormData()
+      formData.append('images', f.data)
+      formData.append('imagecaption', f.caption)
+      const [error, result] = await to(putUserNewImages({ formData, id, config }))
+      if (error) {
+        console.log(`----> Server error response: ${error.message}`)
+        files.value[i].errors = { httpresponse: error.message }
+      }
+    }
+    // <<<
+    async function performFileUpload ({ id, i, imagecaption }: { id: string; i: number; imagecaption: string }) {
+      setCaption({ i, imagecaption })
+      const config = getUploadConfig(i)
+      await sendFileToServer({ id, i, config })
+      await loadGallery(user.value._id)
+      console.log('>>>>> new user data:')
+      console.log(user.value)
+    }
+    // << export end
     async function onSubmit (id: string) {
       console.log(`submits files to server: ${id}`)
-      console.log('>> files array:')
+      console.log('>> files array and caption:')
       console.log(files.value)
-      if (files.value) {
+      console.log(imcaption.value.value)
+      // TODO: set files.value[i].errors: size, format (see fileupload-urility constants)
+      //       send data to server only if no error detected
+      //       make sure to display error at the file-input: set Remove button to uppear
+      if (files.value.length > 0) {
         console.log('--------->>>>>')
-        myformData.delete('images')
-        myformData.delete('imagecaption')
+        const imagecaption = imcaption.value.value
         for (let i = 0; i < files.value.length; i++) {
-          const f = files.value[i]
-          myformData.append('images', f)
+          await performFileUpload({ id, i, imagecaption })
         }
-        console.log(myformData.getAll('images'))
-        myformData.append('imagecaption', imagecaption.value.value)
-        console.log(myformData.get('imagecaption'))
-        console.log(imagecaption.value.value)
-        // TODO: drop input form data
-        // TODO: move to function
-        // foreach file run: put, set progress, set error
-        const config: AxiosRequestConfig = {
-          onUploadProgress: function (progressEvent) {
-            percentCompleted.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          }
-        }
-        const [error, result] = await to(putUserNewImages(myformData, id, config))
-        if (error) {
-          console.log(`----> Server error response: ${error.message}`)
-          setHttpErrorsField({ field: 'imagesresponse', message: error.message })
-          console.log(httpErrors.value)
-        }
-        // await putUserNewImages(myformData, id, config)
       }
     }
-    function reuploadFile (index: number) {
-      console.log(`reuploads file at indes: ${index}`)
+    async function reuploadFile (id: string, i: number) {
+      console.log(`reuploads file at index: ${i}, userId: ${id}`)
+      const imagecaption = imcaption.value.value
+      await performFileUpload({ id, i, imagecaption })
     }
     // TODO: move out
-    // Drag n drop handlers
-    function handleDragStart (event: DragEvent) {
-      console.log('---> drag start')
-      if (event.target && (event.target as HTMLElement).style) (event.target as HTMLElement).style.opacity = '0.75'
-    }
-    function handleDragOver (event: DragEvent) {
-      console.log('---> drag over')
-      if (event.target && (event.target as HTMLElement).style) (event.target as HTMLElement).style.background = '#e64040'
-      if (event.target) (event.target as HTMLElement).innerHTML = 'Drop new images here...'
-    }
-    function handleDragLeave (event: DragEvent) {
-      console.log('---> drag leave')
-      if (event.target && (event.target as HTMLElement).style) (event.target as HTMLElement).style.background = ''
-      if (event.target && (event.target as HTMLElement).style) (event.target as HTMLElement).style.opacity = ''
-      if (event.target) (event.target as HTMLElement).innerHTML = 'Drag files here...'
-    }
-    function handleDrop (event: DragEvent) {
-      console.log('---> drop')
-      if (event && event.dataTransfer) {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.value.push(event.dataTransfer.files[i])
-        // getImagePreviews()
+    // Send to where the file state is at ! Even better: at useFilesUpload!
+    const dragEventHandler = {
+      dragStart (event: DragEvent) {
+        console.log('---> drag start')
+        setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.75' })
+      },
+      dragOver (event: DragEvent) {
+        console.log('---> drag over')
+        setEventTargetDisplay({ target: event.target, background: '#e64040', text: 'Drop new images here...' })
+      },
+      dragLeave (event: DragEvent) {
+        console.log('---> drag leave')
+        setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
+      },
+      drop (event: DragEvent) {
+        console.log('---> drop')
+        if (event && event.dataTransfer) {
+          addFilesFromInputFileList(event.dataTransfer.files)
+          setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
         }
-        if (event.target) (event.target as HTMLElement).style.background = ''
-        if (event.target) (event.target as HTMLElement).style.opacity = ''
-        if (event.target) (event.target as HTMLElement).innerHTML = 'Drag files here...'
       }
     }
-    return { validationErrors, httpErrors, userErrors, percentCompleted, images, imagecaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile, handleDrop, handleDragOver, handleDragLeave, handleDragStart }
+    return { dragEventHandler, getFileErrorText, validationErrors, httpErrors, userErrors, images, imcaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile }
   }
 }
 </script>
