@@ -45,7 +45,8 @@ div.error {
 /* Disabled fields and buttons*/
 label.disabled,
 input.disabled {
-	cursor: not-allowed;
+  cursor: not-allowed;
+  pointer-events: none;
 	--button-back-color: #7d7c7c;
 }
 input.disabled:hover,
