@@ -8,18 +8,9 @@
     @submit.prevent="onSubmit($route.params.id)" onkeydown="return event.key != 'Enter';"
   >
     <div class="row">
-      <div class="caption-input col-lg-6 col-md-12 col-sm-12">
-        <label for="imcaption">Caption for the upload:</label>
-        <input
-          type="text"
-          id="imcaption"
-          name="imcaption"
-          ref="imcaption"
-          @input="handleCaptionInput()"
-          v-validate
-        >
-        <div class="error">{{ validationErrors.imcaption }}</div>
-      </div>
+      <Suspense>
+        <CaptionInput />
+      </Suspense>
       <!-- TODO: move to the child component -->
       <div class="fileinput-outer-container col-lg-6 col-md-12 col-sm-12" ref="fileinput">
         <!-- COMPONENT: inputzone: dropzone, browse file system button -->
@@ -67,7 +58,6 @@
               </div>
               <div class="col-lg-1 col-md-2 col-sm-3">
                 <!-- TODO: switch to v-if else -->
-                <!-- the default statement will generate Remove link, the other two stay as is -->
                 <a v-show="(file.progress < 100 || !file.progress) && !file.isUploaded" class="remove-file" @click="removeFile(i)">Remove</a>
                 <a v-show="file.progress === 100 && !file.isUploaded" class="unsuccessful-upload" @click="reuploadFile($route.params.id, i)">Reupload</a>
                 <a v-show="file.isUploaded === true" class="successful-upload" @click="removeFile(i)">Success</a>
@@ -86,16 +76,16 @@
 </template>
 
 <script lang="ts">
+import CaptionInput from '@/components/forms/fileUpload/formElements/CaptionInput.vue'
 import validate from '@/directives/validate'
 import { validationErrors, httpErrors, userErrors } from '@/modules/states/formErrors'
 import { onMounted, Ref, ref } from 'vue'
 import { useFileUpload } from '@/modules/features/useFileUpload'
 
-// CHILD COMPONENTS
-//  fileInput /drag events and styles/
-//  file-list / display UploadFiles[] elements: file.name, progress, error, remove/
-//           on upload failure --> set Reupload button for the current element
 export default {
+  components: {
+    CaptionInput
+  },
   directives: {
     validate: validate
   },
@@ -104,7 +94,6 @@ export default {
     const images: Ref<HTMLInputElement> = ref(document.createElement('input'))
     const dropzone: Ref<HTMLElement> = ref(document.createElement('div'))
     const fileinput: Ref<HTMLElement> = ref(document.createElement('div'))
-    const imcaption: Ref<HTMLInputElement> = ref(document.createElement('input'))
 
     onMounted(() => {
       dropzone.value.style.background = 'violet'
@@ -118,11 +107,8 @@ export default {
       })
     })
 
-    const { files, updateCaption, addFilesFromInput, performFileUpload, getFileErrorText, dragEventHandler, removeFile } = await useFileUpload()
+    const { files, addFilesFromInput, performFileUpload, getFileErrorText, dragEventHandler, removeFile } = await useFileUpload()
 
-    function handleCaptionInput () {
-      updateCaption(imcaption.value.value)
-    }
     function handleFilesUpload () {
       console.log('handle files input')
       const inputImages = images.value.files
@@ -145,7 +131,7 @@ export default {
       console.log(`reuploads file at index: ${i}, userId: ${id}`)
       await performFileUpload({ id, i })
     }
-    return { handleCaptionInput, dragEventHandler, getFileErrorText, validationErrors, httpErrors, userErrors, images, imcaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile }
+    return { dragEventHandler, getFileErrorText, validationErrors, httpErrors, userErrors, images, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile }
   }
 }
 </script>
