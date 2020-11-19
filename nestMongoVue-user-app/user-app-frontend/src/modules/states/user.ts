@@ -2,7 +2,7 @@ import { ref, Ref, watchEffect } from 'vue'
 import UserInterface from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { createGallery, getAddressFromUser, setAddressProperties, setBasicProperties, setGallery, setImages } from '@/modules/utilities/user-utility'
-import { resetFormErrors, setHttpErrorsField, setUserErrorsPassword } from './formErrors'
+import { resetFormErrors, setUserErrorsPassword } from './formErrors'
 import { getUsersStateUser } from './users'
 import { purgeImage } from '../utilities/gallery/gallery-utility'
 import { to } from '../utilities/index-utility'
@@ -28,8 +28,6 @@ function setStateAddress ({ inputAddress = { street: '', houseNumber: '', city: 
 function setState (inputUser: UserInterface): UserInterface {
   resetFormErrors()
   setBasicProperties(user.value, inputUser)
-  setImages(user.value, inputUser.images)
-  setGallery(user.value, inputUser.gallery)
   setStateAddress({ inputAddress: getAddressFromUser(inputUser) })
   setUserErrorsPassword(user.value)
   return user.value
@@ -42,6 +40,8 @@ function clearState () {
 
 async function initGallery (inputUser: UserInterface) {
   await createGallery(inputUser)
+  setImages(user.value, inputUser.images)
+  setGallery(user.value, inputUser.gallery)
 }
 
 function emptyGallery () {
@@ -52,8 +52,6 @@ async function loadGallery (userId: string | undefined): Promise<Ref<UserInterfa
   if (!userId) return getState()
   const myUser = await getUsersStateUser(userId)
   await initGallery(myUser)
-  setGallery(user.value, myUser.gallery)
-  setImages(user.value, myUser.images)
   return getState()
 }
 
@@ -72,10 +70,8 @@ async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterfa
   if (inputUser._id && image && image.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, result] = await to(purgeImage(inputUser._id, image))
-    if (error) setHttpErrorsField({ field: 'imagesresponse', message: `Can not delete image: ${image}` })
+    if (error) alert(`Can not delete image: ${image}`)
   }
-  console.log('>>>> image deleted')
-  console.log(image)
   return (await loadGallery(inputUser._id)).value.images
 }
 
