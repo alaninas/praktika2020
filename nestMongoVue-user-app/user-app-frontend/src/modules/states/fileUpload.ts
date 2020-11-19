@@ -3,45 +3,40 @@ import { UploadFileInterface } from '@/modules/types/IUploadFile'
 import { putUserNewImages } from '../services'
 import { to } from '../utilities/index-utility'
 import { AxiosRequestConfig } from 'axios'
-import { setEventTargetDisplay, setTargetStyleField } from '../utilities/fileUpload/targetSetters'
+import { createFormData, fileCountLimit, isFileCountAcceptable } from '../utilities/fileUpload/fileupload-utility'
+import { FileErrorsInterface } from '../types/IErors'
+import { resetHttpErrors, setHttpErrorsField } from './formErrors'
 
 const files: Ref<UploadFileInterface[]> = ref([])
 const caption = ref('')
+resetHttpErrors()
+
+function setState (data: UploadFileInterface[]) {
+  files.value = data
+}
+
+function setFileError ({ i, err }: { i: number; err: FileErrorsInterface }) {
+  files.value[i].errors = err
+}
 
 function getState (): Ref<UploadFileInterface[]> {
   return files
 }
 
-function addFilesFromInputFileList (inputImages: FileList) {
-  for (let i = 0; i < inputImages.length; i++) {
-    const f = inputImages[i]
-    files.value.push({ data: f } as UploadFileInterface)
-    // >>>>> here set errors.....
-    // files.value[i].errors = { size: error.message }
-    // files.value[i].errors = { format: error.message }
-  }
-}
-
-function getFileErrorText (index: number): string {
-  try {
-    const f = files.value[index]
-    const err = f.errors
-    if (!err) return ''
-    const length = err.httpresponse?.length
-    return length ? `Error: ${err.httpresponse}. Upload progress: ${f.progress}` : ''
-  } catch (error) {
-    return ''
-  }
+function addFile (f: File, errors: FileErrorsInterface) {
+  files.value.push({ data: f, errors } as UploadFileInterface)
 }
 
 function removeFile (index: number) {
   console.log('removes files from form')
   files.value.splice(index, 1)
+  const imcount = files.value.length
+  setHttpErrorsField({ field: 'imagescount', message: isFileCountAcceptable(imcount) ? '' : `Images count: ${imcount} exceeds the current limit ${fileCountLimit}.` })
   console.log('-- updated files array')
   console.log(files.value)
 }
 
-function setCaption (newVal: string) {
+function setDefaultCaption (newVal: string) {
   caption.value = newVal
   console.log(`>>>> new caption: ${caption.value}`)
 }
@@ -67,46 +62,23 @@ async function sendFileToServer ({ id, i, config }: { id: string; i: number; con
   console.log(`--> submits files to server userId: ${id}`)
   console.log(`--> file: ${files.value[i].data.name}`)
   console.log(`--> caption: ${files.value[i].caption}`)
-  const f = files.value[i]
-  const formData = new FormData()
-  formData.append('images', f.data)
-  formData.append('imagecaption', f.caption)
+  const formData = createFormData({ inputImage: files.value[i].data, caption: files.value[i].caption })
   const [error, result] = await to(putUserNewImages({ formData, id, config }))
   if (error) {
-    console.log(`----> Server error response: ${error.message}`)
-    files.value[i].errors = { httpresponse: error.message }
+    setFileError({ i, err: { httpresponse: error.message } })
     files.value[i].isUploaded = false
   }
   if (result) files.value[i].isUploaded = true
 }
 
-const dragEventHandler = {
-  dragStart (event: DragEvent) {
-    setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.75' })
-  },
-  dragOver (event: DragEvent) {
-    setEventTargetDisplay({ target: event.target, background: '#e64040', text: 'Drop new images here...' })
-  },
-  dragLeave (event: DragEvent) {
-    setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
-  },
-  drop (event: DragEvent) {
-    if (event && event.dataTransfer) {
-      addFilesFromInputFileList(event.dataTransfer.files)
-      setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
-    }
-  }
-}
-
 export {
-  addFilesFromInputFileList,
-  getFileErrorText,
   removeFile,
-  setCaption,
+  setDefaultCaption,
   setUserCaption,
   getUploadConfig,
   sendFileToServer,
   getState,
-  dragEventHandler,
+  setState,
+  addFile,
   files
 }

@@ -1,19 +1,65 @@
-import { getUploadConfig, sendFileToServer, setCaption, setUserCaption, files, addFilesFromInputFileList, getFileErrorText, dragEventHandler, removeFile } from '../states/fileUpload'
+import { ref, Ref } from 'vue'
+import { getUploadConfig, sendFileToServer, setDefaultCaption, setUserCaption, files, addFile, removeFile, setState } from '../states/fileUpload'
+import { httpErrors, setHttpErrorsField } from '../states/formErrors'
 import { loadGallery } from '../states/user'
+import { UploadFileInterface } from '../types/IUploadFile'
+import { createFileInputErrors, doesFileHaveInputErrors, fileCountLimit, isFileCountAcceptable, getFileErrorString } from '../utilities/fileUpload/fileupload-utility'
+import { setEventTargetDisplay, setTargetStyleField } from '../utilities/fileUpload/targetSetters-utility'
 import { useUser } from './useUser'
 
 export async function useFileUpload () {
   const { user } = await useUser({})
 
   function updateCaption (newVal: string) {
-    setCaption(newVal)
+    setDefaultCaption(newVal)
   }
-  async function performFileUpload ({ id, i }: { id: string; i: number }) {
-    if (files.value[i].isUploaded === true) {
-      removeFile(i)
-      return false
+
+  function addFilesFromInputFileList (inputImages: FileList | null): boolean {
+    if (!inputImages) return false
+    for (let i = 0; i < inputImages.length; i++) {
+      const errors = createFileInputErrors(inputImages[i])
+      addFile(inputImages[i], errors)
     }
-    // Here first and foremost check if current file has no input errors
+    console.log('-- updated files array')
+    console.log(files.value)
+    const imcount = files.value.length
+    if (!isFileCountAcceptable(imcount)) setHttpErrorsField({ field: 'imagescount', message: `Images count: ${imcount} exceeds the current limit ${fileCountLimit}.` })
+    return true
+  }
+
+  const dragEventHandler = {
+    dragStart (event: DragEvent) {
+      setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.75' })
+    },
+    dragOver (event: DragEvent) {
+      setEventTargetDisplay({ target: event.target, background: '#e64040', text: 'Drop new images here...' })
+    },
+    dragLeave (event: DragEvent) {
+      setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
+    },
+    drop (event: DragEvent) {
+      if (event && event.dataTransfer) {
+        addFilesFromInputFileList(event.dataTransfer.files)
+        setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
+      }
+    }
+  }
+
+  async function cleanUploads () {
+    const notUploaded: Ref<UploadFileInterface[]> = ref([])
+    for (let i = 0; i < files.value.length; i++) {
+      console.log(`>>>> isUploaded value: ${files.value[i].isUploaded}`)
+      if (!files.value[i].isUploaded) {
+        notUploaded.value.push(files.value[i])
+      }
+    }
+    setState(notUploaded.value)
+    console.log('<<<<<< end cleanup')
+    console.log(notUploaded.value)
+  }
+
+  async function performFileUpload ({ id, i }: { id: string; i: number }) {
+    if (doesFileHaveInputErrors(files.value[i]) || httpErrors.value.imagescount) return false
     setUserCaption(i)
     const config = getUploadConfig(i)
     await sendFileToServer({ id, i, config })
@@ -23,14 +69,26 @@ export async function useFileUpload () {
     return true
   }
 
-  // TODO: set here input pre_server-send error logic for files
-  // use fileUpload-utility constants
-  // call it inside handlesFileInputChange()
-  function addFilesFromInput (inputImages: FileList | null) {
-    if (inputImages) addFilesFromInputFileList(inputImages)
-    console.log('-- updated files array')
-    console.log(files.value)
+  async function submitFiles (id: string) {
+    for (let i = 0; i < files.value.length; i++) {
+      console.log(`>>>> isUploaded value: ${files.value[i].isUploaded}`)
+      if (!files.value[i].isUploaded) await performFileUpload({ id, i })
+    }
   }
 
-  return { files, updateCaption, performFileUpload, addFilesFromInput, getFileErrorText, dragEventHandler, removeFile }
+  function getFileErrorText (index: number): string {
+    try {
+      const f = files.value[index]
+      const err = f.errors
+      if (!err) return ''
+      let result = getFileErrorString.httpresponse(err, f.progress)
+      result += getFileErrorString.size(err)
+      result += getFileErrorString.format(err)
+      return result
+    } catch (error) {
+      return ''
+    }
+  }
+
+  return { files, updateCaption, performFileUpload, submitFiles, addFilesFromInputFileList, getFileErrorText, dragEventHandler, removeFile, cleanUploads }
 }
