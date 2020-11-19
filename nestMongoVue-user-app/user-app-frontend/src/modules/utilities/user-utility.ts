@@ -2,6 +2,7 @@ import UserInterface, { GalleryInterface } from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import PasswordInterface from '@/modules/types/IPassword'
 import { createImageUrl } from '@/modules/utilities/gallery/gallery-utility'
+import { to } from './index-utility'
 
 function displayUserData (user: UserInterface): string {
   const { age, email, fullname, country, address, website } = user
@@ -72,8 +73,10 @@ async function createGallery (user: UserInterface): Promise<UserInterface> {
   for (let i = 0; i < images.length; i++) {
     const image = images[i]
     if (image && image.length > 0) {
+      const [error, result] = await to(createImageUrl(_id, image))
       user.gallery.push({
-        link: await createImageUrl(_id, image),
+        // TODO: static pic as placeholder for unavailable pics
+        link: error ? '' : result,
         name: `User ${_id} image #${i}`,
         caption: 'No caption provided',
         file: image
