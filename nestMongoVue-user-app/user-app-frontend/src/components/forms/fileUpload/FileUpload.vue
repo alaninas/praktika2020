@@ -15,6 +15,7 @@
           id="imcaption"
           name="imcaption"
           ref="imcaption"
+          @input="handleCaptionInput()"
           v-validate
         >
         <div class="error">{{ validationErrors.imcaption }}</div>
@@ -101,9 +102,9 @@ export default {
   async setup () {
     const uploadsForm: Ref<HTMLFormElement> = ref(document.createElement('form'))
     const images: Ref<HTMLInputElement> = ref(document.createElement('input'))
-    const imcaption: Ref<HTMLInputElement> = ref(document.createElement('input'))
     const dropzone: Ref<HTMLElement> = ref(document.createElement('div'))
     const fileinput: Ref<HTMLElement> = ref(document.createElement('div'))
+    const imcaption: Ref<HTMLInputElement> = ref(document.createElement('input'))
 
     onMounted(() => {
       dropzone.value.style.background = 'violet'
@@ -117,8 +118,11 @@ export default {
       })
     })
 
-    const { files, addFilesFromInput, performFileUpload, getFileErrorText, dragEventHandler, removeFile } = await useFileUpload()
+    const { files, updateCaption, addFilesFromInput, performFileUpload, getFileErrorText, dragEventHandler, removeFile } = await useFileUpload()
 
+    function handleCaptionInput () {
+      updateCaption(imcaption.value.value)
+    }
     function handleFilesUpload () {
       console.log('handle files input')
       const inputImages = images.value.files
@@ -127,27 +131,21 @@ export default {
       addFilesFromInput(inputImages)
     }
     async function onSubmit (id: string) {
-      console.log(`submits files to server: ${id}`)
-      console.log('>> files array and caption:')
-      console.log(files.value)
-      console.log(imcaption.value.value)
       // TODO: set files.value[i].errors: size, format (see fileupload-urility constants)
       //       send data to server only if no error detected
       //       make sure to display error at the file-input: set Remove button to uppear
       if (files.value.length > 0) {
         console.log('--------->>>>>')
-        const imagecaption = imcaption.value.value
         for (let i = 0; i < files.value.length; i++) {
-          await performFileUpload({ id, i, imagecaption })
+          await performFileUpload({ id, i })
         }
       }
     }
     async function reuploadFile (id: string, i: number) {
       console.log(`reuploads file at index: ${i}, userId: ${id}`)
-      const imagecaption = imcaption.value.value
-      await performFileUpload({ id, i, imagecaption })
+      await performFileUpload({ id, i })
     }
-    return { dragEventHandler, getFileErrorText, validationErrors, httpErrors, userErrors, images, imcaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile }
+    return { handleCaptionInput, dragEventHandler, getFileErrorText, validationErrors, httpErrors, userErrors, images, imcaption, dropzone, fileinput, uploadsForm, onSubmit, handleFilesUpload, files, removeFile, reuploadFile }
   }
 }
 </script>

@@ -6,6 +6,7 @@ import { AxiosRequestConfig } from 'axios'
 import { setEventTargetDisplay, setTargetStyleField } from '../utilities/fileUpload/targetSetters'
 
 const files: Ref<UploadFileInterface[]> = ref([])
+const caption = ref('')
 
 function getState (): Ref<UploadFileInterface[]> {
   return files
@@ -15,6 +16,9 @@ function addFilesFromInputFileList (inputImages: FileList) {
   for (let i = 0; i < inputImages.length; i++) {
     const f = inputImages[i]
     files.value.push({ data: f } as UploadFileInterface)
+    // >>>>> here set errors.....
+    // files.value[i].errors = { size: error.message }
+    // files.value[i].errors = { format: error.message }
   }
 }
 
@@ -37,8 +41,13 @@ function removeFile (index: number) {
   console.log(files.value)
 }
 
-function setCaption ({ i, imagecaption }: { i: number; imagecaption: string }) {
-  files.value[i].caption = imagecaption
+function setCaption (newVal: string) {
+  caption.value = newVal
+  console.log(`>>>> new caption: ${caption.value}`)
+}
+
+function setUserCaption (i: number) {
+  files.value[i].caption = caption.value
 }
 
 function setProgress ({ i, progress }: { i: number; progress: number }) {
@@ -55,6 +64,9 @@ function getUploadConfig (i: number): AxiosRequestConfig {
 }
 
 async function sendFileToServer ({ id, i, config }: { id: string; i: number; config: AxiosRequestConfig }) {
+  console.log(`--> submits files to server userId: ${id}`)
+  console.log(`--> file: ${files.value[i].data.name}`)
+  console.log(`--> caption: ${files.value[i].caption}`)
   const f = files.value[i]
   const formData = new FormData()
   formData.append('images', f.data)
@@ -69,19 +81,15 @@ async function sendFileToServer ({ id, i, config }: { id: string; i: number; con
 
 const dragEventHandler = {
   dragStart (event: DragEvent) {
-    console.log('---> drag start')
     setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.75' })
   },
   dragOver (event: DragEvent) {
-    console.log('---> drag over')
     setEventTargetDisplay({ target: event.target, background: '#e64040', text: 'Drop new images here...' })
   },
   dragLeave (event: DragEvent) {
-    console.log('---> drag leave')
     setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
   },
   drop (event: DragEvent) {
-    console.log('---> drop')
     if (event && event.dataTransfer) {
       addFilesFromInputFileList(event.dataTransfer.files)
       setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
@@ -94,6 +102,7 @@ export {
   getFileErrorText,
   removeFile,
   setCaption,
+  setUserCaption,
   getUploadConfig,
   sendFileToServer,
   getState,

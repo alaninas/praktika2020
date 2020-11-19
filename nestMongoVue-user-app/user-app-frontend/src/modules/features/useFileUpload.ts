@@ -1,13 +1,16 @@
-import { getUploadConfig, sendFileToServer, setCaption, files, addFilesFromInputFileList, getFileErrorText, dragEventHandler, removeFile } from '../states/FileUpload'
+import { getUploadConfig, sendFileToServer, setCaption, setUserCaption, files, addFilesFromInputFileList, getFileErrorText, dragEventHandler, removeFile } from '../states/fileUpload'
 import { loadGallery } from '../states/user'
 import { useUser } from './useUser'
 
 export async function useFileUpload () {
   const { user } = await useUser({})
 
-  async function performFileUpload ({ id, i, imagecaption }: { id: string; i: number; imagecaption: string }) {
+  function updateCaption (newVal: string) {
+    setCaption(newVal)
+  }
+  async function performFileUpload ({ id, i }: { id: string; i: number }) {
     // Here first and foremost check if current file has no input errors
-    setCaption({ i, imagecaption })
+    setUserCaption(i)
     const config = getUploadConfig(i)
     await sendFileToServer({ id, i, config })
     await loadGallery(user.value._id)
@@ -24,5 +27,5 @@ export async function useFileUpload () {
     console.log(files.value)
   }
 
-  return { files, performFileUpload, addFilesFromInput, getFileErrorText, dragEventHandler, removeFile }
+  return { files, updateCaption, performFileUpload, addFilesFromInput, getFileErrorText, dragEventHandler, removeFile }
 }
