@@ -10,6 +10,7 @@ interface UploadFileInterface {
   errors: FileErrorsInterface;
   progress: number;
   caption: string;
+  isUploaded?: boolean;
 }
 
 // interface ImagesPayloadInterface {

@@ -9,6 +9,10 @@ export async function useFileUpload () {
     setCaption(newVal)
   }
   async function performFileUpload ({ id, i }: { id: string; i: number }) {
+    if (files.value[i].isUploaded === true) {
+      removeFile(i)
+      return false
+    }
     // Here first and foremost check if current file has no input errors
     setUserCaption(i)
     const config = getUploadConfig(i)
@@ -16,6 +20,7 @@ export async function useFileUpload () {
     await loadGallery(user.value._id)
     console.log('>>>>> new user data:')
     console.log(user.value)
+    return true
   }
 
   // TODO: set here input pre_server-send error logic for files

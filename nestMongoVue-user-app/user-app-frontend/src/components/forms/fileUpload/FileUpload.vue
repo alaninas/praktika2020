@@ -68,9 +68,9 @@
               <div class="col-lg-1 col-md-2 col-sm-3">
                 <!-- TODO: switch to v-if else -->
                 <!-- the default statement will generate Remove link, the other two stay as is -->
-                <a v-show="(file.progress < 100 || !file.progress) && (!file.errors || (file.errors && (file.errors.size || file.errors.format)))" class="remove-file" @click="removeFile(i)">Remove</a>
-                <a v-show="file.progress === 100 && !file.errors" class="successful-upload" @click="removeFile(i)">Success</a>
-                <a v-show="file.errors && file.errors.httpresponse" class="unsuccessful-upload" @click="reuploadFile($route.params.id, i)">Reupload</a>
+                <a v-show="(file.progress < 100 || !file.progress) && !file.isUploaded" class="remove-file" @click="removeFile(i)">Remove</a>
+                <a v-show="file.progress === 100 && !file.isUploaded" class="unsuccessful-upload" @click="reuploadFile($route.params.id, i)">Reupload</a>
+                <a v-show="file.isUploaded === true" class="successful-upload" @click="removeFile(i)">Success</a>
               </div>
             </div>
             <div class="error" v-html="getFileErrorText(i)" />
@@ -128,12 +128,12 @@ export default {
       const inputImages = images.value.files
       console.log(`>> input files count: ${inputImages?.length}`)
       console.log(inputImages)
-      addFilesFromInput(inputImages)
-    }
-    async function onSubmit (id: string) {
       // TODO: set files.value[i].errors: size, format (see fileupload-urility constants)
       //       send data to server only if no error detected
       //       make sure to display error at the file-input: set Remove button to uppear
+      addFilesFromInput(inputImages)
+    }
+    async function onSubmit (id: string) {
       if (files.value.length > 0) {
         console.log('--------->>>>>')
         for (let i = 0; i < files.value.length; i++) {

@@ -28,7 +28,7 @@ function getFileErrorText (index: number): string {
     const err = f.errors
     if (!err) return ''
     const length = err.httpresponse?.length
-    return length ? ` Error: ${err.httpresponse}. Upload progress: ${f.progress}` : ''
+    return length ? `Error: ${err.httpresponse}. Upload progress: ${f.progress}` : ''
   } catch (error) {
     return ''
   }
@@ -71,12 +71,13 @@ async function sendFileToServer ({ id, i, config }: { id: string; i: number; con
   const formData = new FormData()
   formData.append('images', f.data)
   formData.append('imagecaption', f.caption)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, result] = await to(putUserNewImages({ formData, id, config }))
   if (error) {
     console.log(`----> Server error response: ${error.message}`)
     files.value[i].errors = { httpresponse: error.message }
+    files.value[i].isUploaded = false
   }
+  if (result) files.value[i].isUploaded = true
 }
 
 const dragEventHandler = {
