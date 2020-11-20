@@ -39,13 +39,11 @@ function setAddressProperties (user: UserInterface, inputAddress: AddressInterfa
 }
 
 function setImages (user: UserInterface, images: string[] | undefined): UserInterface {
-  // const { gallery } = inputUser
   user.images = images
   return user
 }
 
 function setGallery (user: UserInterface, gallery: GalleryInterface[] | undefined): UserInterface {
-  // const { gallery } = inputUser
   user.gallery = gallery
   return user
 }
@@ -59,8 +57,6 @@ function setBasicProperties (user: UserInterface, inputUser: UserInterface): Use
   user.passwordConfirm = passwordConfirm
   user.email = email
   user._id = _id
-  // user.images = images
-  // user.gallery = gallery
   user.country = country || ''
   if (age) user.age = parseInt(age.toString())
   return user
@@ -77,7 +73,7 @@ async function createGallery (user: UserInterface): Promise<UserInterface> {
       user.gallery.push({
         // TODO: static pic as placeholder for unavailable pics
         link: error ? '' : result,
-        name: `User ${_id} image #${i}`,
+        altname: `User ${_id} image #${i}`,
         caption: 'No caption provided',
         file: image
       })

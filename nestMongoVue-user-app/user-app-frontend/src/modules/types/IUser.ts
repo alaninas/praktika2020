@@ -1,8 +1,13 @@
 export interface GalleryInterface {
-    name: string;
+    altname: string;
     link: string;
     caption: string;
     file: string;
+}
+
+export interface ImageInterface {
+    filename: string;
+    caption: string;
 }
 
 export default interface UserInterface {

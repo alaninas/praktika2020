@@ -4,7 +4,7 @@
     <li class="col-lg-3 col-md-6 col-sm-12" v-for="pic in user.gallery" :key="pic">
       <figure>
         <figcaption>{{ pic.file }}</figcaption>
-        <img :src="pic.link" :alt="pic.name"/>
+        <img :src="pic.link" :alt="pic.altname"/>
         <br />
         <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="deletePic(pic.file)">
           Delete
