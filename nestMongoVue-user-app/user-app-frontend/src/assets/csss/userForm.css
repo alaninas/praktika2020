@@ -101,13 +101,15 @@ form.uploadsForm .row {
   overflow: hidden;
   /* color: #333; */
   /* background-color: #fff; */
-  border-color: #ccc;
+  border: .0625rem solid #ccc;
   width: 100%;
   display: inline-block;
-  background: #add8e69c
+  background: #f8f8f8
 }
-.dropzone-container:hover {
-  background: #f080809c
+.dropzone-container:hover,
+.dropzone-container:focus {
+  /* background: #f080809c; */
+  border: .0625rem solid #1976d2;
 }
 .dropzone-container .dropzone {
   /* height: 5rem; */

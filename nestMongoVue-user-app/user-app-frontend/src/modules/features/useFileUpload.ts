@@ -26,10 +26,10 @@ export async function useFileUpload () {
 
   const dragEventHandler = {
     dragStart (event: DragEvent) {
-      setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.75' })
+      setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.55' })
     },
     dragOver (event: DragEvent) {
-      setEventTargetDisplay({ target: event.target, background: '#e64040', text: 'Drop new images here...' })
+      setEventTargetDisplay({ target: event.target, background: '#1976d229', text: 'Drop new images here...' })
     },
     dragLeave (event: DragEvent) {
       setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
