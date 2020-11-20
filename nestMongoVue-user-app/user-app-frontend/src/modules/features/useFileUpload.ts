@@ -5,11 +5,8 @@ import { loadGallery } from '../states/user'
 import { UploadFileInterface } from '../types/IUploadFile'
 import { createFileInputErrors, doesFileHaveInputErrors, fileCountLimit, isFileCountAcceptable, getFileErrorString } from '../utilities/fileUpload/fileupload-utility'
 import { setEventTargetDisplay, setTargetStyleField } from '../utilities/fileUpload/targetSetters-utility'
-import { useUser } from './useUser'
 
 export async function useFileUpload () {
-  const { user } = await useUser({})
-
   function updateCaption (newVal: string) {
     setDefaultCaption(newVal)
   }
@@ -63,9 +60,7 @@ export async function useFileUpload () {
     setUserCaption(i)
     const config = getUploadConfig(i)
     await sendFileToServer({ id, i, config })
-    await loadGallery(user.value._id)
-    console.log('>>>>> new user data:')
-    console.log(user.value)
+    await loadGallery(id)
     return true
   }
 
