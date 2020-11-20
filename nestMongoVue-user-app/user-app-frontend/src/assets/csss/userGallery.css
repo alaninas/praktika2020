@@ -43,3 +43,11 @@ ul.gallery label[role="button"]:hover {
     height: 100%;
   }
 }
+/* Edit form */
+.picture-edit {
+  border: .0625rem double darkgray;
+}
+.picture-edit img {
+	height: 25rem;
+	object-fit: contain;
+}

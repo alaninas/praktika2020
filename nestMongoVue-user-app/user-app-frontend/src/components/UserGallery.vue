@@ -1,13 +1,35 @@
 <template>
   <div class="error">{{ httpErrors.imagesresponse }}</div>
+  <div v-show="isEditFormVisible" class="picture-edit">
+    <h5>Picture &lt;{{ pictureToEdit.file }}&gt; Edit</h5>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <figure>
+          <img :src="pictureToEdit.link" :alt="pictureToEdit.altname"/>
+        </figure>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label role="button" class="responsive-padding responsive-margin inverse" v-show="!isDeleteApproved" @click="isDeleteApproved = !isDeleteApproved">Delete picture</label>
+        <div class="card fluid warning" v-show="isDeleteApproved">
+          <p>Please confirm picture action
+            <label role="button" class="responsive-padding responsive-margin inverse" @click="deletePic(pictureToEdit.file)">Delete</label>
+            <label role="button" class="responsive-padding responsive-margin bordered" @click="isDeleteApproved = !isDeleteApproved">Cancel delete</label>
+          </p>
+        </div>
+      </div>
+    </div>
+    <label role="button" class="responsive-padding responsive-margin bordered" @click="closePictureEdit()">
+      Close edit
+    </label>
+  </div>
   <ul class="row gallery">
     <li class="col-lg-3 col-md-6 col-sm-12" v-for="pic in user.gallery" :key="pic">
       <figure>
         <figcaption>{{ pic.file }}</figcaption>
         <img :src="pic.link" :alt="pic.altname"/>
         <br />
-        <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="deletePic(pic.file)">
-          Delete
+        <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="displayPictureEdit(pic)">
+          Edit
         </label>
       </figure>
     </li>
@@ -17,9 +39,10 @@
 <script lang="ts">
 import { useUser } from '@/modules/features/useUser'
 import { useRoute } from 'vue-router'
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
 import { useLogin } from '@/modules/features/useLogin'
 import { httpErrors } from '@/modules/states/formErrors'
+import { GalleryInterface } from '@/modules/types/IUser'
 
 export default {
   async setup () {
@@ -28,11 +51,24 @@ export default {
     const { user, deletePictureInGallery } = await useUser({ userId: userId.value, noDataReload: false, createGallery: true })
     const { isGivenUserAuthorised } = useLogin({})
 
+    const isEditFormVisible = ref(false)
+    const pictureToEdit: Ref<GalleryInterface> = ref({} as GalleryInterface)
+    const isDeleteApproved = ref(false)
+
+    function displayPictureEdit (picture: GalleryInterface) {
+      if (!isEditFormVisible.value) isEditFormVisible.value = !isEditFormVisible.value
+      pictureToEdit.value = picture
+    }
+    function closePictureEdit () {
+      isEditFormVisible.value = !isEditFormVisible.value
+      pictureToEdit.value = {} as GalleryInterface
+    }
     async function deletePic (im: string) {
       await deletePictureInGallery(im)
+      isEditFormVisible.value = false
     }
 
-    return { user, deletePic, isGivenUserAuthorised, httpErrors }
+    return { user, deletePic, isGivenUserAuthorised, httpErrors, isEditFormVisible, displayPictureEdit, closePictureEdit, pictureToEdit, isDeleteApproved }
   }
 }
 </script>
