@@ -62,6 +62,16 @@ function setBasicProperties (user: UserInterface, inputUser: UserInterface): Use
   return user
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createGalleryPicture ({ error, result, _id, i, image }: { error: any; result: any; _id: string; i: number; image: string }): GalleryInterface {
+  return {
+    // TODO: static pic as placeholder for unavailable pics
+    link: error ? '' : result,
+    altname: `User ${_id} image #${i}`,
+    caption: 'No caption provided',
+    file: image
+  }
+}
 async function createGallery (user: UserInterface): Promise<UserInterface> {
   const { _id, images } = user
   user.gallery = []
@@ -70,13 +80,7 @@ async function createGallery (user: UserInterface): Promise<UserInterface> {
     const image = images[i]
     if (image && image.length > 0) {
       const [error, result] = await to(createImageUrl(_id, image))
-      user.gallery.push({
-        // TODO: static pic as placeholder for unavailable pics
-        link: error ? '' : result,
-        altname: `User ${_id} image #${i}`,
-        caption: 'No caption provided',
-        file: image
-      })
+      user.gallery.push(createGalleryPicture({ error, result, _id, i, image }))
     }
   }
   return user
