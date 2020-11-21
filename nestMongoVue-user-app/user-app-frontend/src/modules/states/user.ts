@@ -1,16 +1,15 @@
 import { ref, Ref, watchEffect } from 'vue'
-import UserInterface from '@/modules/types/IUser'
+import UserInterface, { GalleryInterface, ImageInterface } from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import { createGallery, getAddressFromUser, setAddressProperties, setBasicProperties, setGallery, setImages } from '@/modules/utilities/user-utility'
-import { resetFormErrors, setUserErrorsPassword } from './formErrors'
+import { resetFormErrors, setHttpErrorsField, setUserErrorsPassword } from './formErrors'
 import { getUsersStateUser } from './users'
 import { purgeImage } from '../utilities/gallery/gallery-utility'
 import { to } from '../utilities/index-utility'
+import { putUserUpdatedImage } from '../services'
+import { UpdatePictureInterface } from '../types/IUploadFile'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
-
-const history = []
-history.push(user.value)
 
 function getState () {
   return user
@@ -60,13 +59,15 @@ async function loadState ({ userId, noDataReload, createGallery }: { userId: str
   if (noDataReload) return getState()
   if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
     clearState()
-    if (createGallery && myUser.images) await initGallery(myUser)
+    if (createGallery && myUser.images) {
+      await initGallery(myUser)
+    }
     setState(myUser)
   }
   return getState()
 }
 
-async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterface; image: string }): Promise<string[] | undefined> {
+async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterface; image: string }): Promise<ImageInterface[] | undefined> {
   if (inputUser._id && image && image.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, result] = await to(purgeImage(inputUser._id, image))
@@ -75,13 +76,17 @@ async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterfa
   return (await loadGallery(inputUser._id)).value.images
 }
 
+async function updateGalleryPicture ({ id, galleryPicture }: { id: string; galleryPicture: GalleryInterface }) {
+  console.log(`+> submits files to server userId: ${id}`)
+  const obj = { image: galleryPicture.file, imagecaption: galleryPicture.caption } as UpdatePictureInterface
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [error, result] = await to(putUserUpdatedImage({ obj, id }))
+  if (error) setHttpErrorsField({ field: 'imagesresponse', message: error.message })
+  if (result) await loadGallery(id)
+}
+
 watchEffect(() => {
   setState(user.value)
-  // TODO: debug prints to remove
-  console.log('>> from user watcher')
-  console.log(user.value)
-  history.push(user.value)
-  console.log(history.length)
 })
 
 export {
@@ -95,5 +100,6 @@ export {
   initGallery,
   emptyGallery,
   loadGallery,
-  deleteUserPicture
+  deleteUserPicture,
+  updateGalleryPicture
 }

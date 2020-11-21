@@ -1,25 +1,32 @@
 import { server } from '@/backend-server'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { LoginInterface } from '@/modules/types/ILogin'
-import UserInterface from '@/modules/types/IUser'
+import UserInterface, { ImageInterface } from '@/modules/types/IUser'
 import { tokenService } from './token-service'
 import { resetHeaders, reqInterceptor, resInterceptor } from './headers-service'
 import { to } from '@/modules/utilities/index-utility'
+import { UpdatePictureInterface } from '../types/IUploadFile'
 
 resetHeaders()
 reqInterceptor()
 resInterceptor()
 
-async function getUserImageString (userId: string, image: string): Promise<AxiosResponse<Blob>> {
+async function getUserImageString (userId: string, image: string): Promise<AxiosResponse<string>> {
   return await axios.get(`${server.baseURL}/users/uploads/${userId}/${image}`)
 }
 
-async function deleteUserImage (id: string, image: string): Promise<AxiosResponse<string[]>> {
+async function deleteUserImage (id: string, image: string): Promise<AxiosResponse<ImageInterface[]>> {
   return await axios.delete(`${server.baseURL}/users/gallery/${id}/${image}`)
 }
 
 async function putUserNewImages ({ formData, id, config }: { formData: FormData; id: string; config: AxiosRequestConfig }): Promise<AxiosResponse<UserInterface>> {
-  const [error, result] = await to(axios.put(`${server.baseURL}/users/uploads/${id}`, formData, config))
+  const [error, result] = await to(axios.post(`${server.baseURL}/users/uploads/${id}`, formData, config))
+  if (error) throw error
+  return result
+}
+
+async function putUserUpdatedImage ({ obj, id }: { obj: UpdatePictureInterface; id: string }): Promise<AxiosResponse<UserInterface>> {
+  const [error, result] = await to(axios.put(`${server.baseURL}/users/uploads/${id}`, obj))
   if (error) throw error
   return result
 }
@@ -80,5 +87,6 @@ export {
   // getUserImages,
   deleteUserImage,
   getUserImageString,
-  putUserNewImages
+  putUserNewImages,
+  putUserUpdatedImage
 }

@@ -1,7 +1,12 @@
 <template>
   <div class="error">{{ httpErrors.imagesresponse }}</div>
-  <div v-show="isEditFormVisible" class="picture-edit">
-    <h5>Picture &lt;{{ pictureToEdit.file }}&gt; Edit</h5>
+  <div :class="isEditFormVisible ? 'visible-picture-edit' : 'hidden-picture-edit'" id="picture-edit" ref="pictureedit">
+    <div class="row picture-edit-header">
+      <h5>Picture &lt;{{ pictureToEdit.file }}&gt; Edit</h5>
+      <label role="button" class="responsive-padding responsive-margin bordered" @click="closePictureEdit()">
+        Close edit
+      </label>
+    </div>
     <div class="row">
       <div class="col-lg-6 col-md-6 col-sm-12">
         <figure>
@@ -16,17 +21,29 @@
             <label role="button" class="responsive-padding responsive-margin bordered" @click="isDeleteApproved = !isDeleteApproved">Cancel delete</label>
           </p>
         </div>
+        <form
+            id="editForm"
+            name="editForm"
+            class="editForm"
+            @submit.prevent="onSubmit($route.params.id)" onkeydown="return event.key != 'Enter';"
+          >
+          <label for="imcaption">Picture caption:</label>
+          <input
+            type="text"
+            id="edit-imcaption"
+            name="edit-imcaption"
+            v-model="pictureToEdit.caption"
+          />
+          <input type="submit" value="Submit" class="responsive-padding responsive-margin primary" />
+        </form>
       </div>
     </div>
-    <label role="button" class="responsive-padding responsive-margin bordered" @click="closePictureEdit()">
-      Close edit
-    </label>
   </div>
   <ul class="row gallery">
     <li class="col-lg-3 col-md-6 col-sm-12" v-for="pic in user.gallery" :key="pic">
       <figure>
         <figcaption>{{ pic.file }}</figcaption>
-        <img :src="pic.link" :alt="pic.altname"/>
+        <img :src="pic.link" :alt="pic.altname" :title="pic.caption || ''"/>
         <br />
         <label v-show="isGivenUserAuthorised($route.params.id)" role="button" class="responsive-padding responsive-margin inverse" @click="displayPictureEdit(pic)">
           Edit
@@ -48,16 +65,22 @@ export default {
   async setup () {
     const route = useRoute()
     const userId = ref(route.params.id?.toString())
-    const { user, deletePictureInGallery } = await useUser({ userId: userId.value, noDataReload: false, createGallery: true })
+    const { user, deletePictureInGallery, updatePictureInGallery } = await useUser({ userId: userId.value, noDataReload: false, createGallery: true })
     const { isGivenUserAuthorised } = useLogin({})
 
+    // TODO: refactor
     const isEditFormVisible = ref(false)
     const pictureToEdit: Ref<GalleryInterface> = ref({} as GalleryInterface)
     const isDeleteApproved = ref(false)
+    const pictureedit: Ref<HTMLElement> = ref(document.createElement('div'))
+    // TODO: fileupdate doesnt belong with fileupload module
 
     function displayPictureEdit (picture: GalleryInterface) {
       if (!isEditFormVisible.value) isEditFormVisible.value = !isEditFormVisible.value
       pictureToEdit.value = picture
+      // const el = document.getElementById('picture-edit')
+      // if (el) el.scrollIntoView(false)
+      if (pictureedit.value) pictureedit.value.scrollIntoView(false)
     }
     function closePictureEdit () {
       isEditFormVisible.value = !isEditFormVisible.value
@@ -67,8 +90,12 @@ export default {
       await deletePictureInGallery(im)
       isEditFormVisible.value = false
     }
+    async function onSubmit (id: string) {
+      console.log('kkkkkkkkkkkk')
+      await updatePictureInGallery({ id, galleryPicture: pictureToEdit.value })
+    }
 
-    return { user, deletePic, isGivenUserAuthorised, httpErrors, isEditFormVisible, displayPictureEdit, closePictureEdit, pictureToEdit, isDeleteApproved }
+    return { user, deletePic, isGivenUserAuthorised, httpErrors, isEditFormVisible, displayPictureEdit, closePictureEdit, pictureToEdit, isDeleteApproved, onSubmit, pictureedit }
   }
 }
 </script>

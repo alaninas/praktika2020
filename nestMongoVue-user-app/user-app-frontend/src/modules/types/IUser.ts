@@ -7,7 +7,7 @@ export interface GalleryInterface {
 
 export interface ImageInterface {
     filename: string;
-    caption: string;
+    caption?: string;
 }
 
 export default interface UserInterface {
@@ -29,6 +29,6 @@ export default interface UserInterface {
     movies?: Array<string>;
     _id?: string;
     website?: string;
-    images?: Array<string>;
+    images?: Array<ImageInterface>;
     gallery?: Array<GalleryInterface>;
 }

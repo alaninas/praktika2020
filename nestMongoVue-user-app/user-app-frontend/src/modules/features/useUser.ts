@@ -1,16 +1,13 @@
-import { setState, loadState, clearState, deleteUserPicture } from '@/modules/states/user'
+import { setState, loadState, clearState, deleteUserPicture, updateGalleryPicture } from '@/modules/states/user'
 import { getPasswordFromUser } from '@/modules/utilities/user-utility'
 import { passData } from '@/modules/types/IPassword'
+import { GalleryInterface, ImageInterface } from '../types/IUser'
 
 export async function useUser ({ userId = '', noDataReload = true, createGallery = false }: { userId?: string; noDataReload?: boolean; createGallery?: boolean }) {
   const user = await loadState({ userId, noDataReload, createGallery })
 
   function clearUserData () {
     clearState()
-  }
-
-  async function deletePictureInGallery (image: string): Promise<string[] | undefined> {
-    return await deleteUserPicture({ inputUser: user.value, image })
   }
 
   function preparePasswordForServer (forgetPassword: boolean) {
@@ -27,5 +24,18 @@ export async function useUser ({ userId = '', noDataReload = true, createGallery
     setState(user.value)
   }
 
-  return { user, clearUserData, updateUserPassword, preparePasswordForServer, deletePictureInGallery }
+  async function deletePictureInGallery (image: string): Promise<ImageInterface[] | undefined> {
+    return await deleteUserPicture({ inputUser: user.value, image })
+  }
+
+  async function updatePictureInGallery ({ id, galleryPicture }: { id: string; galleryPicture: GalleryInterface }) {
+    console.log('Picture update ------>>>')
+    const i = user.value.images?.findIndex(el => el.filename === galleryPicture.file)
+    console.log(i)
+    if (!i || i < 0) return false
+    await updateGalleryPicture({ id, galleryPicture })
+    return true
+  }
+
+  return { user, clearUserData, updateUserPassword, preparePasswordForServer, deletePictureInGallery, updatePictureInGallery }
 }

@@ -1,9 +1,4 @@
 import { FileErrorsInterface } from '@/modules/types/IErors'
-// create UploadFiles interface:
-//  data: File
-//  errors: FileErrors /size, format, response/
-//  progress: progress-percentage
-//  caption: string
 
 interface UploadFileInterface {
   data: File;
@@ -13,12 +8,12 @@ interface UploadFileInterface {
   isUploaded?: boolean;
 }
 
-// interface ImagesPayloadInterface {
-//   images: File;
-//   imagecaption: string;
-// }
+interface UpdatePictureInterface {
+  image: string;
+  imagecaption: string;
+}
 
 export {
-  UploadFileInterface
-  // ImagesPayloadInterface
+  UploadFileInterface,
+  UpdatePictureInterface
 }
