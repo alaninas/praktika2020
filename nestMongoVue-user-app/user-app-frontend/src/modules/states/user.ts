@@ -7,7 +7,6 @@ import { getUsersStateUser } from './users'
 import { purgeImage } from '../utilities/gallery/gallery-utility'
 import { to } from '../utilities/index-utility'
 import { putUserUpdatedImage } from '../services'
-import { UpdatePictureInterface } from '../types/IUploadFile'
 
 const user: Ref<UserInterface> = ref({} as UserInterface)
 
@@ -43,10 +42,6 @@ async function initGallery (inputUser: UserInterface) {
   setGallery(user.value, inputUser.gallery)
 }
 
-function emptyGallery () {
-  user.value.gallery = []
-}
-
 async function loadGallery (userId: string | undefined): Promise<Ref<UserInterface>> {
   if (!userId) return getState()
   const myUser = await getUsersStateUser(userId)
@@ -77,10 +72,8 @@ async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterfa
 }
 
 async function updateGalleryPicture ({ id, galleryPicture }: { id: string; galleryPicture: GalleryInterface }) {
-  console.log(`+> submits files to server userId: ${id}`)
-  const obj = { image: galleryPicture.file, imagecaption: galleryPicture.caption } as UpdatePictureInterface
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, result] = await to(putUserUpdatedImage({ obj, id }))
+  const [error, result] = await to(putUserUpdatedImage({ obj: { image: galleryPicture.file, imagecaption: galleryPicture.caption }, id }))
   if (error) setHttpErrorsField({ field: 'imagesresponse', message: error.message })
   if (result) await loadGallery(id)
 }
@@ -98,7 +91,6 @@ export {
   clearState,
   getStateEmail,
   initGallery,
-  emptyGallery,
   loadGallery,
   deleteUserPicture,
   updateGalleryPicture
