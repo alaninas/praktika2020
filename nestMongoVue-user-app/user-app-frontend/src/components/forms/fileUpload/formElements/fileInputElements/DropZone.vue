@@ -65,3 +65,6 @@ export default {
   }
 }
 </script>
+
+<style src="@/assets/csss/dropZone.css">
+</style>

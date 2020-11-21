@@ -45,7 +45,7 @@ function createFilesUploadFormData ({ inputImage, caption }: { inputImage: File;
 
 function createFileInputErrors (file: File): FileErrorsInterface {
   const errors: FileErrorsInterface = { format: '', size: '' } as FileErrorsInterface
-  if (!isSizeAcceptable(file.size)) errors.size = `${file.size} exceeds the limit ${sizeLimit}.`
+  if (!isSizeAcceptable(file.size)) errors.size = `${file.size} exceeds the limit ${sizeLimit} by ${file.size - sizeLimit} bytes.`
   if (!isFormatAcceptable(file.type)) errors.format = `${file.type} is not supported. Currently supporting: ${acceptedFormats.toString()}.`
   return errors
 }

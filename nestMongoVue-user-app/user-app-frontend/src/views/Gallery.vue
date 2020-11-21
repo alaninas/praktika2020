@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import UserGallery from '@/components/UserGallery.vue'
+import UserGallery from '@/components/userGallery/UserGallery.vue'
 import FileUpload from '@/components/forms/fileUpload/FileUpload.vue'
 import { useLogin } from '@/modules/features/useLogin'
 import { routerRedirect } from '@/modules/utilities/router-utility'

@@ -24,5 +24,17 @@ export default {
 }
 </script>
 
-<style src="@/assets/csss/fileInput.css">
+<style lang="css">
+.fileinput-outer-container input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 0;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  cursor: pointer;
+}
 </style>
