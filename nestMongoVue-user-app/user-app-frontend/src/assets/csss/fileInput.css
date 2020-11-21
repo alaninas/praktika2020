@@ -1,0 +1,48 @@
+/* Drag n drop styles */
+.fileinput-outer-container input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 0;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+.fileinput-outer-container input[type=file] {
+  cursor: pointer;
+}
+/* Dropzone */
+.dropzone-container {
+  position: relative;
+  overflow: hidden;
+  /* color: #333; */
+  /* background-color: #fff; */
+  border: .0625rem solid #ccc;
+  width: 100%;
+  display: inline-block;
+  background: #f8f8f8
+}
+.dropzone-container:hover,
+.dropzone-container:focus {
+  /* background: #f080809c; */
+  border: .0625rem solid var(--input-focus-color);
+}
+.dropzone-container .dropzone {
+  /* height: 5rem; */
+  text-align: center !important;
+  line-height: 13rem;
+}
+.dropzone-container .dropzone span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+.dropzone-container .browse-files {
+  position: relative;
+}
+.browse-files label {
+	display: inherit;
+	padding-left: 0;
+}
