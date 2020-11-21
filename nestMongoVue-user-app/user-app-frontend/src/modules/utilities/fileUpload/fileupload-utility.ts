@@ -36,7 +36,7 @@ function isFileCountAcceptable (count: number) {
   return count <= fileCountLimit
 }
 
-function createFormData ({ inputImage, caption }: { inputImage: File; caption: string }): FormData {
+function createFilesUploadFormData ({ inputImage, caption }: { inputImage: File; caption: string }): FormData {
   const formData = new FormData()
   formData.append('images', inputImage)
   formData.append('imagecaption', caption)
@@ -58,7 +58,7 @@ export {
   isFormatAcceptable,
   isSizeAcceptable,
   isFileCountAcceptable,
-  createFormData,
+  createFilesUploadFormData,
   createFileInputErrors,
   doesFileHaveInputErrors,
   fileCountLimit,
