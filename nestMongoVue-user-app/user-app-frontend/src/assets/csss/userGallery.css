@@ -44,10 +44,22 @@ ul.gallery label[role="button"]:hover {
   }
 }
 /* Edit form */
-.picture-edit {
-  border: .0625rem double darkgray;
+[class$="-picture-edit"] {
+  border: .1625rem double darkgray;
 }
-.picture-edit img {
+[class$="-picture-edit"] img {
 	height: 25rem;
 	object-fit: contain;
+}
+.hidden-picture-edit {
+	visibility: hidden;
+	height: 0;
+}
+.visible-picture-edit {
+	visibility: visible;
+	height: auto;
+}
+.picture-edit-header {
+	align-items: center;
+	justify-content: center;
 }
