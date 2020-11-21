@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { IsEqualTo } from "../decorators/IsEqualTo";
 import IImage from "../types/IImage";
 

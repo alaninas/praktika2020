@@ -45,10 +45,6 @@ export class UsersController {
     async getOneUserByEmail(@Param('email') email: string): Promise<Person> {
         return this.usersService.getOneUserByEmail(email);
     }
-    // @Get('gallery/:id')
-    // async getUserImages(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<IImage[]> {
-    //   return this.usersService.getUserImages(id);
-    // }
     @Get('uploads/:id/:image')
     // @Header('Content-Type', 'image/*')
     async getUserFileData(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string> {
@@ -86,13 +82,11 @@ export class UsersController {
     @Post('uploads/:id')
     @UseInterceptors(FilesInterceptor('images', 20, localOptions))
     async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string,  @Body('imagecaption') imagecaption: string): Promise<Person> {
-        console.error(`--> calls file upload: user id ${id}, files count: ${files.length}, first file: ${files[0]}, caption: ${imagecaption}`)
         const oid = ObjectID.createFromHexString(id);
         return this.usersService.uploadMultipleFiles({ id: oid, files, caption: imagecaption });
     }
     @Put('uploads/:id')
     async updateUserFile(@Body('image') file: string, @Param('id') id: string,  @Body('imagecaption') imagecaption: string): Promise<Person> {
-        console.error(`--> calls file update: user id ${id}, first file: ${file}, caption: ${imagecaption}`)
         const oid = ObjectID.createFromHexString(id);
         return this.usersService.updateUserFile({ id: oid, file, caption: imagecaption });
     }
