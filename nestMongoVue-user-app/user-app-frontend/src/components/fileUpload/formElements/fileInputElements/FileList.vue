@@ -31,7 +31,6 @@ export default {
       return `<div id="myBar" class="row w3-container w3-green" style="width:${num}%">${num}%</div>`
     }
     async function reuploadFile (id: string, i: number) {
-      console.log(`reuploads file at index: ${i}, userId: ${id}`)
       await performFileUpload({ id, i })
     }
     return { getFileUploadErrorText, files, removeFile, reuploadFile, getProgressBarDisplay }

@@ -55,9 +55,6 @@ function createUploadConfig (i: number): AxiosRequestConfig {
 }
 
 async function sendFileToServer ({ id, i, config }: { id: string; i: number; config: AxiosRequestConfig }) {
-  console.log(`--> submits files to server userId: ${id}`)
-  console.log(`--> file: ${files.value[i].data.name}`)
-  console.log(`--> caption: ${files.value[i].caption}`)
   const formData = createFilesUploadFormData({ inputImage: files.value[i].data, caption: files.value[i].caption })
   const [error, result] = await to(putUserNewImages({ formData, id, config }))
   if (error) {

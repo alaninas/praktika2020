@@ -1,12 +1,9 @@
 import { LoginInterface, authCredentials, AuthCredentialsType, loginData } from '@/modules/types/ILogin'
 import { Ref, watchEffect } from 'vue'
-import { resetHttpErrors, resetValidationErrors, httpErrors, clearHttpErrorsLogin, setHttpErrorsField } from '@/modules/states/formErrors'
+import { resetHttpErrors, resetValidationErrors, clearHttpErrorsLogin, setHttpErrorsField } from '@/modules/states/formErrors'
 import { tokenService } from '@/modules/services/token-service'
 import { resetUserPassword, loginUser } from '@/modules/utilities/login-utility'
 import { to } from '@/modules/utilities/index-utility'
-
-const history = []
-history.push(loginData.value)
 
 function setState ({ data = { password: '', email: '', _id: '' } }: {data?: LoginInterface}): Ref<LoginInterface> {
   loginData.value = data
@@ -64,9 +61,6 @@ async function resetStatePassword (userLogin: LoginInterface, isPassowrdForgotte
 
 watchEffect(() => {
   setState({ data: loginData.value })
-  console.log('---> from login watcher ')
-  console.log(loginData.value)
-  console.log(httpErrors.value)
 })
 
 export {

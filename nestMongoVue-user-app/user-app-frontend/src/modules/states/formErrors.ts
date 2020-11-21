@@ -1,7 +1,7 @@
 import UserInterface from '@/modules/types/IUser'
 import { userErrors, validationErrors, httpErrors, HttpErrorsFieldTypes } from '@/modules/types/IErors'
 import { LoginInterface } from '../types/ILogin'
-import { Ref, watch } from 'vue'
+import { Ref } from 'vue'
 
 function setUserErrorsPassword (user: UserInterface) {
   const pswdMessagge = user.password === user.passwordConfirm ? '' : 'Passwords do not match.'
@@ -39,11 +39,6 @@ function resetFormErrors () {
   resetHttpErrors()
 }
 
-watch(httpErrors, (httpErrors) => {
-  console.log('------- from httpErrors watcher')
-  console.log(httpErrors)
-})
-
 export {
   userErrors,
   validationErrors,
@@ -54,5 +49,4 @@ export {
   resetValidationErrors,
   resetHttpErrors,
   setHttpErrorsField
-  // setUserErrorsField
 }

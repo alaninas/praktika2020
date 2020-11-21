@@ -29,9 +29,7 @@ export async function useUser ({ userId = '', noDataReload = true, createGallery
   }
 
   async function updatePictureInGallery ({ id, galleryPicture }: { id: string; galleryPicture: GalleryInterface }) {
-    console.log('Picture update ------>>>')
     const i = user.value.images?.findIndex(el => el.filename === galleryPicture.file)
-    console.log(i)
     if (i === undefined || i < 0) return false
     await updateGalleryPicture({ id, galleryPicture })
     return true

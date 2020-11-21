@@ -73,11 +73,7 @@ async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterfa
 
 async function updateGalleryPicture ({ id, galleryPicture }: { id: string; galleryPicture: GalleryInterface }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  console.log('>> before update:')
-  console.log(galleryPicture)
-  console.log(id)
   const [error, result] = await to(putUserUpdatedImage({ obj: { image: galleryPicture.file, imagecaption: galleryPicture.caption }, id }))
-  console.log(result.data)
   if (error) setHttpErrorsField({ field: 'imagesresponse', message: error.message })
   if (result) await loadGallery(id)
 }

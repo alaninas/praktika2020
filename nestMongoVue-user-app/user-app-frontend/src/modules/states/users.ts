@@ -54,8 +54,6 @@ async function removeUsersStateUser (userId: string): Promise<Ref<UserInterface[
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 watch(users, (users, prevUsers) => {
   history.push(users)
-  console.log('>> from users state watcher -- on users')
-  console.log(history.length)
 })
 
 export {

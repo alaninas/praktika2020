@@ -16,9 +16,6 @@ function reqInterceptor () {
     if (userEditForm && !isAuthenticated) {
       routerRedirect('Login')
     }
-    // if (userEditForm && isAuthenticated && userEditForm[2] !== userId) {
-    //   routerRedirect('Users')
-    // }
     return req
   })
 }
