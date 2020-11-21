@@ -24,7 +24,6 @@
             ref="images"
             multiple
             accept=".png, .jpg, .jpeg, .gif"
-            size="1000"
             @change="handleFilesUpload()"
           />
         </div>
@@ -34,14 +33,19 @@
     <ul class="file-list">
       <li v-for="(file, i) in files" :key="file">
         <div class="row">
-          <div class="col-lg-9 col-md-12 col-sm-12">
+          <div class="col-lg-8 col-md-12 col-sm-12">
             {{ file.data.name }}
           </div>
-          <div class="col-lg-2 col-md-10 col-sm-9">
-            <progress v-show="file.progress && file.progress < 100" max="100" :value.prop="file.progress || 0"></progress>
+          <div class="col-lg-3 col-md-10 col-sm-9">
+            <!-- <progress :value.prop="file.progress || 0"></progress> -->
+            <!-- <div class="w3-dark-grey">
+              <div id="myBar" class="w3-container w3-green" :style.prop="{ width: file.progress || 0 + '%' }">{{ file.progress || 0 }}%</div>
+            </div> -->
+            <div class="w3-dark-grey" v-show="file.progress < 100" v-html="getProgressBarDisplay(file.progress)" />
+            <!-- <progress v-show="file.progress && file.progress < 100" max="100" :value.prop="file.progress || 0"></progress> -->
           </div>
           <div class="col-lg-1 col-md-2 col-sm-3">
-            <a v-show="(file.progress < 100 || !file.progress) && !file.isUploaded" class="remove-file" @click="removeFile(i)">Remove {{file.progress}}</a>
+            <a v-show="(file.progress < 100 || !file.progress) && !file.isUploaded" class="remove-file" @click="removeFile(i)">Remove</a>
             <a v-show="file.progress === 100 && !file.isUploaded" class="unsuccessful-upload" @click="reuploadFile($route.params.id, i)">Reupload</a>
             <a v-show="file.isUploaded === true" class="successful-upload" @click="removeFile(i)">Success</a>
           </div>
@@ -55,13 +59,36 @@
 <script lang="ts">
 import { Ref, ref } from 'vue'
 import { useFileUpload } from '@/modules/features/useFileUpload'
+import { setEventTargetDisplay, setTargetStyleField } from '@/modules/utilities/fileUpload/targetSetters-utility'
 
 export default {
   async setup () {
     const images: Ref<HTMLInputElement> = ref(document.createElement('input'))
     const dropzone: Ref<HTMLElement> = ref(document.createElement('div'))
-    const { files, addFilesFromInputFileList, performFileUpload, getFileErrorText, dragEventHandler, removeFile } = await useFileUpload()
+    const { files, addFilesFromInputFileList, performFileUpload, getFileErrorText, removeFile } = await useFileUpload()
 
+    function getProgressBarDisplay (pr: number | undefined): string {
+      const num = pr || 0
+      const s = `<div id="myBar" class="row w3-container w3-green" style="width:${num}%">${num}%</div>`
+      return s
+    }
+    const dragEventHandler = {
+      dragStart (event: DragEvent) {
+        setTargetStyleField({ target: event.target, field: 'opacity', attr: '0.55' })
+      },
+      dragOver (event: DragEvent) {
+        setEventTargetDisplay({ target: event.target, background: '#1976d229', text: 'Drop new images here...' })
+      },
+      dragLeave (event: DragEvent) {
+        setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
+      },
+      drop (event: DragEvent) {
+        if (event && event.dataTransfer) {
+          addFilesFromInputFileList(event.dataTransfer.files)
+          setEventTargetDisplay({ target: event.target, background: '', opacity: '', text: 'Drag files here...' })
+        }
+      }
+    }
     function handleFilesUpload () {
       console.log('handle files input')
       const inputImages = images.value.files
@@ -73,7 +100,7 @@ export default {
       console.log(`reuploads file at index: ${i}, userId: ${id}`)
       await performFileUpload({ id, i })
     }
-    return { dragEventHandler, getFileErrorText, images, dropzone, handleFilesUpload, files, removeFile, reuploadFile }
+    return { dragEventHandler, getFileErrorText, images, dropzone, handleFilesUpload, files, removeFile, reuploadFile, getProgressBarDisplay }
   }
 }
 </script>
