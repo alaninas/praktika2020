@@ -44,7 +44,7 @@ export async function useFileUpload () {
     }
   }
 
-  function getFileErrorText (index: number): string {
+  function getFileUploadErrorText (index: number): string {
     try {
       const f = files.value[index]
       const err = f.errors
@@ -54,5 +54,5 @@ export async function useFileUpload () {
       return ''
     }
   }
-  return { files, updateCaption, performFileUpload, submitFiles, addFilesFromInputFileList, getFileErrorText, removeFile, cleanUploads }
+  return { files, updateCaption, performFileUpload, submitFiles, addFilesFromInputFileList, getFileUploadErrorText, removeFile, cleanUploads }
 }

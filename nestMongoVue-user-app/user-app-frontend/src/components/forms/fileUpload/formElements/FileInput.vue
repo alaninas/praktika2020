@@ -37,12 +37,7 @@
             {{ file.data.name }}
           </div>
           <div class="col-lg-3 col-md-10 col-sm-9">
-            <!-- <progress :value.prop="file.progress || 0"></progress> -->
-            <!-- <div class="w3-dark-grey">
-              <div id="myBar" class="w3-container w3-green" :style.prop="{ width: file.progress || 0 + '%' }">{{ file.progress || 0 }}%</div>
-            </div> -->
             <div class="w3-dark-grey" v-show="file.progress < 100" v-html="getProgressBarDisplay(file.progress)" />
-            <!-- <progress v-show="file.progress && file.progress < 100" max="100" :value.prop="file.progress || 0"></progress> -->
           </div>
           <div class="col-lg-1 col-md-2 col-sm-3">
             <a v-show="(file.progress < 100 || !file.progress) && !file.isUploaded" class="remove-file" @click="removeFile(i)">Remove</a>
@@ -50,7 +45,7 @@
             <a v-show="file.isUploaded === true" class="successful-upload" @click="removeFile(i)">Success</a>
           </div>
         </div>
-        <div class="error" v-html="getFileErrorText(i)" />
+        <div class="error" v-html="getFileUploadErrorText(i)" />
       </li>
     </ul>
   </div>
@@ -65,7 +60,7 @@ export default {
   async setup () {
     const images: Ref<HTMLInputElement> = ref(document.createElement('input'))
     const dropzone: Ref<HTMLElement> = ref(document.createElement('div'))
-    const { files, addFilesFromInputFileList, performFileUpload, getFileErrorText, removeFile } = await useFileUpload()
+    const { files, addFilesFromInputFileList, performFileUpload, getFileUploadErrorText, removeFile } = await useFileUpload()
 
     function getProgressBarDisplay (pr: number | undefined): string {
       const num = pr || 0
@@ -100,7 +95,7 @@ export default {
       console.log(`reuploads file at index: ${i}, userId: ${id}`)
       await performFileUpload({ id, i })
     }
-    return { dragEventHandler, getFileErrorText, images, dropzone, handleFilesUpload, files, removeFile, reuploadFile, getProgressBarDisplay }
+    return { dragEventHandler, getFileUploadErrorText, images, dropzone, handleFilesUpload, files, removeFile, reuploadFile, getProgressBarDisplay }
   }
 }
 </script>
