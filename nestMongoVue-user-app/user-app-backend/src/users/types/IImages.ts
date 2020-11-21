@@ -1,3 +1,5 @@
+import IImage from "./IImage";
+
 export default interface IImages { 
-    images: string[] 
+    images: IImage[] 
 }
