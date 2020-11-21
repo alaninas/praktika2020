@@ -30,7 +30,7 @@
 <script lang="ts">
 import UsersSearch from '@/components/UsersSearch.vue'
 import UsersTable from '@/components/UsersTable.vue'
-import NewUser from '@/components/forms/newUser/NewUser.vue'
+import NewUser from '@/components/newUser/NewUser.vue'
 
 export default {
   components: {

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import LoginUser from '@/components/forms/loginUser/LoginUser.vue'
+import LoginUser from '@/components/loginUser/LoginUser.vue'
 
 export default {
   components: {

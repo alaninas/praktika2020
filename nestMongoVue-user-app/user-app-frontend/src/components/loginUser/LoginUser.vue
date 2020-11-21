@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import validate from '@/directives/validate'
-import Login from '@/components/forms/loginUser/formRows/Login.vue'
+import Login from '@/components/loginUser/formRows/Login.vue'
 import { validationErrors, httpErrors } from '@/modules/states/formErrors'
 import { useLogin } from '@/modules/features/useLogin'
 import { ref } from 'vue'

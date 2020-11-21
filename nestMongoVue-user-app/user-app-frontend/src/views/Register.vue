@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import NewUser from '@/components/forms/newUser/NewUser.vue'
+import NewUser from '@/components/newUser/NewUser.vue'
 
 export default {
   components: {

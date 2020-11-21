@@ -27,8 +27,8 @@
 </template>
 
 <script lang="ts">
-import CaptionInput from '@/components/forms/fileUpload/formElements/CaptionInput.vue'
-import FileInput from '@/components/forms/fileUpload/formElements/FileInput.vue'
+import CaptionInput from '@/components/fileUpload/formElements/CaptionInput.vue'
+import FileInput from '@/components/fileUpload/formElements/FileInput.vue'
 import { httpErrors } from '@/modules/states/formErrors'
 import { onMounted, Ref, ref } from 'vue'
 import { useFileUpload } from '@/modules/features/useFileUpload'

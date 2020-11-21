@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import EditUser from '@/components/forms/editUser/EditUser.vue'
+import EditUser from '@/components/editUser/EditUser.vue'
 import UsersTable from '@/components/UsersTable.vue'
 
 export default {

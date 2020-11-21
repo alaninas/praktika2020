@@ -27,9 +27,9 @@
 
 <script lang="ts">
 import validate from '@/directives/validate'
-import EditAddress from '@/components/forms/editUser/formRows/EditAddress.vue'
-import EditLogin from '@/components/forms/editUser/formRows/EditLogin.vue'
-import EditPersonal from '@/components/forms/editUser/formRows/EditPersonal.vue'
+import EditAddress from '@/components/editUser/formRows/EditAddress.vue'
+import EditLogin from '@/components/editUser/formRows/EditLogin.vue'
+import EditPersonal from '@/components/editUser/formRows/EditPersonal.vue'
 import { useUser } from '@/modules/features/useUser'
 import { useUsers } from '@/modules/features/useUsers'
 import { useRoute } from 'vue-router'

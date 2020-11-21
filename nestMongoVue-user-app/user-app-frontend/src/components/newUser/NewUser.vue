@@ -18,9 +18,9 @@
 
 <script lang="ts">
 import validate from '@/directives/validate'
-import NewAddress from '@/components/forms/newUser/formRows/NewAddress.vue'
-import NewLogin from '@/components/forms/newUser/formRows/NewLogin.vue'
-import NewPersonal from '@/components/forms/newUser/formRows/NewPersonal.vue'
+import NewAddress from '@/components/newUser/formRows/NewAddress.vue'
+import NewLogin from '@/components/newUser/formRows/NewLogin.vue'
+import NewPersonal from '@/components/newUser/formRows/NewPersonal.vue'
 import { useUser } from '@/modules/features/useUser'
 import { useUsers } from '@/modules/features/useUsers'
 import { userErrors, validationErrors } from '@/modules/states/formErrors'
