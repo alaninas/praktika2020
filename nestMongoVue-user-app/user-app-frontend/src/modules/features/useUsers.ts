@@ -55,7 +55,12 @@ export async function useUsers () {
   }
 
   async function editUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
-    return await updateUsersStateUser(newUser)
+    const [error, result] = await to(updateUsersStateUser(newUser))
+    if (error) {
+      userErrors.value.password = 'New password matches the old.'
+      userErrors.value.passwordConfirm = 'New password matches the old.'
+    }
+    return result
   }
   return { unsorted, sortByEmail, sortByAge, sortByAddress, sortByFullname, sortById, searchByEmail, removeUser, addUser, sortByCountry, editUser, sortByWebsite }
 }

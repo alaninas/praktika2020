@@ -32,8 +32,9 @@ async function getUsersStateUser (id: string): Promise<UserInterface> {
 }
 
 async function updateUsersStateUser (newUser: UserInterface): Promise<Ref<UserInterface[]>> {
-  await putUpdatedUser(newUser)
-  setState((await getAllUsers()).data)
+  const [error, result] = await to(putUpdatedUser(newUser))
+  if (error) throw error
+  if (result) setState((await getAllUsers()).data)
   return getState()
 }
 

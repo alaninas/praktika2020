@@ -61,7 +61,9 @@ async function postNewUser (newUser: UserInterface): Promise<AxiosResponse<UserI
 }
 
 async function putUpdatedUser (newUser: UserInterface): Promise<AxiosResponse<UserInterface>> {
-  return await axios.put(`${server.baseURL}/users`, newUser)
+  const [error, result] = await to(axios.put(`${server.baseURL}/users`, newUser))
+  if (error) throw error
+  return result
 }
 
 async function putTemporaryPassword (email: string, pass: string): Promise<AxiosResponse<[UserInterface, string]>> {
