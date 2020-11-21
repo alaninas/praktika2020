@@ -40,9 +40,6 @@ export class UsersService {
         return this.personModel.findOne({email: useremail});
     }
 
-    // async getUserImages(id: ObjectID): Promise<IImage[]> {
-    //     return (await this.personModel.findById(id)).images
-    // }
     async readUserImage(id: ObjectID, image: string): Promise<string> {
         return readFile(id, image);
     }
