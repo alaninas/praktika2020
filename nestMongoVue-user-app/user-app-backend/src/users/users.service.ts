@@ -8,7 +8,8 @@ import { ObjectID } from 'mongodb';
 import { sendMail } from './utilities/mail.utility';
 import { to, getMd5Hash, createUserPassword, updateUserPassword } from './utilities/base-user.utility';
 import IFile from './types/IFile';
-import { getAugmentedUserImages, readFile } from './utilities/file-upload.utility';
+import { getAugmentedUserImages, getUpdatedUserImages, readFile } from './utilities/file-upload.utility';
+import IImage from './types/IImage';
 
 @Injectable()
 export class UsersService {
@@ -39,17 +40,21 @@ export class UsersService {
         return this.personModel.findOne({email: useremail});
     }
 
-    async getUserImages(id: ObjectID): Promise<string[]> {
-        return (await this.personModel.findById(id)).images
-    }
+    // async getUserImages(id: ObjectID): Promise<IImage[]> {
+    //     return (await this.personModel.findById(id)).images
+    // }
     async readUserImage(id: ObjectID, image: string): Promise<string> {
         return readFile(id, image);
     }
-    async uploadMultipleFiles({ id, files }: { id: ObjectID; files: IFile[]; }): Promise<Person> {
+    async updateUserFile({ id, file, caption }: { id: ObjectID; file: string; caption: string }): Promise<Person> {
         const userToUpdate = await this.personModel.findOne({ _id: id });
-        return await userToUpdate.updateOne(getAugmentedUserImages({ files, oldImages: userToUpdate.images }));
+        return await userToUpdate.updateOne(getUpdatedUserImages({ file, caption, oldImages: userToUpdate.images }));
     }
-    async deleteUserImage(id: ObjectID, image: string): Promise<string[]> {
+    async uploadMultipleFiles({ id, files, caption }: { id: ObjectID; files: IFile[]; caption: string }): Promise<Person> {
+        const userToUpdate = await this.personModel.findOne({ _id: id });
+        return await userToUpdate.updateOne(getAugmentedUserImages({ files, caption, oldImages: userToUpdate.images }));
+    }
+    async deleteUserImage(id: ObjectID, image: string): Promise<IImage[]> {
         return this.usersHelper.deleteUserImage(id, image);
     }
      

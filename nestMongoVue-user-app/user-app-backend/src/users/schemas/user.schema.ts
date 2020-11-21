@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import IImage from '../types/IImage';
 
 @Schema()
 export class Person extends Document {
@@ -33,8 +34,10 @@ export class Person extends Document {
   @Prop()
   houseNumber?: number;​
 
+  // @Prop()
+  // images?: string[];
   @Prop()
-  images?: string[];
+  images?: IImage[];
 
   @Prop()
   lastname?: string;

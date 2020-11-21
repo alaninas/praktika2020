@@ -1,5 +1,6 @@
 import { IsArray, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import { IsEqualTo } from "../decorators/IsEqualTo";
+import IImage from "../types/IImage";
 
 export class UpdateUserDto {
     @IsOptional()
@@ -45,9 +46,9 @@ export class UpdateUserDto {
 
     @IsOptional()
     @IsArray()
-    @IsString({each: true})
-    @Matches(/\.(jpg|jpeg|png|gif)$/, {each: true, message: 'file extension not a picture'})
-    images?: string[];
+    // @IsString({each: true})
+    // @Matches(/\.(jpg|jpeg|png|gif)$/, {each: true, message: 'file extension not a picture'})
+    images?: IImage[];
 
     @IsOptional()
     @IsString()

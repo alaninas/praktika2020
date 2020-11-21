@@ -4,11 +4,19 @@ import * as fs from 'fs';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Person } from '../schemas/user.schema';
 import { ObjectID } from 'mongodb';
+import IImage from '../types/IImage';
 
-function getAugmentedUserImages({ files, oldImages }: { files: IFile[]; oldImages: string[]; }): IImages {
+function getUpdatedUserImages({ file, caption, oldImages }: { file: string; oldImages: IImage[]; caption: string; }): IImages {
+  const response = oldImages;
+  const i = response.findIndex(el => el.filename === file)
+  response[i].caption = caption
+  return { images: response };
+}
+
+function getAugmentedUserImages({ files, caption, oldImages }: { files: IFile[]; oldImages: IImage[]; caption: string; }): IImages {
   const response = oldImages;
   files.forEach((file: IFile) => {
-    response.push(file.filename);
+    response.push({ filename: file.filename, caption });
   });
   return { images: response };
 }
@@ -22,12 +30,12 @@ function readFile (id: ObjectID, image: string): string {
 }
 
 
-async function deleteOneImage(user: Person, image: string): Promise<string[] | undefined> {
+async function deleteOneImage(user: Person, image: string): Promise<IImage[] | undefined> {
   const oldImages = user.images
   try {
     fs.unlinkSync(`${process.env.MULTER_OPTIONS_DESTINATION}/${user._id}/${image}`)
     //file removed
-    const index = oldImages.findIndex(el => el === image)
+    const index = oldImages.findIndex(el => el.filename === image)
     oldImages.splice(index, 1)
     return !!oldImages ? oldImages : [] 
   } catch(err) {
@@ -38,5 +46,6 @@ async function deleteOneImage(user: Person, image: string): Promise<string[] | u
 export {
   getAugmentedUserImages,
   deleteOneImage,
-  readFile
+  readFile,
+  getUpdatedUserImages
 }

@@ -13,6 +13,7 @@ import { LoginUserDto } from './dtos/login-user.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { localOptions } from './utilities/files-interceptor.utility';
 import IFile from './types/IFile';
+import IImage from './types/IImage';
 
 @Catch(HttpException)
 @Controller('users')
@@ -44,10 +45,10 @@ export class UsersController {
     async getOneUserByEmail(@Param('email') email: string): Promise<Person> {
         return this.usersService.getOneUserByEmail(email);
     }
-    @Get('gallery/:id')
-    async getUserImages(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<string[]> {
-      return this.usersService.getUserImages(id);
-    }
+    // @Get('gallery/:id')
+    // async getUserImages(@Param('id', ParseObjectIdPipe) id: ObjectID): Promise<IImage[]> {
+    //   return this.usersService.getUserImages(id);
+    // }
     @Get('uploads/:id/:image')
     // @Header('Content-Type', 'image/*')
     async getUserFileData(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string> {
@@ -82,12 +83,18 @@ export class UsersController {
         return this.usersService.updatePasswordByEmail({ email, newPass: sub });
     }
     // TODO: add guards
-    @Put('uploads/:id')
+    @Post('uploads/:id')
     @UseInterceptors(FilesInterceptor('images', 20, localOptions))
     async uploadMultipleFiles(@UploadedFiles() files: IFile[], @Param('id') id: string,  @Body('imagecaption') imagecaption: string): Promise<Person> {
         console.error(`--> calls file upload: user id ${id}, files count: ${files.length}, first file: ${files[0]}, caption: ${imagecaption}`)
         const oid = ObjectID.createFromHexString(id);
-        return this.usersService.uploadMultipleFiles({ id: oid, files });
+        return this.usersService.uploadMultipleFiles({ id: oid, files, caption: imagecaption });
+    }
+    @Put('uploads/:id')
+    async updateUserFile(@Body('image') file: string, @Param('id') id: string,  @Body('imagecaption') imagecaption: string): Promise<Person> {
+        console.error(`--> calls file update: user id ${id}, first file: ${file}, caption: ${imagecaption}`)
+        const oid = ObjectID.createFromHexString(id);
+        return this.usersService.updateUserFile({ id: oid, file, caption: imagecaption });
     }
 
     @UseGuards(JwtAuthGuard)
@@ -97,7 +104,7 @@ export class UsersController {
     }
     // TODO: add guards
     @Delete('gallery/:id/:image')
-    async deleteImage(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<string[]> {
+    async deleteImage(@Param('id', ParseObjectIdPipe) id: ObjectID, @Param('image') image: string): Promise<IImage[]> {
         return this.usersService.deleteUserImage(id, image);
     }
 }

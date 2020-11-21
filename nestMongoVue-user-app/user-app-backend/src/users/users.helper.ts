@@ -7,6 +7,7 @@ import { ObjectID } from 'mongodb';
 import { getDirection, getNewFriendsStages } from './utilities/base-user.utility';
 import * as fs from 'fs';
 import { deleteOneImage } from './utilities/file-upload.utility';
+import IImage from './types/IImage';
 
 @Injectable()
 export class UsersHelper {
@@ -94,7 +95,7 @@ export class UsersHelper {
         return await this.personModel.findOneAndDelete({_id: uid})
     }
 
-    async deleteUserImage(id: ObjectID, image: string): Promise<string[]> {
+    async deleteUserImage(id: ObjectID, image: string): Promise<IImage[]> {
         const user = await this.personModel.findOne({ _id: id });
         const newImages = await deleteOneImage(user, image);
         await user.updateOne({ images: newImages });
