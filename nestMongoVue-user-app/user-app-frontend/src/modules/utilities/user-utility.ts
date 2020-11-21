@@ -1,4 +1,4 @@
-import UserInterface, { GalleryInterface } from '@/modules/types/IUser'
+import UserInterface, { GalleryInterface, ImageInterface } from '@/modules/types/IUser'
 import AddressInterface from '@/modules/types/IAddress'
 import PasswordInterface from '@/modules/types/IPassword'
 import { createImageUrl } from '@/modules/utilities/gallery/gallery-utility'
@@ -38,7 +38,7 @@ function setAddressProperties (user: UserInterface, inputAddress: AddressInterfa
   return user
 }
 
-function setImages (user: UserInterface, images: string[] | undefined): UserInterface {
+function setImages (user: UserInterface, images: ImageInterface[] | undefined): UserInterface {
   user.images = images
   return user
 }
@@ -63,13 +63,13 @@ function setBasicProperties (user: UserInterface, inputUser: UserInterface): Use
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createGalleryPicture ({ error, result, _id, i, image }: { error: any; result: any; _id: string; i: number; image: string }): GalleryInterface {
+function createGalleryPicture ({ error, result, _id, i, image }: { error: any; result: any; _id: string; i: number; image: ImageInterface }): GalleryInterface {
   return {
     // TODO: static pic as placeholder for unavailable pics
     link: error ? '' : result,
     altname: `User ${_id} image #${i}`,
-    caption: 'No caption provided',
-    file: image
+    caption: image.caption || 'No caption provided',
+    file: image.filename
   }
 }
 async function createGallery (user: UserInterface): Promise<UserInterface> {
@@ -78,8 +78,8 @@ async function createGallery (user: UserInterface): Promise<UserInterface> {
   if (!images || !_id) return user
   for (let i = 0; i < images.length; i++) {
     const image = images[i]
-    if (image && image.length > 0) {
-      const [error, result] = await to(createImageUrl(_id, image))
+    if (image && image.filename && image.filename.length > 0) {
+      const [error, result] = await to(createImageUrl(_id, image.filename))
       user.gallery.push(createGalleryPicture({ error, result, _id, i, image }))
     }
   }
