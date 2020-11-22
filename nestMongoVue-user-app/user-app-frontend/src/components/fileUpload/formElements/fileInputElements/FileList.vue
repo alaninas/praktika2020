@@ -6,7 +6,7 @@
           {{ file.data.name }}
         </div>
         <div class="col-lg-3 col-md-10 col-sm-9">
-          <div class="w3-dark-grey" v-show="file.progress < 100" v-html="getProgressBarDisplay(file.progress)" />
+          <div class="progress-bar" v-show="file.progress < 100" v-html="getProgressBarDisplay(file.progress)" />
         </div>
         <div class="col-lg-1 col-md-2 col-sm-3">
           <a v-show="(file.progress < 100 || !file.progress) && !file.isUploaded" class="remove-file" @click="removeFile(i)">Remove</a>
