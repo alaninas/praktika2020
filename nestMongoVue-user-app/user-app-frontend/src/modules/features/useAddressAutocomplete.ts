@@ -33,6 +33,16 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
     setOpenDropDown(newVal)
   }
 
+  function matchesClick (index: number) {
+    if (addressAutocomplete.value.openDropDown) setCurrentIdx(index)
+    setStateAddress({ inputAddress: matchedAddresses.value[addressAutocomplete.value.currentIdx] })
+    resetDropDown(false)
+  }
+
+  function isIndexActive (idx: number): boolean {
+    return idx === addressAutocomplete.value.currentIdx
+  }
+
   function createAddressId (idx: number): string {
     return `address-${idx}`
   }
@@ -43,41 +53,30 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
     if (el) el.scrollIntoView(false)
   }
 
-  function up () {
-    const i = addressAutocomplete.value.currentIdx
-    if (i > 0 && addressAutocomplete.value.openDropDown) setCurrentIdx(i - 1)
-    scrollIntoViewActiveAddress()
-  }
-
-  function down () {
-    const i = addressAutocomplete.value.currentIdx
-    if (i < matchedStringAddresses.value.length - 1 &&
-        addressAutocomplete.value.openDropDown) setCurrentIdx(i + 1)
-    scrollIntoViewActiveAddress()
-  }
-
-  function inputChange () {
-    if (addressAutocomplete.value.openDropDown === false) resetDropDown(true)
-  }
-
-  function matchesClick (index: number) {
-    if (addressAutocomplete.value.openDropDown) setCurrentIdx(index)
-    setStateAddress({ inputAddress: matchedAddresses.value[addressAutocomplete.value.currentIdx] })
-    resetDropDown(false)
-  }
-
-  function enter () {
-    setStateAddress({ inputAddress: matchedAddresses.value[addressAutocomplete.value.currentIdx] })
-    resetDropDown(false)
-  }
-
-  function isIndexActive (idx: number): boolean {
-    return idx === addressAutocomplete.value.currentIdx
+  const inputHandler = {
+    up () {
+      const i = addressAutocomplete.value.currentIdx
+      if (i > 0 && addressAutocomplete.value.openDropDown) setCurrentIdx(i - 1)
+      scrollIntoViewActiveAddress()
+    },
+    down () {
+      const i = addressAutocomplete.value.currentIdx
+      if (i < matchedStringAddresses.value.length - 1 &&
+          addressAutocomplete.value.openDropDown) setCurrentIdx(i + 1)
+      scrollIntoViewActiveAddress()
+    },
+    inputChange () {
+      if (addressAutocomplete.value.openDropDown === false) resetDropDown(true)
+    },
+    enter () {
+      setStateAddress({ inputAddress: matchedAddresses.value[addressAutocomplete.value.currentIdx] })
+      resetDropDown(false)
+    }
   }
 
   watchEffect(() => {
     openMatches(matchedStringAddresses.value)
   })
 
-  return { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedStringAddresses, matchedAddresses, isIndexActive, createAddressId }
+  return { addressAutocomplete, inputHandler, matchesClick, matchedStringAddresses, matchedAddresses, isIndexActive, createAddressId }
 }

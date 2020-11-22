@@ -4,11 +4,11 @@
     <label for="addressInput">Address</label>
     <input
       class="address-input" type="text" id="addressInput" v-model="user.address" placeholder="your address" name="address" pattern="([,A-z\s]+.,[0-9\s]+){2}" required v-validate
-      @keydown.enter="enter()"
-      @keydown.down="down()"
-      @keydown.up="up()"
-      @input="inputChange()"
-      @click="enter()"
+      @keydown.enter="inputHandler.enter()"
+      @keydown.down="inputHandler.down()"
+      @keydown.up="inputHandler.up()"
+      @input="inputHandler.inputChange()"
+      @click="inputHandler.enter()"
     />
     <div v-show="!addressAutocomplete.openDropDown" class="error">{{ validationErrors.address }}</div>
     <ul id="address-dropdown" class="dropdown-menu" v-show="addressAutocomplete.openDropDown">
@@ -52,12 +52,9 @@ export default {
   },
   async setup () {
     const { user } = await useUser({})
-    const { addressAutocomplete, enter, up, down, inputChange, matchesClick, matchedStringAddresses, matchedAddresses, isIndexActive, createAddressId } = useAddressAutocomplete(user)
+    const { addressAutocomplete, inputHandler, matchesClick, matchedStringAddresses, matchedAddresses, isIndexActive, createAddressId } = useAddressAutocomplete(user)
     return {
-      enter,
-      up,
-      down,
-      inputChange,
+      inputHandler,
       matchesClick,
       addressAutocomplete,
       isIndexActive,
