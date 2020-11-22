@@ -54,25 +54,20 @@ async function loadState ({ userId, noDataReload, createGallery }: { userId: str
   if (noDataReload) return getState()
   if (!userId || getState().value._id !== myUser._id || getState().value._id === '' || getState().value._id) {
     clearState()
-    if (createGallery && myUser.images) {
-      await initGallery(myUser)
-    }
+    if (createGallery && myUser.images) await initGallery(myUser)
     setState(myUser)
   }
   return getState()
 }
 
 async function deleteUserPicture ({ inputUser, image }: { inputUser: UserInterface; image: string }): Promise<ImageInterface[] | undefined> {
-  if (inputUser._id && image && image.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [error, result] = await to(purgeImage(inputUser._id, image))
-    if (error) alert(`Can not delete image: ${image}`)
-  }
-  return (await loadGallery(inputUser._id)).value.images
+  if (!inputUser._id || !image || image.length <= 0) return
+  const [error, result] = await to(purgeImage(inputUser._id, image))
+  if (error) alert(`Can not delete image: ${image}`)
+  return result ? (await loadGallery(inputUser._id)).value.images : inputUser.images
 }
 
 async function updateGalleryPicture ({ id, galleryPicture }: { id: string; galleryPicture: GalleryInterface }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, result] = await to(putUserUpdatedImage({ obj: { image: galleryPicture.file, imagecaption: galleryPicture.caption }, id }))
   if (error) setHttpErrorsField({ field: 'imagesresponse', message: error.message })
   if (result) await loadGallery(id)
