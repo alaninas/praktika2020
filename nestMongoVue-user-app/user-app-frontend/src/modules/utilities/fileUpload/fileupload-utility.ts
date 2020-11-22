@@ -4,10 +4,22 @@ import { UploadFileInterface } from '@/modules/types/IUploadFile'
 const acceptedFormats = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
 // const acceptedFormats = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'text/plain']
 
-const sizeLimit = 1000000
+const sizeLimit = 1
 
 const fileCountLimit = 3
 // const fileCountLimit = 20
+
+const converter = {
+  roundNumber (num: number): number {
+    return Math.round((num + Number.EPSILON) * 100) / 100
+  },
+  toMB (num: number): number {
+    return num / 1000000
+  },
+  toPrettyMB (num: number): number {
+    return this.roundNumber(this.toMB(num))
+  }
+}
 
 const getFileErrorString = {
   httpresponse (err: FileErrorsInterface, progress: number): string {
@@ -44,8 +56,9 @@ function createFilesUploadFormData ({ inputImage, caption }: { inputImage: File;
 }
 
 function createFileInputErrors (file: File): FileErrorsInterface {
+  const convSize = converter.toPrettyMB(file.size)
   const errors: FileErrorsInterface = { format: '', size: '' } as FileErrorsInterface
-  if (!isSizeAcceptable(file.size)) errors.size = `${file.size} exceeds the limit ${sizeLimit} by ${file.size - sizeLimit} bytes.`
+  if (!isSizeAcceptable(convSize)) errors.size = `${convSize}MB exceeds the limit ${sizeLimit}MB.`
   if (!isFormatAcceptable(file.type)) errors.format = `${file.type} is not supported. Currently supporting: ${acceptedFormats.toString()}.`
   return errors
 }
