@@ -25,7 +25,11 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
   }
 
   function openMatches (matchedStringAddressesArray: string[]) {
-    const newVal = user.value.address !== undefined && user.value.address !== '' && matchedStringAddressesArray.length !== 0 && addressAutocomplete.value.openDropDown === true
+    const newVal =
+      user.value.address !== undefined &&
+      user.value.address !== '' &&
+      matchedStringAddressesArray.length !== 0 &&
+      addressAutocomplete.value.openDropDown === true
     setOpenDropDown(newVal)
   }
 
@@ -47,7 +51,8 @@ export function useAddressAutocomplete (user: Ref<UserInterface>) {
 
   function down () {
     const i = addressAutocomplete.value.currentIdx
-    if (i < matchedStringAddresses.value.length - 1 && addressAutocomplete.value.openDropDown) setCurrentIdx(i + 1)
+    if (i < matchedStringAddresses.value.length - 1 &&
+        addressAutocomplete.value.openDropDown) setCurrentIdx(i + 1)
     scrollIntoViewActiveAddress()
   }
 
