@@ -32,7 +32,7 @@ const getFileErrorString = {
   },
   format (err: FileErrorsInterface): string {
     const length = err.format?.length
-    return length ? ` File format: ${err.format}` : ''
+    return length ? ` File type: ${err.format}` : ''
   }
 }
 
