@@ -34,7 +34,7 @@ export async function useFileUpload () {
     if (doesFileHaveInputErrors(files.value[i]) || httpErrors.value.imagescount) return false
     setUserCaption(i)
     await sendFileToServer({ id, i, config: createUploadConfig(i) })
-    await loadGallery(id)
+    // await loadGallery(id)
     return true
   }
 
@@ -42,6 +42,7 @@ export async function useFileUpload () {
     for (let i = 0; i < files.value.length; i++) {
       if (!files.value[i].isUploaded) await performFileUpload({ id, i })
     }
+    await loadGallery(id)
   }
 
   function getFileUploadErrorText (index: number): string {
